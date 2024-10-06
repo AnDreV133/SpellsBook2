@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="deploymentTargetDropDown">
+    <value>
+      <entry key="GetSpellsWithFilterAndSorterUseCaseTest">
+        <State />
+      </entry>
+      <entry key="GreetingPreview">
+        <State />
+      </entry>
+      <entry key="app">
+        <State />
+      </entry>
+      <entry key="test_execute_on_filter()">
+        <State />
+      </entry>
+      <entry key="test_execute_on_filter() (1)">
+        <State />
+      </entry>
+      <entry key="test_execute_on_filter_with_one_category_one_position()">
+        <State />
+      </entry>
+    </value>
+  </component>
+</project>

@@ -1,0 +1,30 @@
+<resources>
+    <!--  SPELL TAG -->
+
+    <!--  levels  -->
+    <string name="tag_level_name">Уровень</string>
+    <string name="tag_level_0">Уровень 0</string>
+    <string name="tag_level_1">Уровень 1</string>
+    <string name="tag_level_2">Уровень 2</string>
+    <string name="tag_level_3">Уровень 3</string>
+    <string name="tag_level_4">Уровень 4</string>
+    <string name="tag_level_5">Уровень 5</string>
+    <string name="tag_level_6">Уровень 6</string>
+    <string name="tag_level_7">Уровень 7</string>
+    <string name="tag_level_8">Уровень 8</string>
+    <string name="tag_level_9">Уровень 9</string>
+
+    <!--  schools  -->
+    <string name="tag_school_name">Школа</string>
+    <string name="tag_school_abjuration">Ограждение</string>
+    <string name="tag_school_transmutation">Превращение</string>
+    <string name="tag_school_conjuration">Вызов</string>
+    <string name="tag_school_divination">Прорицание</string>
+    <string name="tag_school_enchantment">Очарование</string>
+    <string name="tag_school_illusion">Иллюзия</string>
+    <string name="tag_school_invocation">Вызов</string>
+    <string name="tag_school_necromancy">Некромантия</string>
+    <string name="apply_filters">Фильтровать</string>
+    <!--    -->
+
+</resources>

@@ -1,0 +1,32 @@
+<resources>
+    <string name="app_name" translatable="false">SpellsBook</string>
+
+    <!--  SPELL TAG -->
+    <string name="tag_unknown" translatable="false">UNKNOWN</string>
+
+    <!--  levels  -->
+    <string name="tag_level_name">Level</string>
+    <string name="tag_level_0">Level 0</string>
+    <string name="tag_level_1">Level 1</string>
+    <string name="tag_level_2">Level 2</string>
+    <string name="tag_level_3">Level 3</string>
+    <string name="tag_level_4">Level 4</string>
+    <string name="tag_level_5">Level 5</string>
+    <string name="tag_level_6">Level 6</string>
+    <string name="tag_level_7">Level 7</string>
+    <string name="tag_level_8">Level 8</string>
+    <string name="tag_level_9">Level 9</string>
+
+    <!--  schools  -->
+    <string name="tag_school_name">School</string>
+    <string name="tag_school_abjuration">Abjuration</string>
+    <string name="tag_school_transmutation">Transmutation</string>
+    <string name="tag_school_conjuration">Conjuration</string>
+    <string name="tag_school_divination">Divination</string>
+    <string name="tag_school_enchantment">Enchantment</string>
+    <string name="tag_school_illusion">Illusion</string>
+    <string name="tag_school_invocation">Invocation</string>
+    <string name="tag_school_necromancy">Necromancy</string>
+    <string name="apply_filters">Filter</string>
+
+</resources>
