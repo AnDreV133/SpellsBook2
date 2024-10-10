@@ -8,8 +8,10 @@ class AddBookUseCase @Inject constructor(
     private val bookRepository: BookRepository
 ) {
     suspend fun execute(model: BookModel) {
-        bookRepository.add(model.copy(
-            name = model.name.trim()
-        ))
+        bookRepository.add(
+            model.copy(
+                name = model.name.trim()
+            )
+        )
     }
 }

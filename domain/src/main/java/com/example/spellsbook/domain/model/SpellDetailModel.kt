@@ -1,7 +1,6 @@
 package com.example.spellsbook.domain.model
 
 data class SpellDetailModel(
-    val uuid: String,
     val name: String,
     val level: Int,
     val school: String,

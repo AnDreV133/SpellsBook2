@@ -13,7 +13,7 @@ data class BookEntity(
     val name: String
 ) {
     companion object {
-        const val TABLE_NAME = "books"
+        const val TABLE_NAME = "book"
         const val COLUMN_ID = "id"
         const val COLUMN_NAME = "name"
     }

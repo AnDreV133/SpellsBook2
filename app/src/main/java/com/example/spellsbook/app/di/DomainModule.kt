@@ -2,10 +2,7 @@ package com.example.spellsbook.app.di
 
 import androidx.compose.ui.text.intl.Locale
 import com.example.spellsbook.domain.LocaleEnum
-import com.example.spellsbook.domain.repository.SpellRepository
-import com.example.spellsbook.domain.repository.TagRepository
-import com.example.spellsbook.domain.usecase.GetSpellsWithFilterAndSorterUseCase
-import com.example.spellsbook.domain.usecase.validation.ValidateBookUseCase
+import com.example.spellsbook.domain.usecase.ValidateBookUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -13,7 +10,7 @@ import dagger.hilt.components.SingletonComponent
 
 @Module(includes = [DataModule::class])
 @InstallIn(SingletonComponent::class)
-class UseCaseModule {
+class DomainModule {
     @Provides
     fun provideValidateBookNameUseCase() =
         ValidateBookUseCase()

@@ -7,6 +7,7 @@ import androidx.room.RawQuery
 import androidx.room.Update
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
+import kotlinx.coroutines.flow.Flow
 
 abstract class BaseDao<T>(private val tableName: String) {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -18,24 +19,18 @@ abstract class BaseDao<T>(private val tableName: String) {
     @Update
     abstract suspend fun update(data: T): Int
 
-    @RawQuery
-    protected abstract suspend fun _getMany(query: SupportSQLiteQuery): List<T>
+//    @RawQuery
+//    protected abstract fun _getMany(query: SupportSQLiteQuery): Flow<List<T>>
 
-    suspend fun getAll() = _getMany(
-        SimpleSQLiteQuery(
-            "select * from $tableName"
-        )
-    )
+//    open fun getInterval(from: Int, to: Int) = _getMany(
+//        if (from >= to)
+//            throw IllegalArgumentException("'from' bigger than 'to' ($from >= $to)")
+//        else
+//            SimpleSQLiteQuery(
+//                "select * from $tableName limit ${to - from} offset $from"
+//            )
+//    )
 
-    suspend fun getInterval(from: Int, to: Int) = _getMany(
-        if (from >= to)
-            throw IllegalArgumentException("'from' bigger than 'to' ($from >= $to)")
-        else
-            SimpleSQLiteQuery(
-                "select * from $tableName limit ${to - from} offset $from"
-            )
-    )
-
-    @RawQuery
-    protected abstract suspend fun _getOne(query: SupportSQLiteQuery): T?
+//    @RawQuery
+//    protected abstract fun _getOne(query: SupportSQLiteQuery): Flow<T?>
 }

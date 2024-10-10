@@ -1,33 +1,30 @@
-package com.example.spellsbook.domain.usecase.validation
+package com.example.spellsbook.domain.usecase
 
 import com.example.spellsbook.domain.model.BookModel
 
 class ValidateBookUseCase {
+    private val MAX_SYMBOLS = 25
+
     fun execute(model: BookModel): ValidationResult {
-        ValidateBookNameUseCase().execute(model.name).also {
+        model.name.checkBookName().also {
             if (!it.successful) return it
         }
         // for another validations
         return ValidationResult(successful = true)
     }
-}
 
-
-class ValidateBookNameUseCase {
-    private val MAX_SYMBOLS = 25
-
-    fun execute(name: String) =
-        if (name.isBlank())
+    private fun String.checkBookName(): ValidationResult =
+        if (this.isBlank())
             ValidationResult(
                 successful = false,
                 errorMessage = "Name can't be empty"
             )
-        else if (name.length > MAX_SYMBOLS)
+        else if (this.length > MAX_SYMBOLS)
             ValidationResult(
                 successful = false,
                 errorMessage = "Name can't be more than $MAX_SYMBOLS symbols"
             )
-        else if (Regex("[0-9]").containsMatchIn(name))
+        else if (Regex("[0-9]").containsMatchIn(this))
             ValidationResult(
                 successful = false,
                 errorMessage = "Name should contain only letters"
@@ -37,4 +34,9 @@ class ValidateBookNameUseCase {
                 successful = true,
             )
 }
+
+data class ValidationResult(
+    val successful: Boolean,
+    val errorMessage: String? = null
+)
 

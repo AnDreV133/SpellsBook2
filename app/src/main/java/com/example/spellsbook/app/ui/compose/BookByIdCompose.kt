@@ -37,9 +37,9 @@ class BookByIdViewModel @Inject constructor(
     }
 
     fun executeAllBooks() {
-        viewModelScope.launch {
-            _books.emit(getAllBooksUseCase.execute())
-        }
+//        viewModelScope.launch {
+//            _books.emit(getAllBooksUseCase.execute())
+//        }
     }
 }
 

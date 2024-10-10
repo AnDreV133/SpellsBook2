@@ -1,10 +1,12 @@
 package com.example.spellsbook.domain.model
 
+import com.example.spellsbook.domain.enums.LevelEnum
+import java.util.UUID
+
 data class SpellShortModel (
-    val uuid: String,
+    val spellUuid: UUID,
     val name: String,
-    val level: Int,
-    val school: String
+    val level: LevelEnum?
 )
 
 

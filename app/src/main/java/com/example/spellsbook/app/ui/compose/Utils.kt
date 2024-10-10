@@ -7,7 +7,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
-fun <T> ViewModel.emitState(destination: MutableStateFlow<T>, state: suspend CoroutineScope.() -> T) {
+fun <T> ViewModel.emitState(destination: MutableStateFlow<T>, state: CoroutineScope.() -> T) {
     viewModelScope.launch {
         destination.emit(
             state()

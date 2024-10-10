@@ -118,21 +118,21 @@ class SpellsViewModel @Inject constructor(
     }
 
     fun applyFilter() {
-        emitState(_state) {
-//            println(
-//                state.value.tags.toList()
+//        emitState(_state) {
+////            println(
+////                state.value.tags.toList()
+////            )
+//            val temp = getSpellsWithFilterAndSorterUseCase.execute(
+//                filter = state.value.tags.toList()
 //            )
-            val temp = getSpellsWithFilterAndSorterUseCase.execute(
-                filter = state.value.tags.toList()
-            )
-
-            println(temp)
-            println(temp.size)
-
-            state.value.copy(
-                spells = temp
-            )
-        }
+//
+//            println(temp)
+//            println(temp.size)
+//
+//            state.value.copy(
+//                spells = temp
+//            )
+//        }
     }
 
 //    fun clearFilter() {

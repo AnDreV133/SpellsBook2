@@ -3,7 +3,7 @@ package com.example.spellsbook.data.store
 import android.app.Application
 import androidx.room.Room
 import android.content.Context
-import com.example.spellsbook.data.store.entity.spells.SpellEntityEn
+import com.example.spellsbook.data.store.entity.TaggingSpellEntity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -21,11 +21,9 @@ object AppDatabaseConnection {
             _db ?: Room.databaseBuilder(
                 appContext as Application,
                 AppDatabase::class.java, DB_NAME
-            ).allowMainThreadQueries().build().also { db -> // todo start on main thread
-                prePopulateDatabase(appContext, db)
-
-                _db = db
-            }
+            ).allowMainThreadQueries().addCallback(
+                PreparingDatabaseCallback(appContext.resources)
+            ).build() // todo remove allowMainThreadQueries()
         }
 
         return _db!!
@@ -40,20 +38,20 @@ object AppDatabaseConnection {
         return instance(appContext)
     }
 
-    private fun prePopulateDatabase(appContext: Context, db: AppDatabase) {
-        CoroutineScope(Dispatchers.IO).launch {
-            val isDbHasData = _db!!.query(
-                """
-                select exists(
-                    select *
-                    from ${SpellEntityEn.TABLE_NAME}
-                    limit 1
-                )
-                """, null
-            ).run { moveToLast(); getInt(0) } != 0
-
-            if (!isDbHasData)
-                AppDatabaseInitializer(appContext, db).init()
-        }
-    }
+//    private fun prePopulateDatabase(appContext: Context, db: AppDatabase) {
+//        CoroutineScope(Dispatchers.IO).launch {
+//            val isDbHasData = _db!!.query(
+//                """
+//                select exists(
+//                    select *
+//                    from ${TaggingSpellEntity.TABLE_NAME}
+//                    limit 1
+//                )
+//                """, null
+//            ).run { moveToLast(); getInt(0) } != 0
+//
+////            if (!isDbHasData)
+////                PreparingDatabaseCallback(appContext.resources).init()
+//        }
+//    }
 }

@@ -13,6 +13,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -34,23 +35,96 @@ import com.example.spellsbook.app.ui.compose.navigation.navigate
 import com.example.spellsbook.domain.model.BookModel
 import com.example.spellsbook.domain.usecase.AddBookUseCase
 import com.example.spellsbook.domain.usecase.GetAllBooksUseCase
+import com.example.spellsbook.domain.usecase.ValidateBookUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
+//@HiltViewModel
+//class AddDialogViewModel @Inject constructor(
+//    private val validateBookUseCase: ValidateBookUseCase,
+//    private val addBookUseCase: AddBookUseCase
+//) : ViewModel() {
+//    data class State(
+//        val bookName: String,
+//        val bookNameError: String? = null
+//    )
+//
+//    val state = mutableStateOf(State(""))
+//
+//    fun addBookWithValidate(bookModel: BookModel) =
+//        validateBookUseCase.execute(bookModel).also { validationResult ->
+//            if (validationResult.successful) {
+//                addBook(bookModel)
+//            } else {
+//                state.value = state.value.copy(
+//                    bookNameError = validationResult.errorMessage
+//                )
+//            }
+//        }
+//
+//    fun updateBookName(name: String) {
+//        state.value = state.value.copy(
+//            bookName = name
+//        )
+//    }
+//
+//
+//    private fun addBook(model: BookModel) {
+//        viewModelScope.launch {
+//            addBookUseCase.execute(model)
+//        }
+//    }
+//
+//    fun clearState() {
+//        state.value = State("")
+//    }
+//}
 
 @HiltViewModel
 class BooksViewModel @Inject constructor(
     private val getAllBooksUseCase: GetAllBooksUseCase,
+    private val validateBookUseCase: ValidateBookUseCase,
     private val addBookUseCase: AddBookUseCase
 ) : ViewModel() {
-    private val _books = MutableStateFlow<List<BookModel>>(emptyList())
-    val books = _books.asStateFlow()
+    data class DialogState(
+        val bookName: MutableState<String> = mutableStateOf(""),
+        val bookNameError: MutableState<String?> = mutableStateOf(null)
+    )
 
-    init { // todo delete when be test database
+    data class State(
+        val books: List<BookModel> = emptyList(),
+        val isDialogShowing: Boolean = false,
+        val dialogState: DialogState = DialogState()
+    )
+
+    sealed class Event {
+        object ShowAddBookDialog : Event()
+        class UpdateBookEdit(val bookModel: BookModel) : Event()
+        object SaveBook : Event()
+        object CloseDialog : Event()
+//        class UpdateBooks : Event()
+    }
+
+    private val books = getAllBooksUseCase
+        .execute()
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(),
+            emptyList()
+        )
+
+    private val _state = MutableStateFlow(State())
+    val state = combine(_state, books) { state, books ->
+        state.copy(books = books)
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000L), State())
+
+    init { // todo remove when be test database
         runBlocking {
             listOf(
                 BookModel(name = "Book 1"),
@@ -61,16 +135,49 @@ class BooksViewModel @Inject constructor(
         }
     }
 
-    fun executeAllBooks() {
-        viewModelScope.launch {
-            _books.emit(getAllBooksUseCase.execute())
-            println("emit")
+    fun onEvent(event: Event) {
+        when (event) {
+            is Event.ShowAddBookDialog -> {
+                _state.value = _state.value.copy(isDialogShowing = true)
+            }
+
+            is Event.CloseDialog -> {
+                _state.value = _state.value.copy(isDialogShowing = false)
+            }
+
+            is Event.SaveBook -> {
+                viewModelScope.launch {
+                    validateBookUseCase
+                        .execute(
+                            BookModel(name = _state.value.dialogState.bookName.value)
+                        )
+                        .also { validationResult ->
+                            if (validationResult.successful) {
+                                addBookUseCase.execute(
+                                    BookModel(
+                                        name = _state.value.dialogState.bookName.value
+                                    )
+                                )
+                            } else {
+                                _state.value.dialogState.bookNameError.value =
+                                    validationResult.errorMessage
+                            }
+                        }
+                }
+            }
+
+            is Event.UpdateBookEdit -> {
+                viewModelScope.launch {
+                    _state.value.dialogState.bookName.value = event.bookModel.name
+                }
+            }
         }
     }
 }
 
+
 class BooksCompose(private val navController: NavHostController) {
-    private var isDialogShowing = mutableStateOf(false)
+//    private var isDialogShowing = mutableStateOf(false)
 
     @Composable
     fun BooksScreen(
@@ -96,18 +203,11 @@ class BooksCompose(private val navController: NavHostController) {
         padding: PaddingValues,
         viewModel: BooksViewModel
     ) {
-        val books by viewModel.books.collectAsState()
-        val rememberIsDialogShowing by remember { isDialogShowing }
-
         LazyColumn(
             modifier = Modifier.padding(padding),
             contentPadding = PaddingValues(4.dp)
         ) {
-            if (!rememberIsDialogShowing)
-                viewModel.executeAllBooks()
-
-            println("repaint")
-            items(books) { elem ->
+            items(viewModel.state.value.books) { elem ->
                 BookItem(model = elem)
             }
         }
@@ -131,7 +231,7 @@ class BooksCompose(private val navController: NavHostController) {
                 containerColor = Color.LightGray,
             ),
             onClick = {
-                println("click on item id: ${model.id}")
+//                println("click on item id: ${model.id}")
                 navController.navigate(NavEndpoint.BookById(model.id))
             }
         ) {
@@ -152,13 +252,13 @@ class BooksCompose(private val navController: NavHostController) {
     fun AddBookFloatingButton(
         viewModel: BooksViewModel
     ) {
-        var rememberIsDialogShowing by remember { isDialogShowing }
+        val state by viewModel.state.collectAsState()
 
         IconButton(
             modifier = AddButtonShape()
                 .padding(8.dp)
                 .size(60.dp),
-            onClick = { rememberIsDialogShowing = true }
+            onClick = { viewModel.onEvent(BooksViewModel.Event.ShowAddBookDialog) }
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_add_24),
@@ -168,19 +268,13 @@ class BooksCompose(private val navController: NavHostController) {
             )
         }
 
-        if (rememberIsDialogShowing)
+
+
+        if (state.isDialogShowing)
             AddBookDialog(
                 forClose = {
-                    rememberIsDialogShowing = false
+                    viewModel.onEvent(BooksViewModel.Event.CloseDialog)
                 },
             )
     }
-
-
-
-
-
-
-
-
 }
