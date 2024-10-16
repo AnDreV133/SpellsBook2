@@ -17,8 +17,6 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -37,6 +35,7 @@ import com.example.spellsbook.domain.usecase.AddBookUseCase
 import com.example.spellsbook.domain.usecase.GetAllBooksUseCase
 import com.example.spellsbook.domain.usecase.ValidateBookUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -105,9 +104,9 @@ class BooksViewModel @Inject constructor(
 
     sealed class Event {
         object ShowAddBookDialog : Event()
-        class UpdateBookEdit(val bookModel: BookModel) : Event()
+        class BookParameterEdit(val bookModel: BookModel) : Event()
         object SaveBook : Event()
-        object CloseDialog : Event()
+        object CloseAddBookDialog : Event()
 //        class UpdateBooks : Event()
     }
 
@@ -125,15 +124,34 @@ class BooksViewModel @Inject constructor(
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000L), State())
 
     init { // todo remove when be test database
-        runBlocking {
+        viewModelScope.launch {
+            println("init")
             listOf(
                 BookModel(name = "Book 1"),
                 BookModel(name = "Book 2"),
                 BookModel(name = "Book 3"),
                 BookModel(name = "Book 4"),
             ).forEach { addBookUseCase.execute(it) }
+
         }
     }
+
+//    fun getBooks() {
+//        viewModelScope.launch {
+//            getAllBooksUseCase.execute().collect {
+//                _state.value = _state.value.copy(
+//                    books = it
+//                )
+//            }
+//            _state.value = _state.value.copy(
+//                books = getAllBooksUseCase.execute().stateIn(
+//                    viewModelScope,
+//                    SharingStarted.WhileSubscribed(),
+//                    emptyList()
+//                ).value
+//            )
+//        }
+//    }
 
     fun onEvent(event: Event) {
         when (event) {
@@ -141,7 +159,7 @@ class BooksViewModel @Inject constructor(
                 _state.value = _state.value.copy(isDialogShowing = true)
             }
 
-            is Event.CloseDialog -> {
+            is Event.CloseAddBookDialog -> {
                 _state.value = _state.value.copy(isDialogShowing = false)
             }
 
@@ -166,7 +184,7 @@ class BooksViewModel @Inject constructor(
                 }
             }
 
-            is Event.UpdateBookEdit -> {
+            is Event.BookParameterEdit -> {
                 viewModelScope.launch {
                     _state.value.dialogState.bookName.value = event.bookModel.name
                 }
@@ -203,11 +221,13 @@ class BooksCompose(private val navController: NavHostController) {
         padding: PaddingValues,
         viewModel: BooksViewModel
     ) {
+        val state by viewModel.state.collectAsState()
+
         LazyColumn(
             modifier = Modifier.padding(padding),
             contentPadding = PaddingValues(4.dp)
         ) {
-            items(viewModel.state.value.books) { elem ->
+            this@LazyColumn.items(state.books) { elem ->
                 BookItem(model = elem)
             }
         }
@@ -268,12 +288,10 @@ class BooksCompose(private val navController: NavHostController) {
             )
         }
 
-
-
         if (state.isDialogShowing)
             AddBookDialog(
                 forClose = {
-                    viewModel.onEvent(BooksViewModel.Event.CloseDialog)
+                    viewModel.onEvent(BooksViewModel.Event.CloseAddBookDialog)
                 },
             )
     }
