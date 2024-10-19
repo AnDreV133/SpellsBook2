@@ -6,9 +6,7 @@ import com.example.spellsbook.data.store.dao.BookDao
 import com.example.spellsbook.domain.model.BookModel
 import com.example.spellsbook.domain.repository.BookRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.transform
 
 class BookRepositoryImpl(
     private val bookDao: BookDao,
@@ -19,5 +17,9 @@ class BookRepositoryImpl(
 
     override suspend fun add(bookModel: BookModel): Long {
         return bookDao.insert(bookModel.mapToEntity())
+    }
+
+    override suspend fun remove(id: Long): Int {
+        return bookDao.delete(id)
     }
 }

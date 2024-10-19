@@ -1,20 +1,12 @@
 package com.example.spellsbook.data.store.dao
 
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
-import androidx.room.RawQuery
 import androidx.room.Update
-import androidx.sqlite.db.SimpleSQLiteQuery
-import androidx.sqlite.db.SupportSQLiteQuery
-import kotlinx.coroutines.flow.Flow
 
 abstract class BaseDao<T>(private val tableName: String) {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun insert(data: T): Long
-
-    @Delete
-    abstract suspend fun delete(data: T)
 
     @Update
     abstract suspend fun update(data: T): Int

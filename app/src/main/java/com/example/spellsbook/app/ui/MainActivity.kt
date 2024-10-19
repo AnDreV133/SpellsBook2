@@ -30,8 +30,6 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-
-
 @Composable
 fun ComposeHolder(
     menuBar: @Composable () -> Unit,

@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -39,47 +41,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-//@HiltViewModel
-//class AddDialogViewModel @Inject constructor(
-//    private val validateBookUseCase: ValidateBookUseCase,
-//    private val addBookUseCase: AddBookUseCase
-//) : ViewModel() {
-//    data class State(
-//        val bookName: String,
-//        val bookNameError: String? = null
-//    )
-//
-//    val state = mutableStateOf(State(""))
-//
-//    fun addBookWithValidate(bookModel: BookModel) =
-//        validateBookUseCase.execute(bookModel).also { validationResult ->
-//            if (validationResult.successful) {
-//                addBook(bookModel)
-//            } else {
-//                state.value = state.value.copy(
-//                    bookNameError = validationResult.errorMessage
-//                )
-//            }
-//        }
-//
-//    fun updateBookName(name: String) {
-//        state.value = state.value.copy(
-//            bookName = name
-//        )
-//    }
-//
-//
-//    private fun addBook(model: BookModel) {
-//        viewModelScope.launch {
-//            addBookUseCase.execute(model)
-//        }
-//    }
-//
-//    fun clearState() {
-//        state.value = State("")
-//    }
-//}
-
 @HiltViewModel
 class BooksViewModel @Inject constructor(
     getAllBooksUseCase: GetAllBooksUseCase,
@@ -88,13 +49,14 @@ class BooksViewModel @Inject constructor(
     data class State(
         val books: List<BookModel> = emptyList(),
         val isAddDialogShowing: Boolean = false,
+        val bookModelForRemoveDialog: BookModel? = null,
     )
 
     sealed class Event {
         object ShowAddBookDialog : Event()
         object CloseAddBookDialog : Event()
-//        object ShowRemoveBookDialog : Event()
-//        object CloseRemoveBookDialog : Event()
+        class ShowRemoveBookDialog(val model: BookModel) : Event()
+        object CloseRemoveBookDialog : Event()
     }
 
     private val books = getAllBooksUseCase
@@ -132,6 +94,14 @@ class BooksViewModel @Inject constructor(
             is Event.CloseAddBookDialog -> {
                 _state.value = _state.value.copy(isAddDialogShowing = false)
             }
+
+            is Event.ShowRemoveBookDialog -> {
+                _state.value = _state.value.copy(bookModelForRemoveDialog = event.model)
+            }
+
+            is Event.CloseRemoveBookDialog -> {
+                _state.value = _state.value.copy(bookModelForRemoveDialog = null)
+            }
         }
     }
 }
@@ -163,9 +133,12 @@ fun BooksScreen(
             onClose = { viewModel.onEvent(BooksViewModel.Event.CloseAddBookDialog) }
         )
 
-
+    if (state.bookModelForRemoveDialog != null)
+        RemoveBookDialog(
+            bookModel = state.bookModelForRemoveDialog!!,
+            onClose = { viewModel.onEvent(BooksViewModel.Event.CloseRemoveBookDialog) }
+        )
 }
-
 
 @Composable
 fun BookList(
@@ -182,6 +155,7 @@ fun BookList(
         this@LazyColumn.items(state.books) { elem ->
             BookItem(
                 model = elem,
+                onRemove = { viewModel.onEvent(BooksViewModel.Event.ShowRemoveBookDialog(elem)) },
                 navigate = { navController.navigate(NavEndpoint.BookById(elem.id)) }
             )
         }
@@ -191,6 +165,7 @@ fun BookList(
 @Composable
 fun BookItem(
     model: BookModel,
+    onRemove: () -> Unit,
     navigate: () -> Unit
 ) {
     Card(
@@ -218,6 +193,10 @@ fun BookItem(
             text = model.name,
             fontSize = 24.sp
         )
+
+        IconButton(onClick = onRemove) {
+            Icon(imageVector = Icons.Default.Delete, contentDescription = "Delete button")
+        }
     }
 }
 
