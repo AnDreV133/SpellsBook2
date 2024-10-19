@@ -8,7 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.spellsbook.app.ui.compose.BookByIdScreen
-import com.example.spellsbook.app.ui.compose.BooksCompose
+import com.example.spellsbook.app.ui.compose.BooksScreen
 import com.example.spellsbook.app.ui.compose.MainMenuBar
 import com.example.spellsbook.app.ui.compose.ScreenWithMenuBar
 import com.example.spellsbook.app.ui.compose.spells.SpellsCompose
@@ -24,7 +24,7 @@ fun AppNavHost() {
             ScreenWithMenuBar(
                 menuBar = { MainMenuBar(navController, NavEndpoint.Books) }
             ) {
-                BooksCompose(navController).BooksScreen()
+                BooksScreen(navController = navController)
             }
         }
 

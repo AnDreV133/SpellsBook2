@@ -12,11 +12,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import com.example.spellsbook.app.ui.compose.BooksCompose
 import com.example.spellsbook.app.ui.compose.MainWindow
 import com.example.spellsbook.app.ui.compose.navigation.AppNavHost
-import com.example.spellsbook.app.ui.compose.navigation.NavEndpoint
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -27,7 +24,6 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             MainWindow {
-//                BooksCompose(null).BooksScreen()
                 AppNavHost()
             }
         }

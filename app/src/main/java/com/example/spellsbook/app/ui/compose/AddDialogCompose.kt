@@ -15,9 +15,8 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,6 +30,8 @@ import com.example.spellsbook.domain.model.BookModel
 import com.example.spellsbook.domain.usecase.AddBookUseCase
 import com.example.spellsbook.domain.usecase.ValidateBookUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -40,53 +41,63 @@ class AddDialogViewModel @Inject constructor(
     private val addBookUseCase: AddBookUseCase
 ) : ViewModel() {
     data class State(
-        val bookName: String,
+        val bookName: String = "",
         val bookNameError: String? = null
     )
 
-    val state = mutableStateOf(State(""))
+    sealed class Event {
+        class Edit(val bookModel: BookModel) : Event()
+        class CloseDialog(val onClose: () -> Unit) : Event()
+        class AddWithValidate(val onClose: () -> Unit) : Event()
+    }
 
-    fun addBookWithValidate(bookModel: BookModel) =
-        validateBookUseCase.execute(bookModel).also { validationResult ->
-            if (validationResult.successful) {
-                addBook(bookModel)
-            } else {
-                state.value = state.value.copy(
-                    bookNameError = validationResult.errorMessage
+    private val _state = MutableStateFlow(State())
+    val state = _state.asStateFlow()
+
+    fun onEvent(event: Event) {
+        when (event) {
+            is Event.Edit -> {
+                _state.value = state.value.copy(
+                    bookName = event.bookModel.name
                 )
             }
-        }
 
-    fun updateBookName(name: String) {
-        state.value = state.value.copy(
-            bookName = name
-        )
+            is Event.AddWithValidate -> {
+                val model = BookModel(
+                    name = state.value.bookName
+                )
+
+                validateBookUseCase.execute(model).also { validationResult ->
+                    if (validationResult.successful) {
+                        viewModelScope.launch { addBookUseCase.execute(model) }
+                        closeDialog(onClose = event.onClose)
+                    } else {
+                        _state.value = state.value.copy(
+                            bookNameError = validationResult.errorMessage
+                        )
+                    }
+                }
+            }
+
+            is Event.CloseDialog -> {
+                closeDialog(onClose = event.onClose)
+            }
+        }
     }
 
-
-    private fun addBook(model: BookModel) {
-        viewModelScope.launch {
-            addBookUseCase.execute(model)
-        }
-    }
-
-    fun clearState() {
-        state.value = State("")
+    private fun closeDialog(onClose: () -> Unit) {
+        _state.value = State()
+        onClose()
     }
 }
 
 
 @Composable
 fun AddBookDialog(
-    forClose: () -> Unit,
+    onClose: () -> Unit,
     viewModel: AddDialogViewModel = hiltViewModel()
 ) {
-    val state by remember { viewModel.state }
-
-    val onClose = {
-        forClose()
-        viewModel.clearState()
-    }
+    val state by viewModel.state.collectAsState()
 
     Dialog(onDismissRequest = onClose) {
         Column(
@@ -124,7 +135,13 @@ fun AddBookDialog(
                         .width(IntrinsicSize.Max)
                         .height(IntrinsicSize.Min),
                     value = state.bookName,
-                    onValueChange = { input -> viewModel.updateBookName(input) },
+                    onValueChange = { input ->
+                        viewModel.onEvent(
+                            AddDialogViewModel.Event.Edit(
+                                BookModel(name = input)
+                            )
+                        )
+                    },
                 )
             }
 
@@ -137,13 +154,9 @@ fun AddBookDialog(
                         contentColor = Color.Gray
                     ),
                 onClick = {
-                    viewModel.addBookWithValidate(
-                        BookModel(name = state.bookName)
-                    ).also {
-                        if (it.successful)
-                            onClose()
-                    }
-
+                    viewModel.onEvent(
+                        AddDialogViewModel.Event.AddWithValidate(onClose)
+                    )
                 }
             ) {
                 Text(text = "Add")

@@ -13,10 +13,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -33,15 +31,12 @@ import com.example.spellsbook.app.ui.compose.navigation.navigate
 import com.example.spellsbook.domain.model.BookModel
 import com.example.spellsbook.domain.usecase.AddBookUseCase
 import com.example.spellsbook.domain.usecase.GetAllBooksUseCase
-import com.example.spellsbook.domain.usecase.ValidateBookUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 //@HiltViewModel
@@ -87,27 +82,19 @@ import javax.inject.Inject
 
 @HiltViewModel
 class BooksViewModel @Inject constructor(
-    private val getAllBooksUseCase: GetAllBooksUseCase,
-    private val validateBookUseCase: ValidateBookUseCase,
-    private val addBookUseCase: AddBookUseCase
+    getAllBooksUseCase: GetAllBooksUseCase,
+    addBookUseCase: AddBookUseCase // todo remove when be test database
 ) : ViewModel() {
-    data class DialogState(
-        val bookName: MutableState<String> = mutableStateOf(""),
-        val bookNameError: MutableState<String?> = mutableStateOf(null)
-    )
-
     data class State(
         val books: List<BookModel> = emptyList(),
-        val isDialogShowing: Boolean = false,
-        val dialogState: DialogState = DialogState()
+        val isAddDialogShowing: Boolean = false,
     )
 
     sealed class Event {
         object ShowAddBookDialog : Event()
-        class BookParameterEdit(val bookModel: BookModel) : Event()
-        object SaveBook : Event()
         object CloseAddBookDialog : Event()
-//        class UpdateBooks : Event()
+//        object ShowRemoveBookDialog : Event()
+//        object CloseRemoveBookDialog : Event()
     }
 
     private val books = getAllBooksUseCase
@@ -136,163 +123,120 @@ class BooksViewModel @Inject constructor(
         }
     }
 
-//    fun getBooks() {
-//        viewModelScope.launch {
-//            getAllBooksUseCase.execute().collect {
-//                _state.value = _state.value.copy(
-//                    books = it
-//                )
-//            }
-//            _state.value = _state.value.copy(
-//                books = getAllBooksUseCase.execute().stateIn(
-//                    viewModelScope,
-//                    SharingStarted.WhileSubscribed(),
-//                    emptyList()
-//                ).value
-//            )
-//        }
-//    }
-
     fun onEvent(event: Event) {
         when (event) {
             is Event.ShowAddBookDialog -> {
-                _state.value = _state.value.copy(isDialogShowing = true)
+                _state.value = _state.value.copy(isAddDialogShowing = true)
             }
 
             is Event.CloseAddBookDialog -> {
-                _state.value = _state.value.copy(isDialogShowing = false)
-            }
-
-            is Event.SaveBook -> {
-                viewModelScope.launch {
-                    validateBookUseCase
-                        .execute(
-                            BookModel(name = _state.value.dialogState.bookName.value)
-                        )
-                        .also { validationResult ->
-                            if (validationResult.successful) {
-                                addBookUseCase.execute(
-                                    BookModel(
-                                        name = _state.value.dialogState.bookName.value
-                                    )
-                                )
-                            } else {
-                                _state.value.dialogState.bookNameError.value =
-                                    validationResult.errorMessage
-                            }
-                        }
-                }
-            }
-
-            is Event.BookParameterEdit -> {
-                viewModelScope.launch {
-                    _state.value.dialogState.bookName.value = event.bookModel.name
-                }
+                _state.value = _state.value.copy(isAddDialogShowing = false)
             }
         }
     }
 }
 
 
-class BooksCompose(private val navController: NavHostController) {
-//    private var isDialogShowing = mutableStateOf(false)
+@Composable
+fun BooksScreen(
+    navController: NavHostController,
+    viewModel: BooksViewModel = hiltViewModel(),
+) {
+    val state by viewModel.state.collectAsState()
 
-    @Composable
-    fun BooksScreen(
-        viewModel: BooksViewModel = hiltViewModel(),
+    Scaffold(
+        floatingActionButton = {
+            AddFloatingButton { viewModel.onEvent(BooksViewModel.Event.ShowAddBookDialog) }
+        },
+
+        content = { padding ->
+            BookList(
+                navController = navController,
+                padding = padding,
+                viewModel = viewModel
+            )
+        }
+    )
+
+    if (state.isAddDialogShowing)
+        AddBookDialog(
+            onClose = { viewModel.onEvent(BooksViewModel.Event.CloseAddBookDialog) }
+        )
+
+
+}
+
+
+@Composable
+fun BookList(
+    navController: NavHostController,
+    padding: PaddingValues,
+    viewModel: BooksViewModel
+) {
+    val state by viewModel.state.collectAsState()
+
+    LazyColumn(
+        modifier = Modifier.padding(padding),
+        contentPadding = PaddingValues(4.dp)
     ) {
-        Scaffold(
-            floatingActionButton = {
-                AddBookFloatingButton(viewModel)
-            },
+        this@LazyColumn.items(state.books) { elem ->
+            BookItem(
+                model = elem,
+                navigate = { navController.navigate(NavEndpoint.BookById(elem.id)) }
+            )
+        }
+    }
+}
 
-            content = { padding ->
-                BookList(
-                    padding = padding,
-                    viewModel = viewModel
-                )
-            }
+@Composable
+fun BookItem(
+    model: BookModel,
+    navigate: () -> Unit
+) {
+    Card(
+        modifier = Modifier
+            .padding(
+                horizontal = 4.dp,
+                vertical = 8.dp,
+            )
+            .fillMaxSize(),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 10.dp
+        ),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.LightGray,
+        ),
+        onClick = navigate
+    ) {
+        Text(
+            modifier = Modifier.padding(
+                horizontal = 16.dp,
+                vertical = 12.dp,
+            ),
+            color = Color.Black,
+            textAlign = TextAlign.Start,
+            text = model.name,
+            fontSize = 24.sp
         )
     }
+}
 
-
-    @Composable
-    fun BookList(
-        padding: PaddingValues,
-        viewModel: BooksViewModel
+@Composable
+fun AddFloatingButton(
+    onClick: () -> Unit,
+) {
+    IconButton(
+        modifier = AddButtonShape()
+            .padding(8.dp)
+            .size(60.dp),
+        onClick = onClick
     ) {
-        val state by viewModel.state.collectAsState()
-
-        LazyColumn(
-            modifier = Modifier.padding(padding),
-            contentPadding = PaddingValues(4.dp)
-        ) {
-            this@LazyColumn.items(state.books) { elem ->
-                BookItem(model = elem)
-            }
-        }
-    }
-
-    @Composable
-    fun BookItem(
-        model: BookModel
-    ) {
-        Card(
+        Icon(
+            painter = painterResource(id = R.drawable.ic_add_24),
+            contentDescription = "Add button",
             modifier = Modifier
-                .padding(
-                    horizontal = 4.dp,
-                    vertical = 8.dp,
-                )
-                .fillMaxSize(),
-            elevation = CardDefaults.cardElevation(
-                defaultElevation = 10.dp
-            ),
-            colors = CardDefaults.cardColors(
-                containerColor = Color.LightGray,
-            ),
-            onClick = {
-//                println("click on item id: ${model.id}")
-                navController.navigate(NavEndpoint.BookById(model.id))
-            }
-        ) {
-            Text(
-                modifier = Modifier.padding(
-                    horizontal = 16.dp,
-                    vertical = 12.dp,
-                ),
-                color = Color.Black,
-                textAlign = TextAlign.Start,
-                text = model.name,
-                fontSize = 24.sp
-            )
-        }
-    }
-
-    @Composable
-    fun AddBookFloatingButton(
-        viewModel: BooksViewModel
-    ) {
-        val state by viewModel.state.collectAsState()
-
-        IconButton(
-            modifier = AddButtonShape()
-                .padding(8.dp)
-                .size(60.dp),
-            onClick = { viewModel.onEvent(BooksViewModel.Event.ShowAddBookDialog) }
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_add_24),
-                contentDescription = "Add Book",
-                modifier = Modifier
-                    .size(48.dp),
-            )
-        }
-
-        if (state.isDialogShowing)
-            AddBookDialog(
-                forClose = {
-                    viewModel.onEvent(BooksViewModel.Event.CloseAddBookDialog)
-                },
-            )
+                .size(48.dp),
+        )
     }
 }
+
