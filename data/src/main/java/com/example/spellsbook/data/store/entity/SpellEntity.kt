@@ -3,7 +3,6 @@ package com.example.spellsbook.data.store.entity
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import java.util.UUID
 
 
 @Entity(
@@ -25,7 +24,7 @@ class SpellEntity(
 //    @ColumnInfo(name = COLUMN_ID)
 //    val id: Long,
     @ColumnInfo(name = COLUMN_UUID)
-    val uuid: UUID,
+    val uuid: String,
     @ColumnInfo(name = COLUMN_LOCALE)
     val locale: String,
     @ColumnInfo(name = COLUMN_NAME)

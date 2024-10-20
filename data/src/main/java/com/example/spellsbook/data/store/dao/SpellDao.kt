@@ -6,8 +6,8 @@ import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
 import com.example.spellsbook.data.store.entity.BooksSpellsXRefEntity
 import com.example.spellsbook.data.store.entity.SpellEntity
-import com.example.spellsbook.data.store.entity.display.SpellWithTagsShort
 import com.example.spellsbook.data.store.entity.TaggingSpellEntity
+import com.example.spellsbook.data.store.entity.display.SpellWithTagsShort
 import com.example.spellsbook.domain.LocaleEnum
 import com.example.spellsbook.domain.enums.SortOptionEnum
 import com.example.spellsbook.domain.enums.TagEnum
@@ -32,16 +32,6 @@ abstract class SpellDao : BaseDao<SpellEntity>(SpellEntity.TABLE_NAME) {
                         "limit 1"
             )
         )
-
-//    fun getRawSpells(
-//        locale: String,
-//        filter: Map<String, List<TagEnum>> = emptyMap(),
-//        sorter: SortOptionEnum = SortOptionEnum.BY_NAME
-//    ): Flow<List<TaggingSpellEntity>> =
-//        _getManyRaw(filterQuery(locale, filter, sorter))
-//
-//    @RawQuery
-//    protected abstract fun _getManyRaw(query: SupportSQLiteQuery): Flow<List<TaggingSpellEntity>>
 
     @RawQuery(observedEntities = [SpellWithTagsShort::class])
     protected abstract fun _getManyShort(query: SupportSQLiteQuery): Flow<List<SpellWithTagsShort>>

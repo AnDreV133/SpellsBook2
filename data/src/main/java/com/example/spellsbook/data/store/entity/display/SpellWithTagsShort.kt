@@ -5,7 +5,6 @@ import androidx.room.Embedded
 import androidx.room.Relation
 import com.example.spellsbook.data.store.entity.SpellEntity
 import com.example.spellsbook.data.store.entity.TaggingSpellEntity
-import java.util.UUID
 
 class SpellWithTagsShort(
 
@@ -22,7 +21,7 @@ class SpellWithTagsShort(
 //        @ColumnInfo(name = SpellEntity.COLUMN_ID)
 //        val id: Long,
         @ColumnInfo(name = SpellEntity.COLUMN_UUID)
-        val spellUuid: UUID ,
+        val spellUuid: String,
         @ColumnInfo(name = SpellEntity.COLUMN_LOCALE)
         val locale: String,
         @ColumnInfo(name = SpellEntity.COLUMN_NAME)

@@ -2,7 +2,6 @@ package com.example.spellsbook.data.store.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import java.util.UUID
 
 @Entity(
     tableName = BooksSpellsXRefEntity.TABLE_NAME,
@@ -15,7 +14,7 @@ class BooksSpellsXRefEntity(
     @ColumnInfo(name = COLUMN_BOOK_ID)
     val bookId: Long,
     @ColumnInfo(name = COLUMN_SPELL_UUID)
-    val spellUuid: UUID
+    val spellUuid: String
 ) {
     companion object {
         const val TABLE_NAME = "books_with_spells"

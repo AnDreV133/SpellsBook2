@@ -44,7 +44,7 @@ import javax.inject.Inject
 @HiltViewModel
 class BooksViewModel @Inject constructor(
     getAllBooksUseCase: GetAllBooksUseCase,
-    addBookUseCase: AddBookUseCase // todo remove when be test database
+    addBookUseCase: AddBookUseCase // todo remove when be test databases
 ) : ViewModel() {
     data class State(
         val books: List<BookModel> = emptyList(),
@@ -72,7 +72,7 @@ class BooksViewModel @Inject constructor(
         state.copy(books = books)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000L), State())
 
-    init { // todo remove when be test database
+    init { // todo remove when be test databases
         viewModelScope.launch {
             println("init")
             listOf(

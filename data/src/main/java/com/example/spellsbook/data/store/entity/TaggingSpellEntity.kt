@@ -3,13 +3,12 @@ package com.example.spellsbook.data.store.entity
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import java.util.UUID
 
 @Entity(tableName = TaggingSpellEntity.TABLE_NAME)
 data class TaggingSpellEntity(
     @PrimaryKey
     @ColumnInfo(name = COLUMN_UUID)
-    val uuid: UUID,
+    val uuid: String,
     @ColumnInfo(name = COLUMN_LEVEL_TAG)
     val levelTag: String? = null,
     @ColumnInfo(name = COLUMN_SCHOOL_TAG)

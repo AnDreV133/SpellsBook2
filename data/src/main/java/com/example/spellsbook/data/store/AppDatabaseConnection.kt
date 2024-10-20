@@ -5,8 +5,7 @@ import androidx.room.Room
 import android.content.Context
 import android.util.Log
 import androidx.room.RoomDatabase
-import com.example.spellsbook.data.store.entity.BookEntity
-import com.example.spellsbook.data.store.entity.TaggingSpellEntity
+import androidx.sqlite.db.SupportSQLiteDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -16,7 +15,7 @@ object AppDatabaseConnection {
 
     @Volatile
     private var _db: AppDatabase? = null
-    private const val DB_NAME = "app-database"
+    private const val DB_NAME = "app-databases"
     private const val TAG = "AppDB"
 
     fun instance(
@@ -28,34 +27,22 @@ object AppDatabaseConnection {
                 AppDatabase::class.java,
                 DB_NAME
             )
-                .allowMainThreadQueries()
-//                .addCallback(
-//                    PreparingDatabaseCallback(appContext.resources)
-//                )
+                .addCallback(
+                    object : RoomDatabase.Callback() {
+                        override fun onCreate(db: SupportSQLiteDatabase) {
+                            super.onCreate(db)
+                            CoroutineScope(Dispatchers.IO).launch {
+                                PreparingDatabase.prepare(appContext, _db!!)
+                            }
+                        }
+                    }
+                )
                 .setQueryCallback(
                     { sqlQuery, _ -> Log.d(TAG, "SQL Query: $sqlQuery") },
                     Executors.newSingleThreadExecutor()
                 )
-                .build() // todo remove allowMainThreadQueries()
+                .build()
         }
-
-//        _db!!.query(
-//            "insert into ${BookEntity.TABLE_NAME} " + "(${BookEntity.COLUMN_NAME}) " + "values ('test')",
-//            null
-//        )
-
-//        _db!!.query("delete from ${BookEntity.TABLE_NAME} where ${BookEntity.COLUMN_ID} = 1", null)
-
-//        "bd06ff73-1d3b-485d-8036-36e2bb17e403 LEVEL_0 CONJURATION"
-//            .split(" ", limit = 3)
-//            .also { fields ->
-//                _db!!.query(
-//                    "INSERT INTO ${TaggingSpellEntity.TABLE_NAME} " +
-//                            "(${TaggingSpellEntity.COLUMN_UUID}, ${TaggingSpellEntity.COLUMN_LEVEL_TAG}, ${TaggingSpellEntity.COLUMN_SCHOOL_TAG}) " +
-//                            "VALUES ('${fields[0]}', '${fields[1]}', '${fields[2]}')",
-//                    null
-//                )
-//            }
 
         return _db!!
     }
@@ -68,21 +55,4 @@ object AppDatabaseConnection {
 
         return instance(appContext)
     }
-
-//    private fun prePopulateDatabase(appContext: Context, db: AppDatabase) {
-//        CoroutineScope(Dispatchers.IO).launch {
-//            val isDbHasData = _db!!.query(
-//                """
-//                select exists(
-//                    select *
-//                    from ${TaggingSpellEntity.TABLE_NAME}
-//                    limit 1
-//                )
-//                """, null
-//            ).run { moveToLast(); getInt(0) } != 0
-//
-////            if (!isDbHasData)
-////                PreparingDatabaseCallback(appContext.resources).init()
-//        }
-//    }
 }

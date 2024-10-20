@@ -3,8 +3,6 @@ package com.example.spellsbook.app.ui.compose
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.spellsbook.domain.model.BookModel
 import com.example.spellsbook.domain.usecase.AddBookUseCase
@@ -12,7 +10,6 @@ import com.example.spellsbook.domain.usecase.GetAllBooksUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
@@ -25,7 +22,7 @@ class BookByIdViewModel @Inject constructor(
     private val _books = MutableStateFlow<List<BookModel>>(emptyList())
     val books = _books.asStateFlow()
 
-    init { // todo delete when be test database
+    init { // todo delete when be test databases
         runBlocking {
             listOf(
                 BookModel(name = "Book 1").also { it.id = 1 },
