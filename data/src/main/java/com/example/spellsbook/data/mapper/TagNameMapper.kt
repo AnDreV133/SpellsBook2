@@ -1,11 +1,11 @@
 package com.example.spellsbook.data.mapper
 
 import com.example.spellsbook.data.store.entity.TaggingSpellEntity
-import com.example.spellsbook.domain.enums.TagNameEnum
+import com.example.spellsbook.domain.enums.TagIndentifierEnum
 
-fun TagNameEnum.mapToColumnName(): String =
+fun TagIndentifierEnum.mapToColumnName(): String =
     when (this) {
-        TagNameEnum.LEVEL -> TaggingSpellEntity.COLUMN_LEVEL_TAG
-        TagNameEnum.SCHOOL -> TaggingSpellEntity.COLUMN_SCHOOL_TAG
+        TagIndentifierEnum.LEVEL -> TaggingSpellEntity.COLUMN_LEVEL_TAG
+        TagIndentifierEnum.SCHOOL -> TaggingSpellEntity.COLUMN_SCHOOL_TAG
         else -> throw IllegalArgumentException("This tagname is not supported")
     }

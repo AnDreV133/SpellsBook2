@@ -11,7 +11,7 @@ import com.example.spellsbook.app.ui.compose.BookByIdScreen
 import com.example.spellsbook.app.ui.compose.BooksScreen
 import com.example.spellsbook.app.ui.compose.MainMenuBar
 import com.example.spellsbook.app.ui.compose.ScreenWithMenuBar
-import com.example.spellsbook.app.ui.compose.spells.SpellsCompose
+import com.example.spellsbook.app.ui.compose.SpellsScreen
 
 @Composable
 fun AppNavHost() {
@@ -61,7 +61,25 @@ fun AppNavHost() {
             ScreenWithMenuBar(
                 menuBar = { MainMenuBar(navController, NavEndpoint.Spells) }
             ) {
-                SpellsCompose(navController = navController).Screen()
+                SpellsScreen(navController = navController)
+            }
+        }
+
+        composable(
+            route = "${NavEndpoint.Spells.route}/{uuid}",
+            arguments = listOf(
+                navArgument("uuid") {
+                    type = NavType.LongType
+                }
+            )
+        ) {
+            ScreenWithMenuBar(
+                menuBar = { Text("stub") }
+            ) {
+                it.arguments?.getLong("uuid").let { uuid ->
+                    if (uuid != null)
+                        Text(text = "Spell $uuid - stub")
+                }
             }
         }
     }

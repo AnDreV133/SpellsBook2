@@ -11,7 +11,7 @@ import com.example.spellsbook.data.store.entity.TaggingSpellEntity
 import com.example.spellsbook.domain.LocaleEnum
 import com.example.spellsbook.domain.enums.SortOptionEnum
 import com.example.spellsbook.domain.enums.TagEnum
-import com.example.spellsbook.domain.enums.TagNameEnum
+import com.example.spellsbook.domain.enums.TagIndentifierEnum
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
@@ -27,7 +27,7 @@ abstract class SpellDao : BaseDao<SpellEntity>(SpellEntity.TABLE_NAME) {
         _getOneDetail(
             SimpleSQLiteQuery(
                 "select * from ${SpellEntity.TABLE_NAME} " +
-                        "where ${SpellEntity.COLUMN_SPELL_UUID}='$uuid' " +
+                        "where ${SpellEntity.COLUMN_UUID}='$uuid' " +
                         "and ${SpellEntity.COLUMN_LOCALE}='$locale' " +
                         "limit 1"
             )
@@ -48,7 +48,7 @@ abstract class SpellDao : BaseDao<SpellEntity>(SpellEntity.TABLE_NAME) {
 
     fun getSpellsShort(
         locale: LocaleEnum,
-        filter: Map<TagNameEnum, List<TagEnum>> = emptyMap(),
+        filter: Map<TagIndentifierEnum, List<TagEnum>> = emptyMap(),
         sorter: SortOptionEnum = SortOptionEnum.BY_NAME
     ): Flow<List<SpellWithTagsShort>> =
         _getManyShort(
@@ -59,9 +59,9 @@ abstract class SpellDao : BaseDao<SpellEntity>(SpellEntity.TABLE_NAME) {
         )
 
     fun getSpellsShort(
-        locale: LocaleEnum,
         bookId: Long,
-        filter: Map<TagNameEnum, List<TagEnum>> = emptyMap(),
+        locale: LocaleEnum,
+        filter: Map<TagIndentifierEnum, List<TagEnum>> = emptyMap(),
         sorter: SortOptionEnum = SortOptionEnum.BY_NAME,
     ): Flow<List<SpellWithTagsShort>> =
         _getManyShort(
@@ -74,10 +74,10 @@ abstract class SpellDao : BaseDao<SpellEntity>(SpellEntity.TABLE_NAME) {
 
     private fun getSpellsWithTagsShortQuery(
         locale: LocaleEnum,
-    ) = "select * from ${SpellEntity.TABLE_NAME} as t0" +
-            "inner join ${TaggingSpellEntity.TABLE_NAME} as t1" +
-            "on ${SpellEntity.COLUMN_LOCALE}=${locale.value} " +
-            "and t0.${SpellEntity.COLUMN_SPELL_UUID}=t1.${TaggingSpellEntity.COLUMN_UUID} "
+    ) = "select * from ${SpellEntity.TABLE_NAME} as t0 " +
+            "inner join ${TaggingSpellEntity.TABLE_NAME} as t1 " +
+            "on ${SpellEntity.COLUMN_LOCALE}='${locale.value}' " +
+            "and t0.${SpellEntity.COLUMN_UUID}=t1.${TaggingSpellEntity.COLUMN_UUID} "
 
     private fun getSpellsWithTagsShortByBookIdQuery(
         locale: LocaleEnum,
@@ -87,11 +87,11 @@ abstract class SpellDao : BaseDao<SpellEntity>(SpellEntity.TABLE_NAME) {
             "inner join ${TaggingSpellEntity.TABLE_NAME} as t1 " +
             "on t0.${BooksSpellsXRefEntity.COLUMN_SPELL_UUID}=t1.${TaggingSpellEntity.COLUMN_UUID} " +
             "inner join ${SpellEntity.TABLE_NAME} as t2 " +
-            "on t0.${BooksSpellsXRefEntity.COLUMN_SPELL_UUID}=t2.${SpellEntity.COLUMN_SPELL_UUID} " +
-            "and t2.${SpellEntity.COLUMN_LOCALE}=${locale.value} "
+            "on t0.${BooksSpellsXRefEntity.COLUMN_SPELL_UUID}=t2.${SpellEntity.COLUMN_UUID} " +
+            "and t2.${SpellEntity.COLUMN_LOCALE}='${locale.value}' "
 
     private fun filterQuerySuffix(
-        filter: Map<TagNameEnum, List<TagEnum>>,
+        filter: Map<TagIndentifierEnum, List<TagEnum>>,
         sorter: SortOptionEnum
     ) = StringBuilder(" ").apply {
         // begin condition
@@ -115,9 +115,9 @@ abstract class SpellDao : BaseDao<SpellEntity>(SpellEntity.TABLE_NAME) {
     }.toString()
 
 
-    private fun TagNameEnum.defineTagName() = when (this) {
-        TagNameEnum.LEVEL -> TaggingSpellEntity.COLUMN_LEVEL_TAG
-        TagNameEnum.SCHOOL -> TaggingSpellEntity.COLUMN_SCHOOL_TAG
+    private fun TagIndentifierEnum.defineTagName() = when (this) {
+        TagIndentifierEnum.LEVEL -> TaggingSpellEntity.COLUMN_LEVEL_TAG
+        TagIndentifierEnum.SCHOOL -> TaggingSpellEntity.COLUMN_SCHOOL_TAG
         else -> throw IllegalArgumentException("tag name not supported")
     }
 }
