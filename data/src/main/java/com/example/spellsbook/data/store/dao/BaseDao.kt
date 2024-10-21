@@ -10,19 +10,4 @@ abstract class BaseDao<T>(private val tableName: String) {
 
     @Update
     abstract suspend fun update(data: T): Int
-
-//    @RawQuery
-//    protected abstract fun _getMany(query: SupportSQLiteQuery): Flow<List<T>>
-
-//    open fun getInterval(from: Int, to: Int) = _getMany(
-//        if (from >= to)
-//            throw IllegalArgumentException("'from' bigger than 'to' ($from >= $to)")
-//        else
-//            SimpleSQLiteQuery(
-//                "select * from $tableName limit ${to - from} offset $from"
-//            )
-//    )
-
-//    @RawQuery
-//    protected abstract fun _getOne(query: SupportSQLiteQuery): Flow<T?>
 }

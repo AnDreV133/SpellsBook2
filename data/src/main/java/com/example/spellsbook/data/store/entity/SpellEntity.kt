@@ -8,13 +8,13 @@ import androidx.room.PrimaryKey
 
 @Entity(
     tableName = SpellEntity.TABLE_NAME,
-    foreignKeys = [
-        ForeignKey(
-            entity = TaggingSpellEntity::class,
-            parentColumns = [TaggingSpellEntity.COLUMN_UUID],
-            childColumns = [SpellEntity.COLUMN_UUID]
-        )
-    ]
+//    foreignKeys = [
+//        ForeignKey(
+//            entity = TaggingSpellEntity::class,
+//            parentColumns = [TaggingSpellEntity.COLUMN_UUID],
+//            childColumns = [SpellEntity.COLUMN_UUID]
+//        )
+//    ]
 )
 class SpellEntity(
     @PrimaryKey
@@ -27,9 +27,7 @@ class SpellEntity(
 ) {
     companion object {
         const val TABLE_NAME = "spell"
-        const val COLUMN_ID = "id"
         const val COLUMN_UUID = "uuid"
-        const val COLUMN_LOCALE = "locale"
         const val COLUMN_NAME = "name"
         const val COLUMN_JSON = "json"
     }

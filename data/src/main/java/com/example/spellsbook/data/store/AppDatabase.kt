@@ -10,7 +10,6 @@ import com.example.spellsbook.data.store.dao.TaggingSpellDao
 import com.example.spellsbook.data.store.entity.BookEntity
 import com.example.spellsbook.data.store.entity.BooksSpellsXRefEntity
 import com.example.spellsbook.data.store.entity.SpellEntity
-import com.example.spellsbook.data.store.entity.SpellEntityRu
 import com.example.spellsbook.data.store.entity.TaggingSpellEntity
 
 @Database(
@@ -19,7 +18,6 @@ import com.example.spellsbook.data.store.entity.TaggingSpellEntity
         BooksSpellsXRefEntity::class,
         TaggingSpellEntity::class,
         SpellEntity::class,
-        SpellEntityRu::class,
     ],
     version = 1,
     exportSchema = true

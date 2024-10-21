@@ -20,6 +20,5 @@ class GetSpellsWithFilterAndSorterUseCase @Inject constructor(
         spellRepository.getSpellsShort(
             filter = filter,
             sorter = sorter,
-            locale = locale,
         )
 }

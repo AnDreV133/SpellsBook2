@@ -1,6 +1,7 @@
 package com.example.spellsbook.data.store.dao
 
 import androidx.room.Dao
+import androidx.room.Query
 import androidx.room.RawQuery
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
@@ -17,18 +18,20 @@ import java.util.UUID
 
 @Dao
 abstract class SpellDao : BaseDao<SpellEntity>(SpellEntity.TABLE_NAME) {
+    @Query("delete from ${SpellEntity.TABLE_NAME}")
+    abstract fun deleteAll()
+
     @RawQuery(observedEntities = [SpellEntity::class])
     protected abstract fun _getOneDetail(query: SupportSQLiteQuery): Flow<SpellEntity>
 
-    fun getSpellDetail(id: Long): Flow<SpellEntity> =
-        _getOneDetail(SimpleSQLiteQuery("select * from ${SpellEntity.TABLE_NAME} where ${SpellEntity.COLUMN_ID}=$id limit 1"))
+    fun getSpellDetail(uuid: String): Flow<SpellEntity> =
+        _getOneDetail(SimpleSQLiteQuery("select * from ${SpellEntity.TABLE_NAME} where ${SpellEntity.COLUMN_UUID}='$uuid' limit 1"))
 
     fun getSpellDetail(uuid: UUID, locale: LocaleEnum): Flow<SpellEntity> =
         _getOneDetail(
             SimpleSQLiteQuery(
                 "select * from ${SpellEntity.TABLE_NAME} " +
                         "where ${SpellEntity.COLUMN_UUID}='$uuid' " +
-                        "and ${SpellEntity.COLUMN_LOCALE}='$locale' " +
                         "limit 1"
             )
         )
@@ -107,4 +110,5 @@ abstract class SpellDao : BaseDao<SpellEntity>(SpellEntity.TABLE_NAME) {
 
     private fun List<TagEnum>.toTableFields() =
         this.joinToString { "'$it'" }
+
 }

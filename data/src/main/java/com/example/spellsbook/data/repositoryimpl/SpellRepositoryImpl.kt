@@ -23,13 +23,11 @@ class SpellRepositoryImpl(
 
     override suspend fun getSpellsShortByBookId(
         bookId: Long,
-        locale: LocaleEnum,
         filter: Map<TagIdentifierEnum, List<TagEnum>>,
         sorter: SortOptionEnum
     ): List<SpellShortModel> =
         spellDao.getSpellsShortByBookId(
             bookId,
-            locale,
             filter,
             sorter
         ).map {
@@ -38,19 +36,16 @@ class SpellRepositoryImpl(
 
 
     override suspend fun getSpellsShort(
-        locale: LocaleEnum,
         filter: Map<TagIdentifierEnum, List<TagEnum>>,
         sorter: SortOptionEnum
     ): List<SpellShortModel> =
         spellDao.getSpellsShort(
-            locale,
             filter,
             sorter
         ).map { it.mapToShortModel() }
 
     override fun getSpellByUuid(
         uuid: String,
-        locale: LocaleEnum
     ): Flow<SpellDetailModel> =
-        spellDao.getSpellDetail(uuid, locale).map { it.mapToDetailModel() }
+        spellDao.getSpellDetail(uuid).map { it.mapToDetailModel() }
 }

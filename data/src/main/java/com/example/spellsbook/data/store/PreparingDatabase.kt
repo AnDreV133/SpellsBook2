@@ -14,7 +14,7 @@ object PreparingDatabase {
     fun prepare(appContext: Context, db: AppDatabase) {
         CoroutineScope(Dispatchers.IO).launch {
             initTaggingSpells(appContext) { db.taggingSpellDao().insert(it) }
-            initSpells(appContext) { db.spellDao().insert(it) }
+//            initSpells(appContext) { db.spellDao().insert(it) }
         }
     }
 
@@ -40,23 +40,31 @@ object PreparingDatabase {
                 }
             }
     }
+}
 
+suspend fun initDbByLocale(
+    context: Context,
+    locale: String,
+    db: AppDatabase,
+) = withContext(Dispatchers.IO) {
+    when (locale) {
+        "en", "ru" -> Unit
+        else -> {
+            throw IllegalArgumentException()
+        }
+    }
 
-    private suspend fun initSpells(
-        context: Context,
-        insert: suspend (SpellEntity) -> Unit
-    ) = withContext(Dispatchers.IO) {
-        listOf(
-//            "spells_en.json" to "en",
-            "spells_ru.json" to "ru"
-        ).forEach { fileAndLocale ->
+    db.spellDao().deleteAll()
+
+    ("spells_$locale.json" to locale)
+        .also { fileAndLocale ->
             JsonParser
                 .parseReader(context.assets.open(fileAndLocale.first).bufferedReader())
                 .asJsonArray
                 .forEach { jsonElem ->
                     launch {
                         (jsonElem as JsonObject).let { jsonObj ->
-                            insert(
+                            db.spellDao().insert(
                                 SpellEntity(
                                     uuid = jsonObj.getString("uuid"),
                                     name = jsonObj.getString("name"),
@@ -67,7 +75,6 @@ object PreparingDatabase {
                     }
                 }
         }
-    }
-
-    private fun JsonObject.getString(key: String) = this.get(key).asString
 }
+
+private fun JsonObject.getString(key: String) = this.get(key).asString

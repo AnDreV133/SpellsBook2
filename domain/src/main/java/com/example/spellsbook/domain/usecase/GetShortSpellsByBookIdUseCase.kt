@@ -18,6 +18,6 @@ class GetShortSpellsByBookIdUseCase @Inject constructor(
         filter: Map<TagIdentifierEnum, List<TagEnum>> = emptyMap(),
         sorter: SortOptionEnum = SortOptionEnum.BY_NAME
     ): List<SpellShortModel> {
-        return spellRepository.getSpellsShortByBookId(id, locale, filter, sorter)
+        return spellRepository.getSpellsShortByBookId(id, filter, sorter)
     }
 }
