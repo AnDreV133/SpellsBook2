@@ -19,7 +19,10 @@ class DomainModule {
     fun provideLocale(): LocaleEnum {
         LocaleEnum.entries.forEach { appLocale ->
             Locale.current.language.also { systemLocale ->
-                if (appLocale.value == systemLocale) return appLocale
+                when (appLocale) {
+                    LocaleEnum.ENGLISH -> "en"
+                    LocaleEnum.RUSSIAN -> "ru"
+                }.let { if (it == systemLocale) return appLocale }
             }
         }
         return LocaleEnum.ENGLISH

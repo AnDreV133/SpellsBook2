@@ -1,6 +1,6 @@
 package com.example.spellsbook.domain
 
-enum class LocaleEnum(val value: String) {
-    ENGLISH("en"),
-    RUSSIAN("ru")
+enum class LocaleEnum {
+    ENGLISH,
+    RUSSIAN
 }

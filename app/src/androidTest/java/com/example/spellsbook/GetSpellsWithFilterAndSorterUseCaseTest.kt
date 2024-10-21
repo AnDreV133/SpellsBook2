@@ -13,7 +13,6 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import java.lang.Thread.sleep
 import javax.inject.Inject
 
 @HiltAndroidTest
@@ -43,7 +42,7 @@ class GetSpellsWithFilterAndSorterUseCaseTest {
         println(levelDao.getAll())
         println(schoolDao.getAll())
 
-        val execute = useCase.execute(
+        val execute = useCase.getFlow(
             filter = listOf(
                 listOf(
                     LevelEnum.LEVEL_1,
@@ -92,7 +91,7 @@ class GetSpellsWithFilterAndSorterUseCaseTest {
         println(levelDao.getAll())
         println(schoolDao.getAll())
 
-        val execute = useCase.execute(
+        val execute = useCase.getFlow(
             filter = listOf(
                 listOf(
                     LevelEnum.LEVEL_1,
@@ -118,7 +117,7 @@ class GetSpellsWithFilterAndSorterUseCaseTest {
         println(levelDao.getAll())
         println(schoolDao.getAll())
 
-        val execute = useCase.execute(
+        val execute = useCase.getFlow(
             filter = listOf(
                 listOf(
                     LevelEnum.LEVEL_1

@@ -21,5 +21,5 @@ interface SpellRepository {
         filter: Map<TagIdentifierEnum, List<TagEnum>>,
         sorter: SortOptionEnum
     ): List<SpellShortModel>
-    fun getSpellByUuid(uuid: UUID, locale: LocaleEnum): Flow<SpellDetailModel>
+    fun getSpellByUuid(uuid: String, locale: LocaleEnum): Flow<SpellDetailModel>
 }

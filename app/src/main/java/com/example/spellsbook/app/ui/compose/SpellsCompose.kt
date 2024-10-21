@@ -363,8 +363,7 @@ fun SpellsListItem(
                 color = Color.Black
             )
             Text(
-                text = spell.level.toString(),
-
+                text = spell.level?.toResourceString() ?: "N/A",
                 )
         }
 

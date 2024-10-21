@@ -49,7 +49,7 @@ class SpellRepositoryImpl(
         ).map { it.mapToShortModel() }
 
     override fun getSpellByUuid(
-        uuid: UUID,
+        uuid: String,
         locale: LocaleEnum
     ): Flow<SpellDetailModel> =
         spellDao.getSpellDetail(uuid, locale).map { it.mapToDetailModel() }
