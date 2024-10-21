@@ -37,47 +37,42 @@ abstract class SpellDao : BaseDao<SpellEntity>(SpellEntity.TABLE_NAME) {
     protected abstract suspend fun _getManyShort(query: SupportSQLiteQuery): List<SpellWithTagsShort>
 
     suspend fun getSpellsShort(
-        locale: LocaleEnum,
         filter: Map<TagIdentifierEnum, List<TagEnum>> = emptyMap(),
         sorter: SortOptionEnum = SortOptionEnum.BY_NAME
     ): List<SpellWithTagsShort> =
         _getManyShort(
             SimpleSQLiteQuery(
-                getSpellsWithTagsShortQuery(locale)
+                getSpellsWithTagsShortQuery()
                         + filterQuerySuffix(filter, sorter)
             )
         )
 
     suspend fun getSpellsShortByBookId(
         bookId: Long,
-        locale: LocaleEnum,
         filter: Map<TagIdentifierEnum, List<TagEnum>> = emptyMap(),
         sorter: SortOptionEnum = SortOptionEnum.BY_NAME,
     ): List<SpellWithTagsShort> =
+
         _getManyShort(
             SimpleSQLiteQuery(
-                getSpellsWithTagsShortByBookIdQuery(locale, bookId)
+                getSpellsWithTagsShortByBookIdQuery(bookId)
                         + filterQuerySuffix(filter, sorter)
             )
         )
 
     private fun getSpellsWithTagsShortQuery(
-        locale: LocaleEnum,
     ) = "select * from ${SpellEntity.TABLE_NAME} as t0 " +
             "inner join ${TaggingSpellEntity.TABLE_NAME} as t1 " +
-            "on t0.${SpellEntity.COLUMN_UUID}=t1.${TaggingSpellEntity.COLUMN_UUID} " +
-            "and t0.${SpellEntity.COLUMN_LOCALE}='${locale.value}' "
+            "on t0.${SpellEntity.COLUMN_UUID}=t1.${TaggingSpellEntity.COLUMN_UUID} "
 
     private fun getSpellsWithTagsShortByBookIdQuery(
-        locale: LocaleEnum,
         bookId: Long
     ) = "select * from ${BooksSpellsXRefEntity.TABLE_NAME} as t0" +
             "where t0.${BooksSpellsXRefEntity.COLUMN_BOOK_ID}=$bookId " + // fixme: incorrect query
             "inner join ${TaggingSpellEntity.TABLE_NAME} as t1 " +
             "on t0.${BooksSpellsXRefEntity.COLUMN_SPELL_UUID}=t1.${TaggingSpellEntity.COLUMN_UUID} " +
             "inner join ${SpellEntity.TABLE_NAME} as t2 " +
-            "on t0.${BooksSpellsXRefEntity.COLUMN_SPELL_UUID}=t2.${SpellEntity.COLUMN_UUID} " +
-            "and t2.${SpellEntity.COLUMN_LOCALE}='${locale.value}' "
+            "on t0.${BooksSpellsXRefEntity.COLUMN_SPELL_UUID}=t2.${SpellEntity.COLUMN_UUID} "
 
     private fun filterQuerySuffix(
         filter: Map<TagIdentifierEnum, List<TagEnum>>,

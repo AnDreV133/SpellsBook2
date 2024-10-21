@@ -47,7 +47,7 @@ object PreparingDatabase {
         insert: suspend (SpellEntity) -> Unit
     ) = withContext(Dispatchers.IO) {
         listOf(
-            "spells_en.json" to "en",
+//            "spells_en.json" to "en",
             "spells_ru.json" to "ru"
         ).forEach { fileAndLocale ->
             JsonParser
@@ -59,8 +59,7 @@ object PreparingDatabase {
                             insert(
                                 SpellEntity(
                                     uuid = jsonObj.getString("uuid"),
-                                    locale = fileAndLocale.second,
-                                    spellName = jsonObj.getString("name"),
+                                    name = jsonObj.getString("name"),
                                     json = jsonObj.toString()
                                 )
                             )

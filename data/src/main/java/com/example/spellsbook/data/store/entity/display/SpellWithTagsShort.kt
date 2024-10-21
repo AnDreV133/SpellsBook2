@@ -13,7 +13,7 @@ class SpellWithTagsShort(
     @Relation(
         parentColumn = TaggingSpellEntity.COLUMN_UUID,
         entityColumn = SpellEntity.COLUMN_UUID,
-        entity = SpellEntity::class,
+        entity = SpellEntity::class
     )
     val spell: SpellShort
 ) {
@@ -22,8 +22,8 @@ class SpellWithTagsShort(
 //        val id: Long,
         @ColumnInfo(name = SpellEntity.COLUMN_UUID)
         val uuid: String,
-        @ColumnInfo(name = SpellEntity.COLUMN_LOCALE)
-        val locale: String,
+//        @ColumnInfo(name = SpellEntity.COLUMN_LOCALE)
+//        val locale: String,
         @ColumnInfo(name = SpellEntity.COLUMN_NAME)
         val name: String
     )

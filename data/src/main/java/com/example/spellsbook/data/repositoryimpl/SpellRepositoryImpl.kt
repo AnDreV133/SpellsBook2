@@ -29,7 +29,6 @@ class SpellRepositoryImpl(
     ): List<SpellShortModel> =
         spellDao.getSpellsShortByBookId(
             bookId,
-            locale,
             filter,
             sorter
         ).map {
@@ -43,7 +42,6 @@ class SpellRepositoryImpl(
         sorter: SortOptionEnum
     ): List<SpellShortModel> =
         spellDao.getSpellsShort(
-            locale,
             filter,
             sorter
         ).map { it.mapToShortModel() }

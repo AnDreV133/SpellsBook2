@@ -8,28 +8,20 @@ import androidx.room.PrimaryKey
 
 @Entity(
     tableName = SpellEntity.TABLE_NAME,
-//    primaryKeys = [
-//        SpellEntity.COLUMN_UUID,
-//        SpellEntity.COLUMN_LOCALE
-//    ],
     foreignKeys = [
         ForeignKey(
             entity = TaggingSpellEntity::class,
             parentColumns = [TaggingSpellEntity.COLUMN_UUID],
             childColumns = [SpellEntity.COLUMN_UUID]
         )
-    ],
+    ]
 )
 class SpellEntity(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = COLUMN_ID)
-    val id: Long = 0,
+    @PrimaryKey
     @ColumnInfo(name = COLUMN_UUID)
     val uuid: String,
-    @ColumnInfo(name = COLUMN_LOCALE)
-    val locale: String,
     @ColumnInfo(name = COLUMN_NAME)
-    val spellName: String,
+    val name: String,
     @ColumnInfo(name = COLUMN_JSON)
     val json: String
 ) {
