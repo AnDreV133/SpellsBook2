@@ -1,6 +1,6 @@
 package com.example.spellsbook.domain.enums
 
-enum class TagIndentifierEnum {
+enum class TagIdentifierEnum {
     LEVEL,
     SCHOOL
 }

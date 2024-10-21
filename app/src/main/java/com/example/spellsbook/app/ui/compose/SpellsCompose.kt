@@ -30,7 +30,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -52,15 +51,15 @@ import com.example.spellsbook.domain.enums.LevelEnum
 import com.example.spellsbook.domain.enums.SchoolEnum
 import com.example.spellsbook.domain.enums.SortOptionEnum
 import com.example.spellsbook.domain.enums.TagEnum
-import com.example.spellsbook.domain.enums.TagIndentifierEnum
+import com.example.spellsbook.domain.enums.TagIdentifierEnum
 import com.example.spellsbook.domain.model.SpellShortModel
 import com.example.spellsbook.domain.usecase.GetSpellsWithFilterAndSorterUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 //data class TagCollectionForFilter(
@@ -82,43 +81,36 @@ class SpellsViewModel @Inject constructor(
 //    private val // todo addSpellToBookUseCase
 ) : ViewModel() {
     data class State(
-        val filters: Map<TagIndentifierEnum, List<TagEnum>> = emptyMap(),
+        val filters: Map<TagIdentifierEnum, List<TagEnum>> = emptyMap(),
         val sorter: SortOptionEnum = SortOptionEnum.BY_NAME,
         val spells: List<SpellShortModel> = emptyList(),
     )
 
     sealed class Event {
-        class UpdateFilter(val pair: Pair<TagIndentifierEnum, List<TagEnum>>) : Event()
+        class UpdateFilter(val pair: Pair<TagIdentifierEnum, List<TagEnum>>) : Event()
         class ChangeSorter(val sorter: SortOptionEnum) : Event()
         object ClearFilterAndSorter : Event()
     }
 
     private val _state = MutableStateFlow(State())
-
-    private val spells = getSpellsWithFilterAndSorterUseCase.execute(
-        filter = _state.value.filters,
-        sorter = _state.value.sorter
-    )
-
-    val state = combine(_state, spells) { state, spells ->
-        state.copy(spells = spells)
+    val state = _state.map { state ->
+        state.copy(
+            spells = getSpellsWithFilterAndSorterUseCase
+                .execute(state.filters, state.sorter)
+        )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), State())
-
-//    init {
-//        applyFilter()
-//    }
 
     fun onEvent(event: Event) {
         when (event) {
             is Event.UpdateFilter -> {
-                _state.value = state.value.copy(
-                    filters = state.value.filters
-                            + (event.pair.first to event.pair.second)
+                println(event.pair)
+                _state.value = _state.value.copy(
+                    filters = _state.value.filters + event.pair
                 )
             }
 
             is Event.ChangeSorter -> {
-                _state.value = state.value.copy(
+                _state.value = _state.value.copy(
                     sorter = event.sorter
                 )
             }
@@ -129,12 +121,6 @@ class SpellsViewModel @Inject constructor(
         }
     }
 }
-
-//class SpellsCompose(
-//    val navController: NavHostController,
-//    val bookId: Long? = null // if bookId is null, screen without add button on spells
-//) {
-
 
 @Composable
 fun SpellsScreen(
@@ -190,19 +176,19 @@ fun FilterGrid(
     modifier: Modifier = Modifier,
     viewModel: SpellsViewModel
 ) {
-    val items = listOf(
+    val filterItemDataList = listOf(
         FilterItemData(
             name = stringResource(id = R.string.tag_level_name),
             tagInfoList = LevelEnum.entries.map {
                 TagInfo(
                     it, it.toResourceString(),
-                    viewModel.state.value.filters[TagIndentifierEnum.LEVEL]
+                    viewModel.state.value.filters[TagIdentifierEnum.LEVEL]
                         ?.contains(it) ?: false
                 )
             },
             updateFilter = {
                 viewModel.onEvent(
-                    SpellsViewModel.Event.UpdateFilter(TagIndentifierEnum.LEVEL to it)
+                    SpellsViewModel.Event.UpdateFilter(TagIdentifierEnum.LEVEL to it)
                 )
             }
         ),
@@ -211,13 +197,13 @@ fun FilterGrid(
             tagInfoList = SchoolEnum.entries.map {
                 TagInfo(
                     it, it.toResourceString(),
-                    viewModel.state.value.filters[TagIndentifierEnum.LEVEL]
+                    viewModel.state.value.filters[TagIdentifierEnum.SCHOOL]
                         ?.contains(it) ?: false
                 )
             },
             updateFilter = {
                 viewModel.onEvent(
-                    SpellsViewModel.Event.UpdateFilter(TagIndentifierEnum.SCHOOL to it)
+                    SpellsViewModel.Event.UpdateFilter(TagIdentifierEnum.SCHOOL to it)
                 )
             }
         ),
@@ -232,7 +218,7 @@ fun FilterGrid(
             contentPadding = PaddingValues(4.dp),
             horizontalArrangement = Arrangement.Start
         ) {
-            items(items) {
+            items(filterItemDataList) {
                 FilterItem(
                     it.name,
                     it.tagInfoList,
@@ -265,7 +251,6 @@ fun FilterItem(
     updateFilter: (List<TagEnum>) -> Unit
 ) {
     var isDropDownMenuShowing by remember { mutableStateOf(false) }
-    val coroutineScope = rememberCoroutineScope()
 
     Row(
         modifier = Modifier
@@ -343,7 +328,7 @@ fun SpellsList(
     ) {
         items(state.value.spells) { spell ->
             SpellsListItem(
-                navigate = { navController.navigate(NavEndpoint.Spells.route + "/${spell.spellUuid}") },
+                navigate = { navController.navigate(NavEndpoint.Spells.route + "/${spell.uuid}") },
                 spell = spell,
                 bookId = bookId
             )

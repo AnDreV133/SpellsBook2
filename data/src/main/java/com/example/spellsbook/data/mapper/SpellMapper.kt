@@ -9,8 +9,8 @@ import com.google.gson.JsonParser
 
 fun SpellWithTagsShort.mapToShortModel(): SpellShortModel =
     SpellShortModel(
-        name = this.spell.spellName,
-        spellUuid = this.spell.spellUuid,
+        name = this.spell.name,
+        uuid = this.spell.uuid,
         level = this.taggingSpell.levelTag?.let { LevelEnum.valueOf(it) },
     )
 

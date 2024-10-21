@@ -3,14 +3,15 @@ package com.example.spellsbook.data.store.entity
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.PrimaryKey
 
 
 @Entity(
     tableName = SpellEntity.TABLE_NAME,
-    primaryKeys = [
-        SpellEntity.COLUMN_UUID,
-        SpellEntity.COLUMN_LOCALE
-    ],
+//    primaryKeys = [
+//        SpellEntity.COLUMN_UUID,
+//        SpellEntity.COLUMN_LOCALE
+//    ],
     foreignKeys = [
         ForeignKey(
             entity = TaggingSpellEntity::class,
@@ -20,9 +21,9 @@ import androidx.room.ForeignKey
     ],
 )
 class SpellEntity(
-//    @PrimaryKey(autoGenerate = true)
-//    @ColumnInfo(name = COLUMN_ID)
-//    val id: Long,
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = COLUMN_ID)
+    val id: Long = 0,
     @ColumnInfo(name = COLUMN_UUID)
     val uuid: String,
     @ColumnInfo(name = COLUMN_LOCALE)

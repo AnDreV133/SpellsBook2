@@ -6,7 +6,7 @@ import com.example.spellsbook.data.store.dao.SpellDao
 import com.example.spellsbook.domain.LocaleEnum
 import com.example.spellsbook.domain.enums.SortOptionEnum
 import com.example.spellsbook.domain.enums.TagEnum
-import com.example.spellsbook.domain.enums.TagIndentifierEnum
+import com.example.spellsbook.domain.enums.TagIdentifierEnum
 import com.example.spellsbook.domain.model.SpellDetailModel
 import com.example.spellsbook.domain.model.SpellShortModel
 import com.example.spellsbook.domain.repository.SpellRepository
@@ -21,32 +21,32 @@ class SpellRepositoryImpl(
 //        TODO("Not yet implemented")
 //    }
 
-    override fun getSpellsShortByBookId(
+    override suspend fun getSpellsShortByBookId(
         bookId: Long,
         locale: LocaleEnum,
-        filter: Map<TagIndentifierEnum, List<TagEnum>>,
+        filter: Map<TagIdentifierEnum, List<TagEnum>>,
         sorter: SortOptionEnum
-    ): Flow<List<SpellShortModel>> =
-        spellDao.getSpellsShort(
+    ): List<SpellShortModel> =
+        spellDao.getSpellsShortByBookId(
             bookId,
             locale,
             filter,
             sorter
         ).map {
-            it.map { it.mapToShortModel() }
+            it.mapToShortModel()
         }
 
 
-    override fun getSpellsShort(
+    override suspend fun getSpellsShort(
         locale: LocaleEnum,
-        filter: Map<TagIndentifierEnum, List<TagEnum>>,
+        filter: Map<TagIdentifierEnum, List<TagEnum>>,
         sorter: SortOptionEnum
-    ): Flow<List<SpellShortModel>> =
+    ): List<SpellShortModel> =
         spellDao.getSpellsShort(
             locale,
             filter,
             sorter
-        ).map { it.map { it.mapToShortModel() } }
+        ).map { it.mapToShortModel() }
 
     override fun getSpellByUuid(
         uuid: UUID,

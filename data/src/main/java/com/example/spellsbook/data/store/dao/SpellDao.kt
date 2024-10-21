@@ -11,7 +11,7 @@ import com.example.spellsbook.data.store.entity.display.SpellWithTagsShort
 import com.example.spellsbook.domain.LocaleEnum
 import com.example.spellsbook.domain.enums.SortOptionEnum
 import com.example.spellsbook.domain.enums.TagEnum
-import com.example.spellsbook.domain.enums.TagIndentifierEnum
+import com.example.spellsbook.domain.enums.TagIdentifierEnum
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
@@ -34,13 +34,13 @@ abstract class SpellDao : BaseDao<SpellEntity>(SpellEntity.TABLE_NAME) {
         )
 
     @RawQuery(observedEntities = [SpellWithTagsShort::class])
-    protected abstract fun _getManyShort(query: SupportSQLiteQuery): Flow<List<SpellWithTagsShort>>
+    protected abstract suspend fun _getManyShort(query: SupportSQLiteQuery): List<SpellWithTagsShort>
 
-    fun getSpellsShort(
+    suspend fun getSpellsShort(
         locale: LocaleEnum,
-        filter: Map<TagIndentifierEnum, List<TagEnum>> = emptyMap(),
+        filter: Map<TagIdentifierEnum, List<TagEnum>> = emptyMap(),
         sorter: SortOptionEnum = SortOptionEnum.BY_NAME
-    ): Flow<List<SpellWithTagsShort>> =
+    ): List<SpellWithTagsShort> =
         _getManyShort(
             SimpleSQLiteQuery(
                 getSpellsWithTagsShortQuery(locale)
@@ -48,12 +48,12 @@ abstract class SpellDao : BaseDao<SpellEntity>(SpellEntity.TABLE_NAME) {
             )
         )
 
-    fun getSpellsShort(
+    suspend fun getSpellsShortByBookId(
         bookId: Long,
         locale: LocaleEnum,
-        filter: Map<TagIndentifierEnum, List<TagEnum>> = emptyMap(),
+        filter: Map<TagIdentifierEnum, List<TagEnum>> = emptyMap(),
         sorter: SortOptionEnum = SortOptionEnum.BY_NAME,
-    ): Flow<List<SpellWithTagsShort>> =
+    ): List<SpellWithTagsShort> =
         _getManyShort(
             SimpleSQLiteQuery(
                 getSpellsWithTagsShortByBookIdQuery(locale, bookId)
@@ -61,19 +61,18 @@ abstract class SpellDao : BaseDao<SpellEntity>(SpellEntity.TABLE_NAME) {
             )
         )
 
-
     private fun getSpellsWithTagsShortQuery(
         locale: LocaleEnum,
     ) = "select * from ${SpellEntity.TABLE_NAME} as t0 " +
             "inner join ${TaggingSpellEntity.TABLE_NAME} as t1 " +
-            "on ${SpellEntity.COLUMN_LOCALE}='${locale.value}' " +
-            "and t0.${SpellEntity.COLUMN_UUID}=t1.${TaggingSpellEntity.COLUMN_UUID} "
+            "on t0.${SpellEntity.COLUMN_UUID}=t1.${TaggingSpellEntity.COLUMN_UUID} " +
+            "and t0.${SpellEntity.COLUMN_LOCALE}='${locale.value}' "
 
     private fun getSpellsWithTagsShortByBookIdQuery(
         locale: LocaleEnum,
         bookId: Long
     ) = "select * from ${BooksSpellsXRefEntity.TABLE_NAME} as t0" +
-            "where t0.${BooksSpellsXRefEntity.COLUMN_BOOK_ID}=$bookId " +
+            "where t0.${BooksSpellsXRefEntity.COLUMN_BOOK_ID}=$bookId " + // fixme: incorrect query
             "inner join ${TaggingSpellEntity.TABLE_NAME} as t1 " +
             "on t0.${BooksSpellsXRefEntity.COLUMN_SPELL_UUID}=t1.${TaggingSpellEntity.COLUMN_UUID} " +
             "inner join ${SpellEntity.TABLE_NAME} as t2 " +
@@ -81,19 +80,19 @@ abstract class SpellDao : BaseDao<SpellEntity>(SpellEntity.TABLE_NAME) {
             "and t2.${SpellEntity.COLUMN_LOCALE}='${locale.value}' "
 
     private fun filterQuerySuffix(
-        filter: Map<TagIndentifierEnum, List<TagEnum>>,
+        filter: Map<TagIdentifierEnum, List<TagEnum>>,
         sorter: SortOptionEnum
-    ) = StringBuilder(" ").apply {
+    ) = StringBuilder().apply {
         // begin condition
         append("where 1=1 ")
         // set filters
         filter.forEach { entry ->
             if (entry.value.isNotEmpty())
-                append("and ${entry.key.defineTagName()} in (${entry.value.joinToString()}) ")
+                append("and ${entry.key.toColumnName()} in (${entry.value.toTableFields()}) ")
         }
 
         // set sorter
-        when (sorter) {
+        when (sorter) { // fixme: incorrect sort query
             SortOptionEnum.BY_NAME -> Unit
 
             SortOptionEnum.BY_LEVEL ->
@@ -105,9 +104,12 @@ abstract class SpellDao : BaseDao<SpellEntity>(SpellEntity.TABLE_NAME) {
     }.toString()
 
 
-    private fun TagIndentifierEnum.defineTagName() = when (this) {
-        TagIndentifierEnum.LEVEL -> TaggingSpellEntity.COLUMN_LEVEL_TAG
-        TagIndentifierEnum.SCHOOL -> TaggingSpellEntity.COLUMN_SCHOOL_TAG
+    private fun TagIdentifierEnum.toColumnName() = when (this) {
+        TagIdentifierEnum.LEVEL -> TaggingSpellEntity.COLUMN_LEVEL_TAG
+        TagIdentifierEnum.SCHOOL -> TaggingSpellEntity.COLUMN_SCHOOL_TAG
         else -> throw IllegalArgumentException("tag name not supported")
     }
+
+    private fun List<TagEnum>.toTableFields() =
+        this.joinToString { "'$it'" }
 }

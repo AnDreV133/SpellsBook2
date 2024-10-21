@@ -21,11 +21,11 @@ class SpellWithTagsShort(
 //        @ColumnInfo(name = SpellEntity.COLUMN_ID)
 //        val id: Long,
         @ColumnInfo(name = SpellEntity.COLUMN_UUID)
-        val spellUuid: String,
+        val uuid: String,
         @ColumnInfo(name = SpellEntity.COLUMN_LOCALE)
         val locale: String,
         @ColumnInfo(name = SpellEntity.COLUMN_NAME)
-        val spellName: String
+        val name: String
     )
 }
 
