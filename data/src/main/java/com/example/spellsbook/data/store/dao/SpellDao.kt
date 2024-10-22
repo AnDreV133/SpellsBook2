@@ -18,9 +18,6 @@ import java.util.UUID
 
 @Dao
 abstract class SpellDao : BaseDao<SpellEntity>(SpellEntity.TABLE_NAME) {
-    @Query("delete from ${SpellEntity.TABLE_NAME}")
-    abstract fun deleteAll()
-
     @RawQuery(observedEntities = [SpellEntity::class])
     protected abstract fun _getOneDetail(query: SupportSQLiteQuery): Flow<SpellEntity>
 

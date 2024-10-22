@@ -1,6 +1,7 @@
 package com.example.spellsbook.app.di
 
 import android.content.Context
+import com.example.spellsbook.data.store.AppDatabase
 import com.example.spellsbook.data.store.AppDatabaseConnection
 import dagger.Module
 import dagger.Provides
@@ -24,5 +25,9 @@ class DataModule {
         @ApplicationContext appContext: Context
     ) = AppDatabaseConnection.reinstantiation(appContext)
 
-
+    @Provides
+    @Singleton
+    fun provideInitDao(
+        appDatabase: AppDatabase
+    ) = appDatabase.initDao()
 }

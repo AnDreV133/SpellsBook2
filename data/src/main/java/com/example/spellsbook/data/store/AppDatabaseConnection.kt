@@ -32,7 +32,7 @@ object AppDatabaseConnection {
                         override fun onCreate(db: SupportSQLiteDatabase) {
                             super.onCreate(db)
                             CoroutineScope(Dispatchers.IO).launch {
-                                PreparingDatabase.prepare(appContext, _db!!)
+                                initDbOnStart(appContext, _db!!.initDao())
                             }
                         }
                     }

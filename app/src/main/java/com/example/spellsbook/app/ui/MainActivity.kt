@@ -16,8 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
 import com.example.spellsbook.app.ui.compose.MainWindow
 import com.example.spellsbook.app.ui.compose.navigation.AppNavHost
-import com.example.spellsbook.data.store.AppDatabase
-import com.example.spellsbook.data.store.PreparingDatabase
+import com.example.spellsbook.data.store.dao.InitDao
 import com.example.spellsbook.data.store.initDbByLocale
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
@@ -28,7 +27,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     @Inject
-    lateinit var db: AppDatabase
+    lateinit var initDao: InitDao
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,9 +39,9 @@ class MainActivity : ComponentActivity() {
 
         getSharedPreferences("global", MODE_PRIVATE).run {
             getString(LAST_LOCALE_KEY, "")?.also { lastLocale ->
-                if (lastLocale != locale) {
-                    lifecycleScope.launch(Dispatchers.IO) {
-                        initDbByLocale(this@MainActivity, locale, db)
+                lifecycleScope.launch(Dispatchers.IO) {
+                    if (lastLocale != locale || initDao.hasSpells().not()) {
+                        initDbByLocale(this@MainActivity, locale, initDao)
                     }
                 }
             }
