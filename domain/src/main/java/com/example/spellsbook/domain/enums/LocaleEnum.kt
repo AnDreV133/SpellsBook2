@@ -1,4 +1,4 @@
-package com.example.spellsbook.domain
+package com.example.spellsbook.domain.enums
 
 enum class LocaleEnum(val value: String) {
     ENGLISH("en"),
