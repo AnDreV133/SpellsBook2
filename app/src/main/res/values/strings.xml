@@ -27,7 +27,6 @@
     <string name="tag_school_illusion">Illusion</string>
     <string name="tag_school_invocation">Invocation</string>
     <string name="tag_school_necromancy">Necromancy</string>
-    <string name="apply_filters">Filter</string>
 
     <!-- detail -->
     <string name="detail_duration">Duration</string>
@@ -41,5 +40,9 @@
     <string name="detail_description">Description</string>
     <string name="detail_source">Source</string>
 
-    
+    <!--  other  -->
+    <string name="apply_filters">Filter</string>
+    <string name="paid_user">Paid user</string>
+
+
 </resources>

@@ -24,7 +24,6 @@
     <string name="tag_school_illusion">Иллюзия</string>
     <string name="tag_school_invocation">Вызов</string>
     <string name="tag_school_necromancy">Некромантия</string>
-    <string name="apply_filters">Фильтровать</string>
 
     <!--  detail  -->
     <string name="detail_duration">Длительность</string>
@@ -38,5 +37,8 @@
     <string name="detail_description">Описание</string>
     <string name="detail_source">Источник</string>
 
+    <!--  other  -->
+    <string name="apply_filters">Фильтровать</string>
+    <string name="paid_user">Платный пользователь</string>
 
 </resources>

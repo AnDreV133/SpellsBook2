@@ -3,6 +3,7 @@ package com.example.spellsbook.app.di
 import android.content.Context
 import com.example.spellsbook.data.store.AppDatabase
 import com.example.spellsbook.data.store.AppDatabaseConnection
+import com.example.spellsbook.data.store.preferences.AppSharedPreferencesConnection
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -24,6 +25,12 @@ class DataModule {
     fun provideTestAppDatabase(
         @ApplicationContext appContext: Context
     ) = AppDatabaseConnection.reinstantiation(appContext)
+
+    @Provides
+    @Singleton
+    fun provideAppSharedPreferences(
+        @ApplicationContext appContext: Context
+    ) = AppSharedPreferencesConnection.instance(appContext)
 
     @Provides
     @Singleton

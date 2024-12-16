@@ -1,9 +1,12 @@
 package com.example.spellsbook.app.di
 
 import com.example.spellsbook.data.repositoryimpl.BookRepositoryImpl
+import com.example.spellsbook.data.repositoryimpl.SettingsRepositoryImpl
 import com.example.spellsbook.data.repositoryimpl.SpellRepositoryImpl
 import com.example.spellsbook.data.store.AppDatabase
+import com.example.spellsbook.data.store.preferences.AppSharedPreferences
 import com.example.spellsbook.domain.repository.BookRepository
+import com.example.spellsbook.domain.repository.SettingsRepository
 import com.example.spellsbook.domain.repository.SpellRepository
 import dagger.Module
 import dagger.Provides
@@ -24,4 +27,8 @@ class DomainRepositoriesModule {
         BookRepositoryImpl(
             bookDao = db.bookDao()
         )
+
+    @Provides
+    fun provideSettingsRepository(sp: AppSharedPreferences): SettingsRepository =
+        SettingsRepositoryImpl(sp)
 }
