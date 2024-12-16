@@ -5,6 +5,7 @@ import com.example.spellsbook.data.store.entity.model.SpellWithTagsShort
 import com.example.spellsbook.domain.enums.LevelEnum
 import com.example.spellsbook.domain.model.SpellDetailModel
 import com.example.spellsbook.domain.model.SpellShortModel
+import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 
 fun SpellWithTagsShort.mapToShortModel(): SpellShortModel =
@@ -17,15 +18,21 @@ fun SpellWithTagsShort.mapToShortModel(): SpellShortModel =
 fun SpellEntity.mapToDetailModel(): SpellDetailModel =
     JsonParser.parseString(this.json).asJsonObject.let { json ->
         SpellDetailModel(
-            name = json["name"].asString,
-            level = json["level"].asInt,
-            school = json["school"].asString,
-            description = json["description"].asString,
-            components = json["components"].asString,
-            duration = json["duration"].asString,
-            range = json["range"].asString,
-            castingTime = json["castingTime"].asString,
-            materials = json["materials"].asString,
-            source = json["source"].asString,
+            name = json.getFromJsonToString("name"),
+            level = json.getFromJsonToString("level"),
+            school = json.getFromJsonToString("school"),
+            description = json.getFromJsonToString("description"),
+            components = json.getFromJsonToString("components"),
+            duration = json.getFromJsonToString("duration"),
+            range = json.getFromJsonToString("range"),
+            castingTime = json.getFromJsonToString("castingTime"),
+            materials = json.getFromJsonToString("materials"),
+            source = json.getFromJsonToString("source"),
         )
+    }
+
+private fun JsonObject.getFromJsonToString(key: String): String =
+    this.get(key).let {
+        if (it != null) it.asString
+        else ""
     }

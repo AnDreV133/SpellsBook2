@@ -11,6 +11,7 @@ import com.example.spellsbook.app.ui.compose.screen.BookByIdScreen
 import com.example.spellsbook.app.ui.compose.screen.BooksScreen
 import com.example.spellsbook.app.ui.compose.fragments.MainMenuBar
 import com.example.spellsbook.app.ui.compose.fragments.ScreenWithMenuBar
+import com.example.spellsbook.app.ui.compose.screen.SpellDetailScreen
 import com.example.spellsbook.app.ui.compose.screen.SpellsScreen
 
 @Composable
@@ -69,17 +70,13 @@ fun AppNavHost() {
             route = "${NavEndpoint.Spells.route}/{uuid}",
             arguments = listOf(
                 navArgument("uuid") {
-                    type = NavType.LongType
+                    type = NavType.StringType
                 }
             )
         ) {
-            ScreenWithMenuBar(
-                menuBar = { Text("stub") }
-            ) {
-                it.arguments?.getLong("uuid").let { uuid ->
-                    if (uuid != null)
-                        Text(text = "Spell $uuid - stub")
-                }
+            it.arguments?.getString("uuid").let { uuid ->
+                if (uuid != null)
+                    SpellDetailScreen(spellUuid = uuid)
             }
         }
     }

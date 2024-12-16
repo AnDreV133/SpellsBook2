@@ -1,6 +1,7 @@
 package com.example.spellsbook.data.store.dao
 
 import androidx.room.Dao
+import androidx.room.Query
 import androidx.room.RawQuery
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
@@ -17,20 +18,28 @@ import java.util.UUID
 
 @Dao
 abstract class SpellDao : BaseDao<SpellEntity>(SpellEntity.TABLE_NAME) {
-    @RawQuery(observedEntities = [SpellEntity::class])
-    protected abstract fun _getOneDetail(query: SupportSQLiteQuery): Flow<SpellEntity>
+    @Query(
+        "SELECT * FROM ${SpellEntity.TABLE_NAME} " +
+                "WHERE ${SpellEntity.COLUMN_UUID} = :uuid " +
+                "AND ${SpellEntity.COLUMN_LANGUAGE} = :language " +
+                "LIMIT 1"
+    )
+    abstract suspend fun getSpellDetail(uuid: String, language: String): SpellEntity
 
-    fun getSpellDetail(uuid: String): Flow<SpellEntity> =
-        _getOneDetail(SimpleSQLiteQuery("select * from ${SpellEntity.TABLE_NAME} where ${SpellEntity.COLUMN_UUID}='$uuid' limit 1"))
+//    @RawQuery(observedEntities = [SpellEntity::class])
+//    protected abstract fun _getOneDetail(query: SupportSQLiteQuery): Flow<SpellEntity>
+//
+//    fun getSpellDetail(uuid: String): Flow<SpellEntity> =
+//        _getOneDetail(SimpleSQLiteQuery("select * from ${SpellEntity.TABLE_NAME} where ${SpellEntity.COLUMN_UUID}='$uuid'  limit 1"))
 
-    fun getSpellDetail(uuid: UUID, locale: LocaleEnum): Flow<SpellEntity> =
-        _getOneDetail(
-            SimpleSQLiteQuery(
-                "select * from ${SpellEntity.TABLE_NAME} " +
-                        "where ${SpellEntity.COLUMN_UUID}='$uuid' " +
-                        "limit 1"
-            )
-        )
+//    fun getSpellDetail(uuid: UUID, locale: LocaleEnum): Flow<SpellEntity> =
+//        _getOneDetail(
+//            SimpleSQLiteQuery(
+//                "select * from ${SpellEntity.TABLE_NAME} " +
+//                        "where ${SpellEntity.COLUMN_UUID}='$uuid' " +
+//                        "limit 1"
+//            )
+//        )
 
     @RawQuery(observedEntities = [SpellWithTagsShort::class])
     protected abstract suspend fun _getManyShort(query: SupportSQLiteQuery): List<SpellWithTagsShort>

@@ -10,8 +10,6 @@ import com.example.spellsbook.domain.enums.TagIdentifierEnum
 import com.example.spellsbook.domain.model.SpellDetailModel
 import com.example.spellsbook.domain.model.SpellShortModel
 import com.example.spellsbook.domain.repository.SpellRepository
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 
 class SpellRepositoryImpl(
     private val spellDao: SpellDao,
@@ -40,8 +38,11 @@ class SpellRepositoryImpl(
             language
         ).map { it.mapToShortModel() }
 
-    override fun getSpellByUuid(
+    override suspend fun getSpellDetailByUuid(
         uuid: String,
-    ): Flow<SpellDetailModel> =
-        spellDao.getSpellDetail(uuid).map { it.mapToDetailModel() }
+        language: LocaleEnum
+    ): SpellDetailModel =
+        spellDao
+            .getSpellDetail(uuid, language = language.value)
+            .mapToDetailModel()
 }

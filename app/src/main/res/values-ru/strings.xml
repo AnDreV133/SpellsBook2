@@ -25,6 +25,18 @@
     <string name="tag_school_invocation">Вызов</string>
     <string name="tag_school_necromancy">Некромантия</string>
     <string name="apply_filters">Фильтровать</string>
-    <!--    -->
+
+    <!--  detail  -->
+    <string name="detail_duration">Длительность</string>
+    <string name="detail_casting_time">Время накладывания</string>
+    <string name="detail_components">Компоненты</string>
+    <string name="detail_level">Уровень</string>
+    <string name="detail_school">Школа</string>
+    <string name="detail_materials">Материалы</string>
+    <string name="detail_name">Название</string>
+    <string name="detail_range">Дистанция</string>
+    <string name="detail_description">Описание</string>
+    <string name="detail_source">Источник</string>
+
 
 </resources>

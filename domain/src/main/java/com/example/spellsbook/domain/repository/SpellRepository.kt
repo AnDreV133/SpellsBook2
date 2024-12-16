@@ -9,12 +9,17 @@ import com.example.spellsbook.domain.model.SpellShortModel
 import kotlinx.coroutines.flow.Flow
 
 interface SpellRepository {
+    suspend fun getSpellDetailByUuid(
+        uuid: String,
+        language: LocaleEnum
+    ): SpellDetailModel
+
     suspend fun getSpellsShortByBookId(
         bookId: Long,
         filter: Map<TagIdentifierEnum, List<TagEnum>>,
         sorter: SortOptionEnum
     ): List<SpellShortModel>
-    fun getSpellByUuid(uuid: String): Flow<SpellDetailModel>
+
     suspend fun getSpellsShort(
         filter: Map<TagIdentifierEnum, List<TagEnum>>,
         sorter: SortOptionEnum,

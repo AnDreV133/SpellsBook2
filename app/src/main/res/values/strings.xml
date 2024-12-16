@@ -29,4 +29,17 @@
     <string name="tag_school_necromancy">Necromancy</string>
     <string name="apply_filters">Filter</string>
 
+    <!-- detail -->
+    <string name="detail_duration">Duration</string>
+    <string name="detail_casting_time">Casting time</string>
+    <string name="detail_components">Components</string>
+    <string name="detail_level">Level</string>
+    <string name="detail_school">School</string>
+    <string name="detail_materials">Materials</string>
+    <string name="detail_name">Name</string>
+    <string name="detail_range">Range</string>
+    <string name="detail_description">Description</string>
+    <string name="detail_source">Source</string>
+
+    
 </resources>
