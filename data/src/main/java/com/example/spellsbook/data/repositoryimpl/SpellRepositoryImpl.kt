@@ -12,15 +12,10 @@ import com.example.spellsbook.domain.model.SpellShortModel
 import com.example.spellsbook.domain.repository.SpellRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import java.util.UUID
 
 class SpellRepositoryImpl(
     private val spellDao: SpellDao,
 ) : SpellRepository {
-//    override fun getSpellByUuid(uuid: UUID, locale: LocaleEnum): Flow<SpellDetailModel> {
-//        TODO("Not yet implemented")
-//    }
-
     override suspend fun getSpellsShortByBookId(
         bookId: Long,
         filter: Map<TagIdentifierEnum, List<TagEnum>>,

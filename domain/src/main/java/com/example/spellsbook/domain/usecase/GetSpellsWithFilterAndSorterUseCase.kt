@@ -6,7 +6,6 @@ import com.example.spellsbook.domain.enums.TagEnum
 import com.example.spellsbook.domain.enums.TagIdentifierEnum
 import com.example.spellsbook.domain.model.SpellShortModel
 import com.example.spellsbook.domain.repository.SpellRepository
-import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class GetSpellsWithFilterAndSorterUseCase @Inject constructor(
