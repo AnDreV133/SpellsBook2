@@ -111,6 +111,10 @@ abstract class SpellDao : BaseDao<SpellEntity>(SpellEntity.TABLE_NAME) {
     private fun TagIdentifierEnum.toColumnName() = when (this) {
         TagIdentifierEnum.LEVEL -> TaggingSpellEntity.COLUMN_LEVEL_TAG
         TagIdentifierEnum.SCHOOL -> TaggingSpellEntity.COLUMN_SCHOOL_TAG
+        TagIdentifierEnum.CASTING_TIME-> TaggingSpellEntity.COLUMN_CASTING_TIME_TAG
+        TagIdentifierEnum.RANGE -> TaggingSpellEntity.COLUMN_RANGE_TAG
+        TagIdentifierEnum.RITUAL-> TaggingSpellEntity.COLUMN_RITUAL_TAG
+        TagIdentifierEnum.AUTHOR -> TaggingSpellEntity.COLUMN_AUTHOR_TAG
         else -> throw IllegalArgumentException("tag name not supported")
     }
 

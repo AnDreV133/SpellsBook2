@@ -23,7 +23,7 @@ private suspend fun initTaggingSpells(
     initDao: InitDao
 ) = withContext(Dispatchers.IO) {
     context.assets
-        .open("tags.r")
+        .open("tags_new")
         .bufferedReader()
         .useLines { lines ->
             lines.map { line ->
@@ -33,7 +33,11 @@ private suspend fun initTaggingSpells(
                         TaggingSpellEntity(
                             uuid = fields[0],
                             levelTag = fields[1],
-                            schoolTag = fields[2]
+                            schoolTag = fields[2],
+                            castingTime = fields[3],
+                            range = fields[4],
+                            ritual = fields[5],
+                            author = fields[6],
                         )
                     }
             }.toList()

@@ -13,6 +13,14 @@ data class TaggingSpellEntity(
     val levelTag: String? = null,
     @ColumnInfo(name = COLUMN_SCHOOL_TAG)
     val schoolTag: String? = null,
+    @ColumnInfo(name = COLUMN_CASTING_TIME_TAG)
+    val castingTime: String? = null,
+    @ColumnInfo(name = COLUMN_RANGE_TAG)
+    val range: String? = null,
+    @ColumnInfo(name = COLUMN_RITUAL_TAG)
+    val ritual: String? = null,
+    @ColumnInfo(name = COLUMN_AUTHOR_TAG)
+    val author: String? = null
 
     // todo add more columns here
 ) {
@@ -21,6 +29,10 @@ data class TaggingSpellEntity(
         const val COLUMN_UUID = "uuid"
         const val COLUMN_SCHOOL_TAG = "school_tag"
         const val COLUMN_LEVEL_TAG = "level_tag"
+        const val COLUMN_CASTING_TIME_TAG = "casting_time"
+        const val COLUMN_RANGE_TAG = "range"
+        const val COLUMN_RITUAL_TAG = "ritual"
+        const val COLUMN_AUTHOR_TAG = "author"
 
         // todo add more names for columns here
     }

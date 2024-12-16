@@ -53,6 +53,7 @@ fun SpellDetailScreen(
                 R.string.detail_range to model.range,
                 R.string.detail_components to model.components,
                 R.string.detail_duration to model.duration,
+                R.string.detail_school to model.school,
                 R.string.detail_source to model.source,
             ).forEach {
                 SingleLineTextParameter(

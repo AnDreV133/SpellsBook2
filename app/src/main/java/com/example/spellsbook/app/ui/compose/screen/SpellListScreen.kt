@@ -192,7 +192,7 @@ fun FilterGrid(
                     SpellsViewModel.Event.UpdateFilter(TagIdentifierEnum.SCHOOL to it)
                 )
             }
-        ),
+        ), // todo refactor
     )
 
     Column(
