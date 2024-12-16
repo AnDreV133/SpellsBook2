@@ -34,14 +34,15 @@ class SpellRepositoryImpl(
             it.mapToShortModel()
         }
 
-
     override suspend fun getSpellsShort(
         filter: Map<TagIdentifierEnum, List<TagEnum>>,
-        sorter: SortOptionEnum
+        sorter: SortOptionEnum,
+        language: LocaleEnum
     ): List<SpellShortModel> =
         spellDao.getSpellsShort(
             filter,
-            sorter
+            sorter,
+            language
         ).map { it.mapToShortModel() }
 
     override fun getSpellByUuid(

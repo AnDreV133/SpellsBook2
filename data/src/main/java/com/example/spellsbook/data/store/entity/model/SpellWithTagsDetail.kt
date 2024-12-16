@@ -1,4 +1,4 @@
-package com.example.spellsbook.data.store.entity.display
+package com.example.spellsbook.data.store.entity.model
 
 import androidx.room.Embedded
 import androidx.room.Relation

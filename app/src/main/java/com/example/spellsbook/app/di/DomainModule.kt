@@ -22,6 +22,7 @@ class DomainModule {
                 when (appLocale) {
                     LocaleEnum.ENGLISH -> "en"
                     LocaleEnum.RUSSIAN -> "ru"
+                    LocaleEnum.DEFAULT -> "en"
                 }.let { if (it == systemLocale) return appLocale }
             }
         }

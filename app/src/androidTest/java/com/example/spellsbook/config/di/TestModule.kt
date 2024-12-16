@@ -1,5 +1,6 @@
 package com.example.spellsbook.config.di
 
+import com.example.spellsbook.app.di.DataModule
 import com.example.spellsbook.data.store.AppDatabase
 import com.example.spellsbook.domain.LocaleEnum
 import com.example.spellsbook.domain.repository.SpellRepository
@@ -10,7 +11,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 
-@Module(includes = [DataModule_::class, UseCaseModule::class])
+@Module(includes = [DataModule::class, UseCaseModule::class])
 @InstallIn(SingletonComponent::class)
 class TestModule {
     @Provides

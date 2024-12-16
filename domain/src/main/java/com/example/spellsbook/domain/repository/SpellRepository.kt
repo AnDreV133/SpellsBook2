@@ -1,5 +1,6 @@
 package com.example.spellsbook.domain.repository
 
+import com.example.spellsbook.domain.LocaleEnum
 import com.example.spellsbook.domain.enums.SortOptionEnum
 import com.example.spellsbook.domain.enums.TagEnum
 import com.example.spellsbook.domain.enums.TagIdentifierEnum
@@ -13,9 +14,10 @@ interface SpellRepository {
         filter: Map<TagIdentifierEnum, List<TagEnum>>,
         sorter: SortOptionEnum
     ): List<SpellShortModel>
+    fun getSpellByUuid(uuid: String): Flow<SpellDetailModel>
     suspend fun getSpellsShort(
         filter: Map<TagIdentifierEnum, List<TagEnum>>,
-        sorter: SortOptionEnum
+        sorter: SortOptionEnum,
+        language: LocaleEnum
     ): List<SpellShortModel>
-    fun getSpellByUuid(uuid: String): Flow<SpellDetailModel>
 }

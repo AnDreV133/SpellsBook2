@@ -12,7 +12,6 @@ import kotlinx.coroutines.launch
 import java.util.concurrent.Executors
 
 object AppDatabaseConnection {
-
     @Volatile
     private var _db: AppDatabase? = null
     private const val DB_NAME = "app-databases"
@@ -26,13 +25,12 @@ object AppDatabaseConnection {
                 appContext as Application,
                 AppDatabase::class.java,
                 DB_NAME
-            )
-                .addCallback(
+            ).addCallback(
                     object : RoomDatabase.Callback() {
                         override fun onCreate(db: SupportSQLiteDatabase) {
                             super.onCreate(db)
                             CoroutineScope(Dispatchers.IO).launch {
-                                initDbOnStart(appContext, _db!!.initDao())
+                                initDb(appContext, _db!!.initDao())
                             }
                         }
                     }

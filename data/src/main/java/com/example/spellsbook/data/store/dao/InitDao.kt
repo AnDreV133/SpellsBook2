@@ -11,19 +11,17 @@ import com.example.spellsbook.data.store.entity.TaggingSpellEntity
 
 @Dao
 abstract class InitDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    protected abstract suspend fun _insertTaggingSpells(taggingSpellEntity: List<TaggingSpellEntity>)
-
     @Transaction
-    open suspend fun insertTaggingSpells(taggingSpellEntity: List<TaggingSpellEntity>) {
-        _insertTaggingSpells(taggingSpellEntity)
+    open suspend fun clearAndInsertTaggingSpells(taggingSpellEntity: List<TaggingSpellEntity>) {
+        deleteAllTaggingSpells()
+        insertTaggingSpells(taggingSpellEntity)
     }
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    protected abstract suspend fun insertSpells(spellEntityList: List<SpellEntity>)
+    protected abstract suspend fun insertTaggingSpells(taggingSpellEntity: List<TaggingSpellEntity>)
 
-    @Query("delete from ${SpellEntity.TABLE_NAME}")
-    protected abstract suspend fun deleteAllSpells()
+    @Query("delete from ${TaggingSpellEntity.TABLE_NAME}")
+    protected abstract suspend fun deleteAllTaggingSpells()
 
     @Transaction
     open suspend fun clearAndInsertSpells(spellEntityList: List<SpellEntity>) {
@@ -31,6 +29,12 @@ abstract class InitDao {
         insertSpells(spellEntityList)
     }
 
-    @Query("select exists(select '' from ${SpellEntity.TABLE_NAME})")
-    abstract suspend fun hasSpells(): Boolean
+    @Query("delete from ${SpellEntity.TABLE_NAME}")
+    protected abstract suspend fun deleteAllSpells()
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    protected abstract suspend fun insertSpells(spellEntityList: List<SpellEntity>)
+
+//    @Query("select exists(select '' from ${SpellEntity.TABLE_NAME})")
+//    abstract suspend fun hasSpells(): Boolean
 }

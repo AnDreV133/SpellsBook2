@@ -1,14 +1,13 @@
 package com.example.spellsbook.data.store.dao
 
 import androidx.room.Dao
-import androidx.room.Query
 import androidx.room.RawQuery
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
 import com.example.spellsbook.data.store.entity.BooksSpellsXRefEntity
 import com.example.spellsbook.data.store.entity.SpellEntity
 import com.example.spellsbook.data.store.entity.TaggingSpellEntity
-import com.example.spellsbook.data.store.entity.display.SpellWithTagsShort
+import com.example.spellsbook.data.store.entity.model.SpellWithTagsShort
 import com.example.spellsbook.domain.LocaleEnum
 import com.example.spellsbook.domain.enums.SortOptionEnum
 import com.example.spellsbook.domain.enums.TagEnum
@@ -38,11 +37,12 @@ abstract class SpellDao : BaseDao<SpellEntity>(SpellEntity.TABLE_NAME) {
 
     suspend fun getSpellsShort(
         filter: Map<TagIdentifierEnum, List<TagEnum>> = emptyMap(),
-        sorter: SortOptionEnum = SortOptionEnum.BY_NAME
+        sorter: SortOptionEnum = SortOptionEnum.BY_NAME,
+        language: LocaleEnum = LocaleEnum.ENGLISH
     ): List<SpellWithTagsShort> =
         _getManyShort(
             SimpleSQLiteQuery(
-                getSpellsWithTagsShortQuery()
+                getSpellsWithTagsShortQuery(language)
                         + filterQuerySuffix(filter, sorter)
             )
         )
@@ -52,7 +52,6 @@ abstract class SpellDao : BaseDao<SpellEntity>(SpellEntity.TABLE_NAME) {
         filter: Map<TagIdentifierEnum, List<TagEnum>> = emptyMap(),
         sorter: SortOptionEnum = SortOptionEnum.BY_NAME,
     ): List<SpellWithTagsShort> =
-
         _getManyShort(
             SimpleSQLiteQuery(
                 getSpellsWithTagsShortByBookIdQuery(bookId)
@@ -61,9 +60,11 @@ abstract class SpellDao : BaseDao<SpellEntity>(SpellEntity.TABLE_NAME) {
         )
 
     private fun getSpellsWithTagsShortQuery(
-    ) = "select * from ${SpellEntity.TABLE_NAME} as t0 " +
-            "inner join ${TaggingSpellEntity.TABLE_NAME} as t1 " +
-            "on t0.${SpellEntity.COLUMN_UUID}=t1.${TaggingSpellEntity.COLUMN_UUID} "
+        language: LocaleEnum
+    ) = "select * from ${TaggingSpellEntity.TABLE_NAME} as t0 " +
+            "inner join ${SpellEntity.TABLE_NAME} as t1 " +
+            "on t0.${SpellEntity.COLUMN_UUID}=t1.${TaggingSpellEntity.COLUMN_UUID} " +
+            "and t1.${SpellEntity.COLUMN_LANGUAGE}='${language.value}'"
 
     private fun getSpellsWithTagsShortByBookIdQuery(
         bookId: Long
@@ -79,7 +80,7 @@ abstract class SpellDao : BaseDao<SpellEntity>(SpellEntity.TABLE_NAME) {
         sorter: SortOptionEnum
     ) = StringBuilder().apply {
         // begin condition
-        append("where 1=1 ")
+        append(" where 1=1 ")
         // set filters
         filter.forEach { entry ->
             if (entry.value.isNotEmpty())
@@ -98,7 +99,6 @@ abstract class SpellDao : BaseDao<SpellEntity>(SpellEntity.TABLE_NAME) {
         append("order by ${SpellEntity.COLUMN_NAME} asc ")
     }.toString()
 
-
     private fun TagIdentifierEnum.toColumnName() = when (this) {
         TagIdentifierEnum.LEVEL -> TaggingSpellEntity.COLUMN_LEVEL_TAG
         TagIdentifierEnum.SCHOOL -> TaggingSpellEntity.COLUMN_SCHOOL_TAG
@@ -107,5 +107,4 @@ abstract class SpellDao : BaseDao<SpellEntity>(SpellEntity.TABLE_NAME) {
 
     private fun List<TagEnum>.toTableFields() =
         this.joinToString { "'$it'" }
-
 }
