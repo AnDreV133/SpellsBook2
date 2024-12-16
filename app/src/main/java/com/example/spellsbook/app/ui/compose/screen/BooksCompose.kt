@@ -1,4 +1,4 @@
-package com.example.spellsbook.app.ui.compose
+package com.example.spellsbook.app.ui.compose.screen
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -28,6 +28,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.example.spellsbook.R
+import com.example.spellsbook.app.ui.compose.AddButtonShape
 import com.example.spellsbook.app.ui.compose.navigation.NavEndpoint
 import com.example.spellsbook.app.ui.compose.navigation.navigate
 import com.example.spellsbook.domain.model.BookModel

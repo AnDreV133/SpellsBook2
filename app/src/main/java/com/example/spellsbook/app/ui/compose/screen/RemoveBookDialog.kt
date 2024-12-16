@@ -1,4 +1,4 @@
-package com.example.spellsbook.app.ui.compose
+package com.example.spellsbook.app.ui.compose.screen
 
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.AlertDialog

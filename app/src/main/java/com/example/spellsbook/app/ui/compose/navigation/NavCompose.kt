@@ -7,11 +7,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.spellsbook.app.ui.compose.BookByIdScreen
-import com.example.spellsbook.app.ui.compose.BooksScreen
-import com.example.spellsbook.app.ui.compose.MainMenuBar
-import com.example.spellsbook.app.ui.compose.ScreenWithMenuBar
-import com.example.spellsbook.app.ui.compose.SpellsScreen
+import com.example.spellsbook.app.ui.compose.screen.BookByIdScreen
+import com.example.spellsbook.app.ui.compose.screen.BooksScreen
+import com.example.spellsbook.app.ui.compose.fragments.MainMenuBar
+import com.example.spellsbook.app.ui.compose.fragments.ScreenWithMenuBar
+import com.example.spellsbook.app.ui.compose.screen.SpellsScreen
 
 @Composable
 fun AppNavHost() {
