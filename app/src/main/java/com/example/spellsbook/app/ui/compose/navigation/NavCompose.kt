@@ -48,6 +48,32 @@ fun AppNavHost() {
         }
 
         composable(
+            route = NavEndpoint.UnknownSpells.route,
+            arguments = listOf(
+                navArgument("id") {
+                    type = NavType.LongType
+                }
+            )
+        ) {
+            ScreenWithMenuBar(
+                menuBar = {
+                    BookMenuBar(
+                        navController = navController,
+                        changedEndpoint = NavEndpoint.UnknownSpells
+                    )
+                }
+            ) {
+                it.arguments?.getLong("id").let { id ->
+                    if (id != null)
+                        SpellsScreen(
+                            bookId = id,
+                            navController = navController
+                        )
+                }
+            }
+        }
+
+        composable(
             route = NavEndpoint.KnownSpells.route,
             arguments = listOf(
                 navArgument("id") {
@@ -64,38 +90,11 @@ fun AppNavHost() {
                 }
             ) {
                 it.arguments?.getLong("id").let { id ->
-                    SpellsScreen(
+                    KnownSpellsScreen(
                         bookId = id,
                         navController = navController
                     )
                 }
-            }
-        }
-
-        composable(
-            route = NavEndpoint.UnknownSpells.route,
-            arguments = listOf(
-                navArgument("id") {
-                    type = NavType.LongType
-                }
-            )
-        ) {
-            ScreenWithMenuBar(
-                menuBar = {
-                    BookMenuBar(
-                        navController = navController,
-                        changedEndpoint = NavEndpoint.UnknownSpells
-                    )
-                }
-            ) {
-                Text(text = "stub")
-//                it.arguments?.getLong("id").let { id ->
-//                    if (id != null)
-//                        BookByIdScreen(
-//                            id = id,
-//                            navController = navController
-//                        )
-//                }
             }
         }
 
