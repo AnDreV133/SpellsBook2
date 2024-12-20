@@ -6,6 +6,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.navigation.NavHostController
 import com.example.spellsbook.R
@@ -18,31 +19,35 @@ data class MenuNavigationItem(
 )
 
 @Composable
-fun itemsForMainMenu() = listOf(
-    MenuNavigationItem(
-        title = "Books",
-        icon = ImageVector.vectorResource(R.drawable.ic_block_48),
-        navEndpoint = NavEndpoint.Books
-    ),
-    MenuNavigationItem(
-        title = "Spells",
-        icon = ImageVector.vectorResource(R.drawable.ic_block_48),
-        navEndpoint = NavEndpoint.Spells
-    ),
-    MenuNavigationItem(
-        title = "Settings",
-        icon = ImageVector.vectorResource(R.drawable.ic_block_48),
-        navEndpoint = NavEndpoint.Settings
-    )
-)
-
-@Composable
 fun MainMenuBar(
     navController: NavHostController,
-    changedEndpoint: NavEndpoint
+    changedEndpoint: NavEndpoint,
 ) {
-    val items = itemsForMainMenu()
+    MenuBar(
+        navController = navController,
+        changedEndpoint = changedEndpoint,
+        items = itemsForMainMenu
+    )
+}
 
+@Composable
+fun BookMenuBar(
+    navController: NavHostController,
+    changedEndpoint: NavEndpoint,
+) {
+    MenuBar(
+        navController = navController,
+        changedEndpoint = changedEndpoint,
+        items = itemsForBookMenu
+    )
+}
+
+@Composable
+private fun MenuBar(
+    navController: NavHostController,
+    changedEndpoint: NavEndpoint,
+    items: List<MenuNavigationItem>
+) {
     val selectedItemIndex = items.indexOfFirst { it.navEndpoint == changedEndpoint }
     if (selectedItemIndex < 0) throw IllegalArgumentException("Invalid endpoint")
 
@@ -62,3 +67,38 @@ fun MainMenuBar(
         }
     }
 }
+
+private val itemsForMainMenu
+    @Composable
+    get() = listOf(
+        MenuNavigationItem(
+            title = stringResource(id = R.string.menu_books),
+            icon = ImageVector.vectorResource(R.drawable.ic_block_48),
+            navEndpoint = NavEndpoint.Books
+        ),
+        MenuNavigationItem(
+            title = stringResource(id = R.string.menu_spells),
+            icon = ImageVector.vectorResource(R.drawable.ic_block_48),
+            navEndpoint = NavEndpoint.Spells
+        ),
+        MenuNavigationItem(
+            title = stringResource(id = R.string.menu_settings),
+            icon = ImageVector.vectorResource(R.drawable.ic_block_48),
+            navEndpoint = NavEndpoint.Settings
+        )
+    )
+
+private val itemsForBookMenu
+    @Composable
+    get() = listOf(
+        MenuNavigationItem(
+            title = stringResource(id = R.string.menu_spells),
+            icon = ImageVector.vectorResource(R.drawable.ic_block_48),
+            navEndpoint = NavEndpoint.UnknownSpells
+        ),
+        MenuNavigationItem(
+            title = stringResource(id = R.string.menu_known_spells),
+            icon = ImageVector.vectorResource(R.drawable.ic_block_48),
+            navEndpoint = NavEndpoint.KnownSpells
+        )
+    )

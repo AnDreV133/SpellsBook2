@@ -1,35 +1,27 @@
 package com.example.spellsbook.app.ui.compose.screen
 
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.example.spellsbook.R
 import com.example.spellsbook.app.ui.compose.AddButtonShape
+import com.example.spellsbook.app.ui.compose.item.BookItem
 import com.example.spellsbook.app.ui.compose.navigation.NavEndpoint
-import com.example.spellsbook.app.ui.compose.navigation.navigate
 import com.example.spellsbook.domain.model.BookModel
 import com.example.spellsbook.domain.usecase.AddBookUseCase
 import com.example.spellsbook.domain.usecase.GetAllBooksUseCase
@@ -40,7 +32,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import  androidx.compose.foundation.lazy.items
 
 @HiltViewModel
 class BooksViewModel @Inject constructor(
@@ -157,49 +148,12 @@ fun BookList(
             BookItem(
                 model = elem,
                 onRemove = { viewModel.onEvent(BooksViewModel.Event.ShowRemoveBookDialog(elem)) },
-                navigate = { navController.navigate(NavEndpoint.BookById(elem.id)) }
+                navigate = { navController.navigate(NavEndpoint.UnknownSpells.getDestination(elem.id)) }
             )
         }
     }
 }
 
-@Composable
-fun BookItem(
-    model: BookModel,
-    onRemove: () -> Unit,
-    navigate: () -> Unit
-) {
-    Card(
-        modifier = Modifier
-            .padding(
-                horizontal = 4.dp,
-                vertical = 8.dp,
-            )
-            .fillMaxSize(),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 10.dp
-        ),
-        colors = CardDefaults.cardColors(
-            containerColor = Color.LightGray,
-        ),
-        onClick = navigate
-    ) {
-        Text(
-            modifier = Modifier.padding(
-                horizontal = 16.dp,
-                vertical = 12.dp,
-            ),
-            color = Color.Black,
-            textAlign = TextAlign.Start,
-            text = model.name,
-            fontSize = 24.sp
-        )
-
-        IconButton(onClick = onRemove) {
-            Icon(imageVector = Icons.Default.Delete, contentDescription = "Delete button")
-        }
-    }
-}
 
 @Composable
 fun AddFloatingButton(

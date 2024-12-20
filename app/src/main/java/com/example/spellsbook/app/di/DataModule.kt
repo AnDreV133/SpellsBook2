@@ -14,14 +14,14 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 class DataModule {
-//    @Provides
-//    @Singleton
+    @Provides
+    @Singleton
     fun provideAppDatabase(
         @ApplicationContext appContext: Context
     ) = AppDatabaseConnection.instance(appContext)
 
-    @Provides
-    @Singleton
+//    @Provides
+//    @Singleton
     fun provideTestAppDatabase(
         @ApplicationContext appContext: Context
     ) = AppDatabaseConnection.reinstantiation(appContext)

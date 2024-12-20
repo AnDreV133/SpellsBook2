@@ -7,10 +7,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.spellsbook.app.ui.compose.screen.BookByIdScreen
-import com.example.spellsbook.app.ui.compose.screen.BooksScreen
+import com.example.spellsbook.app.ui.compose.fragments.BookMenuBar
 import com.example.spellsbook.app.ui.compose.fragments.MainMenuBar
 import com.example.spellsbook.app.ui.compose.fragments.ScreenWithMenuBar
+import com.example.spellsbook.app.ui.compose.screen.BookByIdScreen
+import com.example.spellsbook.app.ui.compose.screen.BooksScreen
 import com.example.spellsbook.app.ui.compose.screen.SettingsScreen
 import com.example.spellsbook.app.ui.compose.screen.SpellDetailScreen
 import com.example.spellsbook.app.ui.compose.screen.SpellsScreen
@@ -27,27 +28,6 @@ fun AppNavHost() {
                 menuBar = { MainMenuBar(navController, NavEndpoint.Books) }
             ) {
                 BooksScreen(navController = navController)
-            }
-        }
-
-        composable(
-            route = "${NavEndpoint.Books.route}/{id}",
-            arguments = listOf(
-                navArgument("id") {
-                    type = NavType.LongType
-                }
-            )
-        ) {
-            ScreenWithMenuBar(
-                menuBar = { Text("stub") }
-            ) {
-                it.arguments?.getLong("id").let { id ->
-                    if (id != null)
-                        BookByIdScreen(
-                            id = id,
-                            navController = navController
-                        )
-                }
             }
         }
 
@@ -68,7 +48,59 @@ fun AppNavHost() {
         }
 
         composable(
-            route = "${NavEndpoint.Spells.route}/{uuid}",
+            route = NavEndpoint.KnownSpells.route,
+            arguments = listOf(
+                navArgument("id") {
+                    type = NavType.LongType
+                }
+            )
+        ) {
+            ScreenWithMenuBar(
+                menuBar = {
+                    BookMenuBar(
+                        navController = navController,
+                        changedEndpoint = NavEndpoint.KnownSpells
+                    )
+                }
+            ) {
+                it.arguments?.getLong("id").let { id ->
+                    SpellsScreen(
+                        bookId = id,
+                        navController = navController
+                    )
+                }
+            }
+        }
+
+        composable(
+            route = NavEndpoint.UnknownSpells.route,
+            arguments = listOf(
+                navArgument("id") {
+                    type = NavType.LongType
+                }
+            )
+        ) {
+            ScreenWithMenuBar(
+                menuBar = {
+                    BookMenuBar(
+                        navController = navController,
+                        changedEndpoint = NavEndpoint.UnknownSpells
+                    )
+                }
+            ) {
+                Text(text = "stub")
+//                it.arguments?.getLong("id").let { id ->
+//                    if (id != null)
+//                        BookByIdScreen(
+//                            id = id,
+//                            navController = navController
+//                        )
+//                }
+            }
+        }
+
+        composable(
+            route = NavEndpoint.SpellByUuid.route,
             arguments = listOf(
                 navArgument("uuid") {
                     type = NavType.StringType

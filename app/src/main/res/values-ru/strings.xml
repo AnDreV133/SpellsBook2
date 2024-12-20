@@ -63,6 +63,13 @@
     <string name="detail_description">Описание</string>
     <string name="detail_source">Источник</string>
 
+    <!--  menu  -->
+    <string name="menu_books">Книги</string>
+    <string name="menu_spells">Заклинания</string>
+    <string name="menu_settings">Настройки</string>
+    <string name="menu_unknown_spells">Неизвестные</string>
+    <string name="menu_known_spells">Подготовленные</string>
+
     <!--  other  -->
     <string name="apply_filters">Фильтровать</string>
     <string name="paid_user">Платный пользователь</string>

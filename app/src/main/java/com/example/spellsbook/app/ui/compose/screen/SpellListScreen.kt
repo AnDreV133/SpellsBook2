@@ -47,6 +47,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.spellsbook.R
 import com.example.spellsbook.app.mapper.toResString
+import com.example.spellsbook.app.ui.compose.item.SpellsListItem
 import com.example.spellsbook.app.ui.compose.navigation.NavEndpoint
 import com.example.spellsbook.domain.enums.CastingTimeEnum
 import com.example.spellsbook.domain.enums.LevelEnum
@@ -315,7 +316,13 @@ fun SpellsList(
     ) {
         items(state.value.spells) { spell ->
             SpellsListItem(
-                navigate = { navController.navigate(NavEndpoint.Spells.route + "/${spell.uuid}") },
+                navigate = {
+                    navController.navigate(
+                        NavEndpoint
+                            .SpellByUuid
+                            .getDestination(spell.uuid)
+                    )
+                },
                 spell = spell,
                 bookId = bookId
             )
@@ -323,45 +330,3 @@ fun SpellsList(
     }
 }
 
-@Composable
-fun SpellsListItem(
-    navigate: () -> Unit,
-    spell: SpellShortModel,
-    bookId: Long? = null
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
-    ) {
-
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-                .clickable(onClick = navigate),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = spell.name,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black
-            )
-            Text(
-                text = spell.level?.toResString() ?: "N/A",
-            )
-        }
-
-        if (bookId != null)
-            Button(
-                modifier = Modifier.size(24.dp),
-                onClick = {
-
-                }
-            ) {
-
-            }
-    }
-}
