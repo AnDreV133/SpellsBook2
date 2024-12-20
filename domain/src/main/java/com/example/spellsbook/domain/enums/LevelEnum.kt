@@ -10,5 +10,6 @@ enum class LevelEnum : TagEnum {
     LEVEL_6,
     LEVEL_7,
     LEVEL_8,
-    LEVEL_9
+    LEVEL_9;
+//    override fun values(): List<LevelEnum> = entries
 }

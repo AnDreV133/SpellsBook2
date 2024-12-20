@@ -5,5 +5,6 @@ enum class RangeEnum : TagEnum{
     VERY_CLOSE,
     CLOSE,
     FAR,
-    VERY_FAR
+    VERY_FAR;
+//    override fun values(): List<RangeEnum> = entries
 }

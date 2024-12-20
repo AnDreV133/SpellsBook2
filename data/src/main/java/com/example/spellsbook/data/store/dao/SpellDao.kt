@@ -13,8 +13,6 @@ import com.example.spellsbook.domain.LocaleEnum
 import com.example.spellsbook.domain.enums.SortOptionEnum
 import com.example.spellsbook.domain.enums.TagEnum
 import com.example.spellsbook.domain.enums.TagIdentifierEnum
-import kotlinx.coroutines.flow.Flow
-import java.util.UUID
 
 @Dao
 abstract class SpellDao : BaseDao<SpellEntity>(SpellEntity.TABLE_NAME) {
@@ -114,7 +112,7 @@ abstract class SpellDao : BaseDao<SpellEntity>(SpellEntity.TABLE_NAME) {
         TagIdentifierEnum.CASTING_TIME-> TaggingSpellEntity.COLUMN_CASTING_TIME_TAG
         TagIdentifierEnum.RANGE -> TaggingSpellEntity.COLUMN_RANGE_TAG
         TagIdentifierEnum.RITUAL-> TaggingSpellEntity.COLUMN_RITUAL_TAG
-        TagIdentifierEnum.AUTHOR -> TaggingSpellEntity.COLUMN_AUTHOR_TAG
+        TagIdentifierEnum.SOURCE -> TaggingSpellEntity.COLUMN_SOURCE_TAG
         else -> throw IllegalArgumentException("tag name not supported")
     }
 

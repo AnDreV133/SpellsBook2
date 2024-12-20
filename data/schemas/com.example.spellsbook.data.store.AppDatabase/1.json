@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "7341410b569b0af5e25b6f01c9173b91",
+    "identityHash": "38eff8c63818a7e04c877f7e39e20959",
     "entities": [
       {
         "tableName": "book",
@@ -59,7 +59,7 @@
       },
       {
         "tableName": "tagging_spell",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uuid` TEXT NOT NULL, `level_tag` TEXT, `school_tag` TEXT, `casting_time` TEXT, `range` TEXT, `ritual` TEXT, `author` TEXT, PRIMARY KEY(`uuid`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uuid` TEXT NOT NULL, `level_tag` TEXT, `school_tag` TEXT, `casting_time` TEXT, `range_tag` TEXT, `ritual_tag` TEXT, `source_tag` TEXT, PRIMARY KEY(`uuid`))",
         "fields": [
           {
             "fieldPath": "uuid",
@@ -87,19 +87,19 @@
           },
           {
             "fieldPath": "range",
-            "columnName": "range",
+            "columnName": "range_tag",
             "affinity": "TEXT",
             "notNull": false
           },
           {
             "fieldPath": "ritual",
-            "columnName": "ritual",
+            "columnName": "ritual_tag",
             "affinity": "TEXT",
             "notNull": false
           },
           {
-            "fieldPath": "author",
-            "columnName": "author",
+            "fieldPath": "source",
+            "columnName": "source_tag",
             "affinity": "TEXT",
             "notNull": false
           }
@@ -156,7 +156,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7341410b569b0af5e25b6f01c9173b91')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '38eff8c63818a7e04c877f7e39e20959')"
     ]
   }
 }

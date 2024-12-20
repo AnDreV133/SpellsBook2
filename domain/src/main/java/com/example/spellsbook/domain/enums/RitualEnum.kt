@@ -1,6 +1,7 @@
 package com.example.spellsbook.domain.enums
 
-enum class RitualEnum {
+enum class RitualEnum : TagEnum {
     RITUAL,
-    CAST
+    CAST;
+//    override fun values(): List<RitualEnum> = entries
 }

@@ -1,6 +1,5 @@
 <resources>
-    <!--  SPELL TAG -->
-
+    <!--  BEGIN SPELL TAG -->
     <!--  levels  -->
     <string name="tag_level_name">Уровень</string>
     <string name="tag_level_0">Уровень 0</string>
@@ -25,6 +24,33 @@
     <string name="tag_school_invocation">Вызов</string>
     <string name="tag_school_necromancy">Некромантия</string>
 
+    <!--  casting time  -->
+    <string name="tag_casting_time_name">Время накладывания</string>
+    <string name="tag_casting_time_action">Действие</string>
+    <string name="tag_casting_time_bonus_action">Бонусное действие</string>
+    <string name="tag_casting_time_reaction">Реакция</string>
+    <string name="tag_casting_time_minutes">Минуты</string>
+
+    <!--  ranges  -->
+    <string name="tag_range_name">Дистанция</string>
+    <string name="tag_range_special">Особое</string>
+    <string name="tag_range_very_close">Очень близко</string>
+    <string name="tag_range_close">Близко</string>
+    <string name="tag_range_far">Далеко</string>
+    <string name="tag_range_very_far">Очень далеко</string>
+
+    <!--  author  -->
+    <string name="tag_source_name">Источник</string>
+    <string name="tag_source_prepared">Книга</string>
+    <string name="tag_source_by_author">Авторское</string>
+
+    <!--  ritual  -->
+    <string name="tag_ritual_name">Ритуал</string>
+    <string name="tag_ritual_ritual">Ритуал</string>
+    <string name="tag_ritual_cast">Нет</string>
+    <!--  END SPELL TAG -->
+
+
     <!--  detail  -->
     <string name="detail_duration">Длительность</string>
     <string name="detail_casting_time">Время накладывания</string>
@@ -40,5 +66,6 @@
     <!--  other  -->
     <string name="apply_filters">Фильтровать</string>
     <string name="paid_user">Платный пользователь</string>
+    <string name="tag_casting_time_hours">Часы</string>
 
 </resources>

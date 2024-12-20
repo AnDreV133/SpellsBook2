@@ -37,7 +37,7 @@ private suspend fun initTaggingSpells(
                             castingTime = fields[3],
                             range = fields[4],
                             ritual = fields[5],
-                            author = fields[6],
+                            source = fields[6],
                         )
                     }
             }.toList()

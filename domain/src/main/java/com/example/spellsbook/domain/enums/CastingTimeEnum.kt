@@ -5,5 +5,7 @@ enum class CastingTimeEnum : TagEnum {
     BONUS_ACTION,
     REACTION,
     MINUTES,
-    HOURS
+    HOURS;
+
+//    override fun values(): List<TagEnum> = entries
 }

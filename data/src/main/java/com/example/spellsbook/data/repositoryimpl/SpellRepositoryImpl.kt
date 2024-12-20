@@ -22,7 +22,7 @@ class SpellRepositoryImpl(
         spellDao.getSpellsShortByBookId(
             bookId,
             filter,
-            sorter
+            sorter // todo add language
         ).map {
             it.mapToShortModel()
         }

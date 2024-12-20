@@ -26,8 +26,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -35,7 +37,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -45,11 +46,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.spellsbook.R
-import com.example.spellsbook.app.mapper.toResourceString
+import com.example.spellsbook.app.mapper.toResString
 import com.example.spellsbook.app.ui.compose.navigation.NavEndpoint
+import com.example.spellsbook.domain.enums.CastingTimeEnum
 import com.example.spellsbook.domain.enums.LevelEnum
+import com.example.spellsbook.domain.enums.RangeEnum
+import com.example.spellsbook.domain.enums.RitualEnum
 import com.example.spellsbook.domain.enums.SchoolEnum
 import com.example.spellsbook.domain.enums.SortOptionEnum
+import com.example.spellsbook.domain.enums.SourceEnum
 import com.example.spellsbook.domain.enums.TagEnum
 import com.example.spellsbook.domain.enums.TagIdentifierEnum
 import com.example.spellsbook.domain.model.SpellShortModel
@@ -106,6 +111,8 @@ class SpellsViewModel @Inject constructor(
             }
         }
     }
+
+    fun getFilters() = _state.value.filters
 }
 
 @Composable
@@ -145,16 +152,16 @@ private fun SearchRow(
 
 }
 
-class TagInfo(
+class TagSelect(
     val tag: TagEnum,
-    val showingName: String,
     var isSelected: Boolean
 )
 
-class FilterItemData(
-    val name: String,
-    val tagInfoList: List<TagInfo>,
-    val updateFilter: (List<TagEnum>) -> Unit
+data class FilterItemData(
+    val tagIdentifier: TagIdentifierEnum,
+    val tags: List<TagEnum>,
+    val getTagsInFilter: () -> List<TagEnum>,
+    val updateTagsInFilter: (List<TagEnum>) -> Unit
 )
 
 @Composable
@@ -162,38 +169,16 @@ fun FilterGrid(
     modifier: Modifier = Modifier,
     viewModel: SpellsViewModel
 ) {
-    val filterItemDataList = listOf(
-        FilterItemData(
-            name = stringResource(id = R.string.tag_level_name),
-            tagInfoList = LevelEnum.entries.map {
-                TagInfo(
-                    it, it.toResourceString(),
-                    viewModel.state.value.filters[TagIdentifierEnum.LEVEL]
-                        ?.contains(it) ?: false
-                )
-            },
-            updateFilter = {
-                viewModel.onEvent(
-                    SpellsViewModel.Event.UpdateFilter(TagIdentifierEnum.LEVEL to it)
-                )
-            }
-        ),
-        FilterItemData(
-            name = stringResource(id = R.string.tag_school_name),
-            tagInfoList = SchoolEnum.entries.map {
-                TagInfo(
-                    it, it.toResourceString(),
-                    viewModel.state.value.filters[TagIdentifierEnum.SCHOOL]
-                        ?.contains(it) ?: false
-                )
-            },
-            updateFilter = {
-                viewModel.onEvent(
-                    SpellsViewModel.Event.UpdateFilter(TagIdentifierEnum.SCHOOL to it)
-                )
-            }
-        ), // todo refactor
-    )
+    val filterItemDataList = remember {
+        listOf(
+            constructFilterItem(viewModel, TagIdentifierEnum.LEVEL, LevelEnum.entries),
+            constructFilterItem(viewModel, TagIdentifierEnum.SCHOOL, SchoolEnum.entries),
+            constructFilterItem(viewModel, TagIdentifierEnum.CASTING_TIME, CastingTimeEnum.entries),
+            constructFilterItem(viewModel, TagIdentifierEnum.RANGE, RangeEnum.entries),
+            constructFilterItem(viewModel, TagIdentifierEnum.SOURCE, SourceEnum.entries),
+            constructFilterItem(viewModel, TagIdentifierEnum.RITUAL, RitualEnum.entries)
+        )
+    }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -206,37 +191,44 @@ fun FilterGrid(
         ) {
             items(filterItemDataList) {
                 FilterItem(
-                    it.name,
-                    it.tagInfoList,
-                    it.updateFilter
+                    it.component1(),
+                    it.component2(),
+                    it.component3(),
+                    it.component4()
                 )
             }
         }
-
-//        Row(
-//            verticalAlignment = Alignment.CenterVertically,
-//            horizontalArrangement = Arrangement.SpaceEvenly
-//        ) {
-//            Button(
-//                modifier = Modifier
-//                    .wrapContentSize(),
-//                onClick = {
-//                    viewModel.applyFilter()
-//                }
-//            ) {
-//                Text(stringResource(id = R.string.apply_filters))
-//            }
-//        }
     }
 }
 
+private fun constructFilterItem(
+    viewModel: SpellsViewModel,
+    tagIdentifier: TagIdentifierEnum,
+    tags: List<TagEnum>
+) = FilterItemData(
+    tagIdentifier = tagIdentifier,
+    tags = tags,
+    getTagsInFilter = {
+        viewModel.getFilters()[tagIdentifier] ?: listOf()
+    },
+    updateTagsInFilter = { tagEnumList ->
+        viewModel.onEvent(
+            SpellsViewModel.Event.UpdateFilter(
+                tagIdentifier to tagEnumList
+            )
+        )
+    }
+)
+
 @Composable
 fun FilterItem(
-    name: String,
-    tagInfoList: List<TagInfo>,
-    updateFilter: (List<TagEnum>) -> Unit
+    tagIdentifier: TagIdentifierEnum,
+    tags: List<TagEnum>,
+    getTagsInFilter: () -> List<TagEnum>,
+    updateTagsInFilter: (List<TagEnum>) -> Unit
 ) {
     var isDropDownMenuShowing by remember { mutableStateOf(false) }
+    val selectedTagsMap = remember { mutableStateMapOf<TagEnum, Boolean>() } // todo rewrite
 
     Row(
         modifier = Modifier
@@ -257,7 +249,7 @@ fun FilterItem(
             modifier = Modifier.size(24.dp)
         )
         Text(
-            text = name,
+            text = tagIdentifier.toResString(),
             color = Color.White,
             overflow = TextOverflow.Ellipsis,
             maxLines = 1,
@@ -269,30 +261,39 @@ fun FilterItem(
     }
 
     if (isDropDownMenuShowing) {
+        // todo do list of selected tags from previous selected tags
         DropdownMenu(
             expanded = isDropDownMenuShowing,
             onDismissRequest = {
                 isDropDownMenuShowing = false
-                updateFilter(
-                    tagInfoList
-                        .filter { it.isSelected }
-                        .map { it.tag }
+                updateTagsInFilter(
+                    selectedTagsMap
+                        .filter { it.value }
+                        .map { it.key }
                 )
             }
         ) {
-            tagInfoList.forEach { tagInfo ->
-//                var selected by remember { mutableStateOf(tagInfo.isSelected) }
+            selectedTagsMap.forEach { tagSelect ->
                 Row {
                     RadioButton(
-                        selected = tagInfo.isSelected,
+                        selected = tagSelect.value,
                         onClick = {
-                            tagInfo.isSelected = !tagInfo.isSelected
+                            selectedTagsMap[tagSelect.key] = !tagSelect.value
                         }
                     )
 
-                    Text(tagInfo.showingName)
+                    Text(tagSelect.key.toResString())
                 }
             }
+        }
+
+        SideEffect {
+            selectedTagsMap.clear()
+            val tagsInFilter = getTagsInFilter()
+            selectedTagsMap.putAll(
+                tags.map { it to tagsInFilter.contains(it) }
+            )
+            println(selectedTagsMap)
         }
     }
 }
@@ -349,9 +350,8 @@ fun SpellsListItem(
                 color = Color.Black
             )
             Text(
-                text = spell.level?.toResourceString() ?: "N/A",
-
-                )
+                text = spell.level?.toResString() ?: "N/A",
+            )
         }
 
         if (bookId != null)

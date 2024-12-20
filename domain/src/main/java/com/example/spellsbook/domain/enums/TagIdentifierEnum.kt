@@ -6,5 +6,5 @@ enum class TagIdentifierEnum {
     CASTING_TIME,
     RANGE,
     RITUAL,
-    AUTHOR
+    SOURCE
 }

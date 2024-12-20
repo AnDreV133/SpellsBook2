@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name" translatable="false">SpellsBook</string>
 
-    <!--  SPELL TAG -->
+    <!--  BEGIN SPELL TAG -->
     <string name="tag_unknown" translatable="false">UNKNOWN</string>
 
     <!--  levels  -->
@@ -28,6 +28,34 @@
     <string name="tag_school_invocation">Invocation</string>
     <string name="tag_school_necromancy">Necromancy</string>
 
+    <!--  casting time  -->
+    <string name="tag_casting_time_name">Casting time</string>
+    <string name="tag_casting_time_action">Action</string>
+    <string name="tag_casting_time_bonus_action">Bonus action</string>
+    <string name="tag_casting_time_reaction">Reaction</string>
+    <string name="tag_casting_time_minutes">Minutes</string>
+    <string name="tag_casting_time_hours">Hours</string>
+
+    <!--  ranges  -->
+    <string name="tag_range_name">Range</string>
+    <string name="tag_range_special">Special</string>
+    <string name="tag_range_very_close">Very Close</string>
+    <string name="tag_range_close">Close</string>
+    <string name="tag_range_far">Far</string>
+    <string name="tag_range_very_far">Very Far</string>
+
+    <!--  author  -->
+    <string name="tag_source_name">Source</string>
+    <string name="tag_source_prepared">Book</string>
+    <string name="tag_source_by_author">By Author</string>
+
+    <!--  ritual  -->
+    <string name="tag_ritual_name">Ritual</string>
+    <string name="tag_ritual_ritual">Ritual</string>
+    <string name="tag_ritual_cast">Cast</string>
+    <!--  END SPELL TAG -->
+
+
     <!-- detail -->
     <string name="detail_duration">Duration</string>
     <string name="detail_casting_time">Casting time</string>
@@ -43,6 +71,7 @@
     <!--  other  -->
     <string name="apply_filters">Filter</string>
     <string name="paid_user">Paid user</string>
+
 
 
 </resources>

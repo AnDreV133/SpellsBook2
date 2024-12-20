@@ -8,5 +8,6 @@ enum class SchoolEnum : TagEnum {
     ENCHANTMENT,
     ILLUSION,
     INVOCATION,
-    NECROMANCY,
+    NECROMANCY;
+//    override fun values(): List<SchoolEnum> = entries
 }
