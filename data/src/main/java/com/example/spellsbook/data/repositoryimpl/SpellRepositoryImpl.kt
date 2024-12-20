@@ -14,19 +14,6 @@ import com.example.spellsbook.domain.repository.SpellRepository
 class SpellRepositoryImpl(
     private val spellDao: SpellDao,
 ) : SpellRepository {
-    override suspend fun getSpellsShortByBookId(
-        bookId: Long,
-        filter: Map<TagIdentifierEnum, List<TagEnum>>,
-        sorter: SortOptionEnum
-    ): List<SpellShortModel> =
-        spellDao.getSpellsShortByBookId(
-            bookId,
-            filter,
-            sorter // todo add language
-        ).map {
-            it.mapToShortModel()
-        }
-
     override suspend fun getSpellsShort(
         filter: Map<TagIdentifierEnum, List<TagEnum>>,
         sorter: SortOptionEnum,

@@ -1,4 +1,4 @@
-package com.example.spellsbook.app.ui.compose.item
+package com.example.spellsbook.app.ui.compose.screen.spell_list
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -21,7 +21,7 @@ import com.example.spellsbook.app.mapper.toResString
 import com.example.spellsbook.domain.model.SpellShortModel
 
 @Composable
-fun SpellsListItem(
+fun SpellListItem(
     navigate: () -> Unit,
     spell: SpellShortModel,
     bookId: Long? = null

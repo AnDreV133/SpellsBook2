@@ -4,7 +4,7 @@ package com.example.spellsbook.data.store
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.example.spellsbook.data.store.dao.BookDao
-import com.example.spellsbook.data.store.dao.BookWithSpellsDao
+import com.example.spellsbook.data.store.dao.BooksWithSpellsDao
 import com.example.spellsbook.data.store.dao.InitDao
 import com.example.spellsbook.data.store.dao.SpellDao
 import com.example.spellsbook.data.store.dao.TaggingSpellDao
@@ -26,7 +26,7 @@ import com.example.spellsbook.data.store.entity.TaggingSpellEntity
 abstract class AppDatabase : RoomDatabase() {
     abstract fun bookDao(): BookDao
 
-    abstract fun bookWithSpellsDao(): BookWithSpellsDao
+    abstract fun bookWithSpellsDao(): BooksWithSpellsDao
 
     abstract fun spellDao(): SpellDao
 

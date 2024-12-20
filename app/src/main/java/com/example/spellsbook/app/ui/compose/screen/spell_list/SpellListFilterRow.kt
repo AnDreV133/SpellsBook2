@@ -1,4 +1,4 @@
-package com.example.spellsbook.app.ui.compose.screen
+package com.example.spellsbook.app.ui.compose.screen.spell_list
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -7,15 +7,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
@@ -26,7 +22,6 @@ import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
@@ -39,117 +34,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import androidx.navigation.NavController
 import com.example.spellsbook.R
 import com.example.spellsbook.app.mapper.toResString
-import com.example.spellsbook.app.ui.compose.item.SpellsListItem
-import com.example.spellsbook.app.ui.compose.navigation.NavEndpoint
 import com.example.spellsbook.domain.enums.CastingTimeEnum
 import com.example.spellsbook.domain.enums.LevelEnum
 import com.example.spellsbook.domain.enums.RangeEnum
 import com.example.spellsbook.domain.enums.RitualEnum
 import com.example.spellsbook.domain.enums.SchoolEnum
-import com.example.spellsbook.domain.enums.SortOptionEnum
 import com.example.spellsbook.domain.enums.SourceEnum
 import com.example.spellsbook.domain.enums.TagEnum
 import com.example.spellsbook.domain.enums.TagIdentifierEnum
-import com.example.spellsbook.domain.model.SpellShortModel
-import com.example.spellsbook.domain.usecase.GetSpellsWithFilterAndSorterUseCase
-import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
-import javax.inject.Inject
-
-@HiltViewModel
-class SpellsViewModel @Inject constructor(
-    private val getSpellsWithFilterAndSorterUseCase: GetSpellsWithFilterAndSorterUseCase,
-//    private val // todo addSpellToBookUseCase
-) : ViewModel() {
-    data class State(
-        val filters: Map<TagIdentifierEnum, List<TagEnum>> = emptyMap(),
-        val sorter: SortOptionEnum = SortOptionEnum.BY_NAME,
-        val spells: List<SpellShortModel> = emptyList(),
-    )
-
-    sealed class Event {
-        class UpdateFilter(val pair: Pair<TagIdentifierEnum, List<TagEnum>>) : Event()
-        class ChangeSorter(val sorter: SortOptionEnum) : Event()
-        object ClearFilterAndSorter : Event()
-    }
-
-    private val _state = MutableStateFlow(State())
-    val state = _state.map { state ->
-        state.copy(
-            spells = getSpellsWithFilterAndSorterUseCase
-                .execute(state.filters, state.sorter)
-        )
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), State())
-
-    fun onEvent(event: Event) {
-        when (event) {
-            is Event.UpdateFilter -> {
-                println(event.pair)
-                _state.value = _state.value.copy(
-                    filters = _state.value.filters + event.pair
-                )
-            }
-
-            is Event.ChangeSorter -> {
-                _state.value = _state.value.copy(
-                    sorter = event.sorter
-                )
-            }
-
-            is Event.ClearFilterAndSorter -> {
-                _state.value = State()
-            }
-        }
-    }
-
-    fun getFilters() = _state.value.filters
-}
-
-@Composable
-fun SpellsScreen(
-    navController: NavController,
-    bookId: Long? = null,
-    viewModel: SpellsViewModel = hiltViewModel()
-) {
-    val wrapContentModifier = Modifier
-        .fillMaxWidth()
-        .wrapContentHeight()
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(
-                color = Color.White
-            ),
-    ) {
-        SearchRow()
-        SortRow()
-        FilterGrid(
-            viewModel = viewModel,
-            modifier = wrapContentModifier,
-        )
-        SpellsList(
-            navController = navController,
-            viewModel = viewModel
-        )
-    }
-}
-
-@Composable
-private fun SearchRow(
-    modifier: Modifier = Modifier
-) {
-
-}
 
 data class FilterItemData(
     val tagIdentifier: TagIdentifierEnum,
@@ -161,7 +55,7 @@ data class FilterItemData(
 @Composable
 fun FilterGrid(
     modifier: Modifier = Modifier,
-    viewModel: SpellsViewModel
+    viewModel: SpellListViewModel
 ) {
     val filterItemDataList = remember {
         listOf(
@@ -196,7 +90,7 @@ fun FilterGrid(
 }
 
 private fun constructFilterItem(
-    viewModel: SpellsViewModel,
+    viewModel: SpellListViewModel,
     tagIdentifier: TagIdentifierEnum,
     tags: List<TagEnum>
 ) = FilterItemData(
@@ -207,7 +101,7 @@ private fun constructFilterItem(
     },
     updateTagsInFilter = { tagEnumList ->
         viewModel.onEvent(
-            SpellsViewModel.Event.UpdateFilter(
+            SpellListViewModel.Event.UpdateFilter(
                 tagIdentifier to tagEnumList
             )
         )
@@ -291,35 +185,3 @@ fun FilterItem(
         }
     }
 }
-
-@Composable
-private fun SortRow() {
-}
-
-@Composable
-fun SpellsList(
-    navController: NavController,
-    viewModel: SpellsViewModel,
-    bookId: Long? = null
-) {
-    val state = viewModel.state.collectAsState()
-
-    LazyColumn(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        items(state.value.spells) { spell ->
-            SpellsListItem(
-                navigate = {
-                    navController.navigate(
-                        NavEndpoint
-                            .SpellByUuid
-                            .getDestination(spell.uuid)
-                    )
-                },
-                spell = spell,
-                bookId = bookId
-            )
-        }
-    }
-}
-

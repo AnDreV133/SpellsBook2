@@ -1,6 +1,5 @@
 package com.example.spellsbook.app.ui.compose.navigation
 
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -10,11 +9,11 @@ import androidx.navigation.navArgument
 import com.example.spellsbook.app.ui.compose.fragments.BookMenuBar
 import com.example.spellsbook.app.ui.compose.fragments.MainMenuBar
 import com.example.spellsbook.app.ui.compose.fragments.ScreenWithMenuBar
-import com.example.spellsbook.app.ui.compose.screen.BookByIdScreen
 import com.example.spellsbook.app.ui.compose.screen.BooksScreen
+import com.example.spellsbook.app.ui.compose.screen.KnownSpellsScreen
 import com.example.spellsbook.app.ui.compose.screen.SettingsScreen
 import com.example.spellsbook.app.ui.compose.screen.SpellDetailScreen
-import com.example.spellsbook.app.ui.compose.screen.SpellsScreen
+import com.example.spellsbook.app.ui.compose.screen.spell_list.SpellsScreen
 
 @Composable
 fun AppNavHost() {
@@ -90,10 +89,11 @@ fun AppNavHost() {
                 }
             ) {
                 it.arguments?.getLong("id").let { id ->
-                    KnownSpellsScreen(
-                        bookId = id,
-                        navController = navController
-                    )
+                    if (id != null)
+                        KnownSpellsScreen(
+                            bookId = id,
+                            navController = navController
+                        )
                 }
             }
         }
@@ -113,3 +113,5 @@ fun AppNavHost() {
         }
     }
 }
+
+

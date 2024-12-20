@@ -14,12 +14,6 @@ interface SpellRepository {
         language: LocaleEnum
     ): SpellDetailModel
 
-    suspend fun getSpellsShortByBookId(
-        bookId: Long,
-        filter: Map<TagIdentifierEnum, List<TagEnum>>,
-        sorter: SortOptionEnum
-    ): List<SpellShortModel>
-
     suspend fun getSpellsShort(
         filter: Map<TagIdentifierEnum, List<TagEnum>>,
         sorter: SortOptionEnum,

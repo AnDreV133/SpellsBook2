@@ -6,7 +6,7 @@ import com.example.spellsbook.data.store.preferences.set
 import com.example.spellsbook.domain.repository.SettingsRepository
 
 class SettingsRepositoryImpl(
-    val sp: AppSharedPreferences
+    private val sp: AppSharedPreferences
 ) : SettingsRepository {
     override suspend fun enablePaidUser() {
         sp.set(SP_PAID_USER, true)
