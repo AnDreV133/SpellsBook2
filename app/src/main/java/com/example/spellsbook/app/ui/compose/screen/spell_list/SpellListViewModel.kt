@@ -7,6 +7,7 @@ import com.example.spellsbook.domain.enums.TagEnum
 import com.example.spellsbook.domain.enums.TagIdentifierEnum
 import com.example.spellsbook.domain.model.SpellShortModel
 import com.example.spellsbook.domain.usecase.AddSpellToBookUseCase
+import com.example.spellsbook.domain.usecase.GetSpellsWithFilterAndSorterByBookIdUseCase
 import com.example.spellsbook.domain.usecase.GetSpellsWithFilterAndSorterUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,7 +19,6 @@ import javax.inject.Inject
 @HiltViewModel
 class SpellListViewModel @Inject constructor(
     private val getSpellsWithFilterAndSorterUseCase: GetSpellsWithFilterAndSorterUseCase,
-    private val addSpellToBookUseCase: AddSpellToBookUseCase
 ) : ViewModel() {
     data class State(
         val filters: Map<TagIdentifierEnum, List<TagEnum>> = emptyMap(),
@@ -62,4 +62,11 @@ class SpellListViewModel @Inject constructor(
     }
 
     fun getFilters() = _state.value.filters
+}
+
+class SpellListWithAddToBookViewModel @Inject constructor(
+    private val getSpellsWithFilterAndSorterByBookIdUseCase: GetSpellsWithFilterAndSorterByBookIdUseCase,
+    private val addSpellToBookUseCase: AddSpellToBookUseCase,
+) {
+
 }

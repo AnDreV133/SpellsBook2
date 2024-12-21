@@ -24,4 +24,13 @@ abstract class BooksWithSpellsDao {
         """
     )
     abstract suspend fun insert(bookId: Long, spellUuid: String): Long
+
+    @Query(
+        """
+        select ${BooksSpellsXRefEntity.COLUMN_SPELL_UUID} 
+            from ${BooksSpellsXRefEntity.TABLE_NAME}
+            where ${BooksSpellsXRefEntity.COLUMN_BOOK_ID}=:bookId
+        """
+    )
+    abstract suspend fun getByBookId(bookId: Long): List<String>
 }

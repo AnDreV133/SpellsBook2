@@ -22,7 +22,5 @@ fun KnownSpellsScreen(
     navController: NavHostController,
     viewModel: KnownSpellsViewModel = hiltViewModel()
 ) {
-    LazyColumn {
 
-    }
 }

@@ -11,6 +11,6 @@ class GetSpellsShortByBookIdUseCase @Inject constructor(
     private val locale: LocaleEnum
 ) {
     fun execute(bookId: Long): Flow<List<SpellShortModel>> {
-        return booksWithSpellsRepository.getSpellsByBookId(bookId, locale.value)
+        return booksWithSpellsRepository.getSpellsByBookId(bookId, locale)
     }
 }

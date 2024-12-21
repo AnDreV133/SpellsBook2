@@ -1,5 +1,6 @@
 package com.example.spellsbook.domain.repository
 
+import com.example.spellsbook.domain.LocaleEnum
 import com.example.spellsbook.domain.model.SpellShortModel
 import kotlinx.coroutines.flow.Flow
 
@@ -8,5 +9,7 @@ interface BooksWithSpellsRepository {
 
     suspend fun removeSpellFromBook(bookId: Long, spellUuid: String): Int
 
-    fun getSpellsByBookId(bookId: Long, language: String): Flow<List<SpellShortModel>>
+    fun getSpellsByBookId(bookId: Long, language: LocaleEnum): Flow<List<SpellShortModel>>
+
+    suspend fun getUuidsByBookId(bookId: Long): List<String>
 }

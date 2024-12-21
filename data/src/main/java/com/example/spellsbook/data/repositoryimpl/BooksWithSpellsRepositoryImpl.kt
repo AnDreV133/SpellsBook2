@@ -3,6 +3,7 @@ package com.example.spellsbook.data.repositoryimpl
 import com.example.spellsbook.data.mapper.mapToShortModel
 import com.example.spellsbook.data.store.dao.BooksWithSpellsDao
 import com.example.spellsbook.data.store.dao.SpellDao
+import com.example.spellsbook.domain.LocaleEnum
 import com.example.spellsbook.domain.model.SpellShortModel
 import com.example.spellsbook.domain.repository.BooksWithSpellsRepository
 import kotlinx.coroutines.flow.Flow
@@ -22,10 +23,13 @@ class BooksWithSpellsRepositoryImpl(
 
     override fun getSpellsByBookId(
         bookId: Long,
-        language: String
+        language: LocaleEnum
     ): Flow<List<SpellShortModel>> =
-        spellDao.getSpellsShortByBookId(bookId, language)
+        spellDao.getSpellsShortByBookId(bookId, language.value)
             .map { list ->
                 list.map { it.mapToShortModel() }
             }
+
+    override suspend fun getUuidsByBookId(bookId: Long): List<String> =
+        bookWithSpellsDao.getByBookId(bookId)
 }
