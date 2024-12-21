@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
-class SpellListViewModel @Inject constructor(
+class SpellListViewModel_ @Inject constructor(
     private val getSpellsWithFilterAndSorterUseCase: GetSpellsWithFilterAndSorterUseCase,
 ) : ViewModel() {
     data class State(
@@ -63,6 +63,7 @@ class SpellListViewModel @Inject constructor(
 
     fun getFilters() = _state.value.filters
 }
+
 
 class SpellListWithAddToBookViewModel @Inject constructor(
     private val getSpellsWithFilterAndSorterByBookIdUseCase: GetSpellsWithFilterAndSorterByBookIdUseCase,

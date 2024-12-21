@@ -34,6 +34,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.ViewModel
 import com.example.spellsbook.R
 import com.example.spellsbook.app.mapper.toResString
 import com.example.spellsbook.domain.enums.CastingTimeEnum
@@ -44,6 +46,39 @@ import com.example.spellsbook.domain.enums.SchoolEnum
 import com.example.spellsbook.domain.enums.SourceEnum
 import com.example.spellsbook.domain.enums.TagEnum
 import com.example.spellsbook.domain.enums.TagIdentifierEnum
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import javax.inject.Inject
+
+@HiltViewModel
+class FilterGridViewModel @Inject constructor() : ViewModel() {
+    data class State(
+        val filters: FilterMap = emptyMap(),
+    )
+
+    sealed class Event {
+        class UpdateFilter(val pair: Pair<TagIdentifierEnum, List<TagEnum>>) : Event()
+        object ClearFilter : Event()
+    }
+
+    private val _state = MutableStateFlow(State())
+    val state = _state.asStateFlow()
+
+    fun onEvent(event: Event) {
+        when (event) {
+            is Event.UpdateFilter -> {
+                _state.value = _state.value.copy(
+                    filters = _state.value.filters + event.pair
+                )
+            }
+
+            is Event.ClearFilter -> {
+                _state.value = State()
+            }
+        }
+    }
+}
 
 data class FilterItemData(
     val tagIdentifier: TagIdentifierEnum,
@@ -54,8 +89,9 @@ data class FilterItemData(
 
 @Composable
 fun FilterGrid(
+    callbackApplyFilter: (FilterMap) -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: SpellListViewModel
+    viewModel: FilterGridViewModel = hiltViewModel()
 ) {
     val filterItemDataList = remember {
         listOf(
@@ -78,42 +114,16 @@ fun FilterGrid(
             horizontalArrangement = Arrangement.Start
         ) {
             items(filterItemDataList) {
-                FilterItem(
-                    it.component1(),
-                    it.component2(),
-                    it.component3(),
-                    it.component4()
-                )
+                FilterItem(it) { callbackApplyFilter(viewModel.state.value.filters) }
             }
         }
     }
 }
 
-private fun constructFilterItem(
-    viewModel: SpellListViewModel,
-    tagIdentifier: TagIdentifierEnum,
-    tags: List<TagEnum>
-) = FilterItemData(
-    tagIdentifier = tagIdentifier,
-    tags = tags,
-    getTagsInFilter = {
-        viewModel.getFilters()[tagIdentifier] ?: listOf()
-    },
-    updateTagsInFilter = { tagEnumList ->
-        viewModel.onEvent(
-            SpellListViewModel.Event.UpdateFilter(
-                tagIdentifier to tagEnumList
-            )
-        )
-    }
-)
-
 @Composable
 fun FilterItem(
-    tagIdentifier: TagIdentifierEnum,
-    tags: List<TagEnum>,
-    getTagsInFilter: () -> List<TagEnum>,
-    updateTagsInFilter: (List<TagEnum>) -> Unit
+    itemData: FilterItemData,
+    onDismissRequest: () -> Unit,
 ) {
     var isDropDownMenuShowing by remember { mutableStateOf(false) }
     val selectedTagsMap = remember { mutableStateMapOf<TagEnum, Boolean>() } // todo rewrite
@@ -137,7 +147,7 @@ fun FilterItem(
             modifier = Modifier.size(24.dp)
         )
         Text(
-            text = tagIdentifier.toResString(),
+            text = itemData.tagIdentifier.toResString(),
             color = Color.White,
             overflow = TextOverflow.Ellipsis,
             maxLines = 1,
@@ -154,11 +164,12 @@ fun FilterItem(
             expanded = isDropDownMenuShowing,
             onDismissRequest = {
                 isDropDownMenuShowing = false
-                updateTagsInFilter(
+                itemData.updateTagsInFilter(
                     selectedTagsMap
                         .filter { it.value }
                         .map { it.key }
                 )
+                onDismissRequest()
             }
         ) {
             selectedTagsMap.forEach { tagSelect ->
@@ -177,11 +188,32 @@ fun FilterItem(
 
         SideEffect {
             selectedTagsMap.clear()
-            val tagsInFilter = getTagsInFilter()
+            val tagsInFilter = itemData.getTagsInFilter()
             selectedTagsMap.putAll(
-                tags.map { it to tagsInFilter.contains(it) }
+                itemData.tags.map { it to tagsInFilter.contains(it) }
             )
             println(selectedTagsMap)
         }
     }
 }
+
+private fun constructFilterItem(
+    viewModel: FilterGridViewModel,
+    tagIdentifier: TagIdentifierEnum,
+    tags: List<TagEnum>
+) = FilterItemData(
+    tagIdentifier = tagIdentifier,
+    tags = tags,
+    getTagsInFilter = {
+        viewModel.state.value.filters[tagIdentifier] ?: listOf()
+    },
+    updateTagsInFilter = { tagEnumList ->
+        viewModel.onEvent(
+            FilterGridViewModel.Event.UpdateFilter(
+                tagIdentifier to tagEnumList
+            )
+        )
+    }
+)
+
+typealias FilterMap = Map<TagIdentifierEnum, List<TagEnum>>

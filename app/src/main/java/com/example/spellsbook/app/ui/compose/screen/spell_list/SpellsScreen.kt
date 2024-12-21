@@ -9,19 +9,35 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.spellsbook.app.ui.compose.navigation.NavEndpoint
+import com.example.spellsbook.domain.enums.SortOptionEnum
+import com.example.spellsbook.domain.model.SpellShortModel
+import com.example.spellsbook.domain.usecase.GetSpellsWithFilterAndSorterUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import javax.inject.Inject
+
 
 
 @Composable
 fun SpellsScreen(
     navController: NavController,
-    bookId: Long? = null,
-    viewModel: SpellListViewModel = hiltViewModel()
+    content: @Composable (FilterMap, SortOptionEnum) -> Unit,
 ) {
+    var filter by remember { mutableStateOf<FilterMap>(emptyMap()) }
+    val sorter by remember { mutableStateOf(SortOptionEnum.BY_NAME) }
+
     val wrapContentModifier = Modifier
         .fillMaxWidth()
         .wrapContentHeight()
@@ -36,13 +52,10 @@ fun SpellsScreen(
         SearchRow()
         SortRow()
         FilterGrid(
-            viewModel = viewModel,
+            callbackApplyFilter = { filter = it },
             modifier = wrapContentModifier,
         )
-        SpellsList(
-            navController = navController,
-            viewModel = viewModel
-        )
+        content(filter, sorter)
     }
 }
 
@@ -58,30 +71,4 @@ private fun SearchRow(
 private fun SortRow() {
 }
 
-@Composable
-fun SpellsList(
-    navController: NavController,
-    viewModel: SpellListViewModel,
-    bookId: Long? = null
-) {
-    val state = viewModel.state.collectAsState()
-
-    LazyColumn(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        items(state.value.spells) { spell ->
-            SpellListItem(
-                navigate = {
-                    navController.navigate(
-                        NavEndpoint
-                            .SpellByUuid
-                            .getDestination(spell.uuid)
-                    )
-                },
-                spell = spell,
-                bookId = bookId
-            )
-        }
-    }
-}
 
