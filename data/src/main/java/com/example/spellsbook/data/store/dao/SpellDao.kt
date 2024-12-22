@@ -9,13 +9,14 @@ import com.example.spellsbook.data.store.entity.BooksSpellsXRefEntity
 import com.example.spellsbook.data.store.entity.SpellEntity
 import com.example.spellsbook.data.store.entity.TaggingSpellEntity
 import com.example.spellsbook.data.store.entity.model.SpellWithTagsShort
+import com.example.spellsbook.data.store.util.filterSuffixQuery
+import com.example.spellsbook.data.store.util.getSpellsWithTagsShortQuery
 import com.example.spellsbook.domain.enums.LocaleEnum
 import com.example.spellsbook.domain.enums.SortOptionEnum
 import com.example.spellsbook.domain.enums.TagEnum
 import com.example.spellsbook.domain.enums.TagIdentifierEnum
 import kotlinx.coroutines.flow.Flow
 
-// todo add catching 'default' language
 @Dao
 abstract class SpellDao : BaseDao<SpellEntity>(SpellEntity.TABLE_NAME) {
     @Query(
@@ -40,60 +41,19 @@ abstract class SpellDao : BaseDao<SpellEntity>(SpellEntity.TABLE_NAME) {
     abstract suspend fun getSpellDetail(uuid: String, language: String): SpellEntity
 
     @RawQuery(observedEntities = [SpellWithTagsShort::class])
-    protected abstract suspend fun _getManyShort(query: SupportSQLiteQuery): List<SpellWithTagsShort>
+    protected abstract suspend fun getManyShort(query: SupportSQLiteQuery): List<SpellWithTagsShort>
 
     suspend fun getSpellsShort(
         filter: Map<TagIdentifierEnum, List<TagEnum>> = emptyMap(),
         sorter: SortOptionEnum = SortOptionEnum.BY_NAME,
         language: LocaleEnum = LocaleEnum.ENGLISH
     ): List<SpellWithTagsShort> =
-        _getManyShort(
+        getManyShort(
             SimpleSQLiteQuery(
                 getSpellsWithTagsShortQuery(language)
-                        + filterQuerySuffix(filter, sorter)
+                        + filterSuffixQuery(filter, sorter)
             )
         )
 
-    private fun getSpellsWithTagsShortQuery(
-        language: LocaleEnum
-    ) = "select * from ${TaggingSpellEntity.TABLE_NAME} as t0 " +
-            "inner join ${SpellEntity.TABLE_NAME} as t1 " +
-            "on t0.${SpellEntity.COLUMN_UUID}=t1.${TaggingSpellEntity.COLUMN_UUID} " +
-            "and t1.${SpellEntity.COLUMN_LANGUAGE}='${language.value}'"
 
-    private fun filterQuerySuffix(
-        filter: Map<TagIdentifierEnum, List<TagEnum>>,
-        sorter: SortOptionEnum
-    ) = StringBuilder().apply {
-        // begin condition
-        append(" where 1=1 ")
-        // set filters
-        filter.forEach { entry ->
-            append("and ${entry.key.toColumnName()} in (${entry.value.toTableFields()}) ")
-        }
-
-        // set sorter
-        when (sorter) { // fixme: incorrect sort query
-            SortOptionEnum.BY_NAME -> Unit
-
-            SortOptionEnum.BY_LEVEL ->
-                append(", ${TaggingSpellEntity.COLUMN_LEVEL_TAG} asc ")
-
-            else -> throw IllegalArgumentException("sort option not supported")
-        }
-        append("order by ${SpellEntity.COLUMN_NAME} asc ")
-    }.toString()
-
-    private fun TagIdentifierEnum.toColumnName() = when (this) {
-        TagIdentifierEnum.LEVEL -> TaggingSpellEntity.COLUMN_LEVEL_TAG
-        TagIdentifierEnum.SCHOOL -> TaggingSpellEntity.COLUMN_SCHOOL_TAG
-        TagIdentifierEnum.CASTING_TIME -> TaggingSpellEntity.COLUMN_CASTING_TIME_TAG
-        TagIdentifierEnum.RANGE -> TaggingSpellEntity.COLUMN_RANGE_TAG
-        TagIdentifierEnum.RITUAL -> TaggingSpellEntity.COLUMN_RITUAL_TAG
-        TagIdentifierEnum.SOURCE -> TaggingSpellEntity.COLUMN_SOURCE_TAG
-        else -> throw IllegalArgumentException("tag name not supported")
-    }
-
-    private fun List<TagEnum>.toTableFields() =
-        this.joinToString { "'$it'" }
 }
