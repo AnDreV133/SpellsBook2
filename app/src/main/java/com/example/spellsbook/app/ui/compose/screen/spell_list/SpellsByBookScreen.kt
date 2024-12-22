@@ -16,6 +16,10 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,7 +40,7 @@ import com.example.spellsbook.domain.enums.SortOptionEnum
 import com.example.spellsbook.domain.model.SpellShortModel
 import com.example.spellsbook.domain.usecase.AddSpellToBookUseCase
 import com.example.spellsbook.domain.usecase.GetSpellsWithFilterAndSorterByBookIdUseCase
-import com.example.spellsbook.domain.usecase.GetSpellsWithFilterAndSorterUseCase
+import com.example.spellsbook.domain.usecase.RemoveSpellFromBookUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -46,7 +50,8 @@ import javax.inject.Inject
 @HiltViewModel
 class SpellsByBookViewModel @Inject constructor(
     private val getSpellsWithFilterAndSorterByBookIdUseCase: GetSpellsWithFilterAndSorterByBookIdUseCase,
-    private val addSpellToBookUseCase: AddSpellToBookUseCase
+    private val addSpellToBookUseCase: AddSpellToBookUseCase,
+    private val removeSpellFromBookUseCase: RemoveSpellFromBookUseCase
 ) : ViewModel() {
     data class State(
         val spells: List<Pair<SpellShortModel, Boolean>> = emptyList(),
@@ -60,7 +65,13 @@ class SpellsByBookViewModel @Inject constructor(
         ) : Event()
 
         class AddToBook(
-            val bookId: Long
+            val bookId: Long,
+            val spell: SpellShortModel
+        ) : Event()
+
+        class RemoveFromBook(
+            val bookId: Long,
+            val spell: SpellShortModel
         ) : Event()
     }
 
@@ -83,10 +94,18 @@ class SpellsByBookViewModel @Inject constructor(
 
             is Event.AddToBook -> {
                 viewModelScope.launch {
-                    _state.value = _state.value.copy(
-                        spells = getSpellsWithFilterAndSorterByBookIdUseCase.execute(
-                            bookId = event.bookId
-                        )
+                    addSpellToBookUseCase.execute(
+                        event.bookId,
+                        event.spell.uuid
+                    )
+                }
+            }
+
+            is Event.RemoveFromBook -> {
+                viewModelScope.launch {
+                    removeSpellFromBookUseCase.execute(
+                        event.bookId,
+                        event.spell.uuid
                     )
                 }
             }
@@ -121,6 +140,35 @@ private fun SpellList(
 ) {
     val state = viewModel.state.collectAsState()
 
+    val navigateFunc = remember {
+        { spellAndChanged: Pair<SpellShortModel, Boolean> ->
+            navController.navigate(
+                NavEndpoint
+                    .SpellByUuid
+                    .getDestination(spellAndChanged.first.uuid)
+            )
+        }
+    }
+
+    val transferToBookFunc = remember {
+        { spellAndChanged: Pair<SpellShortModel, Boolean> ->
+            viewModel.onEvent(
+                if (spellAndChanged.second)
+                    SpellsByBookViewModel.Event.RemoveFromBook(
+                        bookId = bookId,
+                        spell = spellAndChanged.first
+                    )
+                else
+                    SpellsByBookViewModel
+                        .Event
+                        .AddToBook(
+                            bookId = bookId,
+                            spell = spellAndChanged.first
+                        )
+            )
+        }
+    }
+
     viewModel.onEvent(
         SpellsByBookViewModel
             .Event
@@ -136,22 +184,8 @@ private fun SpellList(
     ) {
         items(state.value.spells) { spellAndChanged ->
             SpellListItem(
-                navigate = {
-                    navController.navigate(
-                        NavEndpoint
-                            .SpellByUuid
-                            .getDestination(spellAndChanged.first.uuid)
-                    )
-                },
-                switchToBook = {
-                    viewModel.onEvent(
-                        SpellsByBookViewModel
-                            .Event
-                            .AddToBook(
-                                bookId = bookId
-                            )
-                    )
-                },
+                navigate = { navigateFunc(spellAndChanged) },
+                transferToBook = transferToBookFunc,
                 spellAndChanged = spellAndChanged,
             )
         }
@@ -161,9 +195,11 @@ private fun SpellList(
 @Composable
 private fun SpellListItem(
     navigate: () -> Unit,
-    switchToBook: () -> Unit,
+    transferToBook: (Pair<SpellShortModel, Boolean>) -> Unit,
     spellAndChanged: Pair<SpellShortModel, Boolean>
 ) {
+    var spellAndChangedState by remember { mutableStateOf(spellAndChanged) }
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -192,9 +228,13 @@ private fun SpellListItem(
         IconButton(
             modifier = Modifier
                 .padding(8.dp),
-            onClick = switchToBook
+            onClick = {
+                spellAndChangedState = spellAndChangedState
+                    .copy(second = !spellAndChangedState.second)
+                transferToBook(spellAndChangedState)
+            }
         ) {
-            if (spellAndChanged.second)
+            if (spellAndChangedState.second)
                 Icon(
                     painter = painterResource(id = R.drawable.ic_add_24),
                     tint = Color.Green,
@@ -215,7 +255,7 @@ private fun SpellListItem(
 private fun SpellListItemPreview() {
     SpellListItem(
         navigate = {},
-        switchToBook = {},
+        transferToBook = {},
         spellAndChanged = Pair(
             SpellShortModel(
                 "vpnavoi",
