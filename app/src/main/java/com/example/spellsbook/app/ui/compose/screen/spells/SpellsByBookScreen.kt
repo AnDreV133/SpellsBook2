@@ -31,11 +31,11 @@ class SpellsByBookViewModel @Inject constructor(
     private val removeSpellFromBookUseCase: RemoveSpellFromBookUseCase
 ) : ViewModel() {
     data class State(
-        val spells: List<Pair<SpellShortModel, Boolean>> = emptyList(),
+        val spells: Map<SpellShortModel, Boolean> = emptyMap(),
     )
 
     sealed class Event {
-        class UpdateListByFilterAndSorter(
+        class ExecuteListByFilterAndSorter(
             val bookId: Long,
             val filter: FilterMap,
             val sorter: SortOptionEnum
@@ -57,33 +57,55 @@ class SpellsByBookViewModel @Inject constructor(
 
     fun onEvent(event: Event) {
         when (event) {
-            is Event.UpdateListByFilterAndSorter -> {
+            is Event.ExecuteListByFilterAndSorter -> {
                 viewModelScope.launch {
                     _state.value = _state.value.copy(
                         spells = getSpellsWithFilterAndSorterByBookIdUseCase.execute(
                             bookId = event.bookId,
                             filter = event.filter,
                             sorter = event.sorter
-                        ),
+                        ).associate { it },
                     )
                 }
             }
 
             is Event.AddToBook -> {
                 viewModelScope.launch {
-                    addSpellToBookUseCase.execute(
-                        event.bookId,
-                        event.spell.uuid
-                    )
+                    launch {
+                        addSpellToBookUseCase.execute(
+                            event.bookId,
+                            event.spell.uuid
+                        )
+                    }
+                    launch {
+                        _state.value = _state.value.copy(
+                            spells = _state.value.spells
+                                .toMutableMap()
+                                .apply {
+                                    compute(event.spell) { _, _ -> true }
+                                }
+                        )
+                    }
                 }
             }
 
             is Event.RemoveFromBook -> {
                 viewModelScope.launch {
-                    removeSpellFromBookUseCase.execute(
-                        event.bookId,
-                        event.spell.uuid
-                    )
+                    launch {
+                        removeSpellFromBookUseCase.execute(
+                            event.bookId,
+                            event.spell.uuid
+                        )
+                    }
+                    launch {
+                        _state.value = _state.value.copy(
+                            spells = _state.value.spells
+                                .toMutableMap()
+                                .apply {
+                                    compute(event.spell) { _, _ -> false }
+                                }
+                        )
+                    }
                 }
             }
         }
@@ -126,21 +148,28 @@ private fun SpellList(
         }
     }
 
-    val transferToBookFunc = remember {
-        { spellAndChanged: Pair<SpellShortModel, Boolean> ->
+    val addToBookFunc = remember {
+        { spell: SpellShortModel ->
             viewModel.onEvent(
-                if (spellAndChanged.second)
-                    SpellsByBookViewModel.Event.RemoveFromBook(
+                SpellsByBookViewModel
+                    .Event
+                    .AddToBook(
                         bookId = bookId,
-                        spell = spellAndChanged.first
+                        spell = spell
                     )
-                else
-                    SpellsByBookViewModel
-                        .Event
-                        .AddToBook(
-                            bookId = bookId,
-                            spell = spellAndChanged.first
-                        )
+            )
+        }
+    }
+
+    val removeFromBookFunc = remember {
+        { spell: SpellShortModel ->
+            viewModel.onEvent(
+                SpellsByBookViewModel
+                    .Event
+                    .RemoveFromBook(
+                        bookId = bookId,
+                        spell = spell
+                    )
             )
         }
     }
@@ -148,7 +177,7 @@ private fun SpellList(
     viewModel.onEvent(
         SpellsByBookViewModel
             .Event
-            .UpdateListByFilterAndSorter(
+            .ExecuteListByFilterAndSorter(
                 bookId = bookId,
                 filter = filter,
                 sorter = sorter
@@ -158,10 +187,11 @@ private fun SpellList(
     LazyColumn(
         modifier = Modifier.fillMaxSize()
     ) {
-        items(state.value.spells) { spellAndChanged ->
+        items(state.value.spells.toList()) { spellAndChanged ->
             SpellListItemWithSwitchButton(
                 spellAndChanged = spellAndChanged,
-                transferToBook = transferToBookFunc,
+                addToBook = addToBookFunc,
+                removeFromBook = removeFromBookFunc,
             ) { navigateFunc(spellAndChanged) }
         }
     }

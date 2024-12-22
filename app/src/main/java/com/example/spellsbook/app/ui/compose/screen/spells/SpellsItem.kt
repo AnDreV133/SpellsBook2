@@ -45,8 +45,7 @@ fun SpellListItemWithButton(
     ) {
         SpellListItem(
             modifier = Modifier
-                .weight(weight = textWidth)
-            ,
+                .weight(weight = textWidth),
             spell = spell,
             navigate = navigate
         )
@@ -68,11 +67,10 @@ fun SpellListItemWithButton(
 @Composable
 fun SpellListItemWithSwitchButton(
     spellAndChanged: Pair<SpellShortModel, Boolean>,
-    transferToBook: (Pair<SpellShortModel, Boolean>) -> Unit,
+    addToBook: (SpellShortModel) -> Unit,
+    removeFromBook: (SpellShortModel) -> Unit,
     navigate: () -> Unit
 ) {
-    var spellAndChangedState by remember { mutableStateOf(spellAndChanged) }
-
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -84,28 +82,34 @@ fun SpellListItemWithSwitchButton(
             spell = spellAndChanged.first,
             navigate = navigate
         )
-        IconButton(
-            modifier = Modifier
-                .padding(8.dp),
-            onClick = {
-                spellAndChangedState = spellAndChangedState
-                    .copy(second = !spellAndChangedState.second)
-                transferToBook(spellAndChangedState)
-            }
-        ) {
-            if (spellAndChangedState.second)
+        if (spellAndChanged.second)
+            IconButton(
+                modifier = Modifier
+                    .padding(8.dp),
+                onClick = {
+                    addToBook(spellAndChanged.first)
+                }
+            ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_add_24),
                     tint = Color.Green,
                     contentDescription = null
                 )
-            else
+            }
+        else
+            IconButton(
+                modifier = Modifier
+                    .padding(8.dp),
+                onClick = {
+                    removeFromBook(spellAndChanged.first)
+                }
+            ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_remove_24),
                     tint = Color.Red,
                     contentDescription = null
                 )
-        }
+            }
     }
 }
 
@@ -146,10 +150,10 @@ fun SpellListItem(
 @Composable
 private fun SpellListItemPreview() {
     SpellListItemWithButton(
-            SpellShortModel(
-                "vpnavoi",
-                "testtesttesttesttesttesttesttesttesttesttesttesttesttest",
-                LevelEnum.LEVEL_1
+        SpellShortModel(
+            "vpnavoi",
+            "testtesttesttesttesttesttesttesttesttesttesttesttesttest",
+            LevelEnum.LEVEL_1
         ),
         onClick = {}
     ) {}
