@@ -3,7 +3,7 @@ package com.example.spellsbook.data.repositoryimpl
 import com.example.spellsbook.data.mapper.mapToDetailModel
 import com.example.spellsbook.data.mapper.mapToShortModel
 import com.example.spellsbook.data.store.dao.SpellDao
-import com.example.spellsbook.domain.LocaleEnum
+import com.example.spellsbook.domain.enums.LocaleEnum
 import com.example.spellsbook.domain.enums.SortOptionEnum
 import com.example.spellsbook.domain.enums.TagEnum
 import com.example.spellsbook.domain.enums.TagIdentifierEnum

@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import com.example.spellsbook.data.store.entity.SpellEntity.Companion.COLUMN_LANGUAGE
 import com.example.spellsbook.data.store.entity.SpellEntity.Companion.COLUMN_UUID
-import com.example.spellsbook.domain.LocaleEnum
+import com.example.spellsbook.domain.enums.LocaleEnum
 
 
 @Entity(

@@ -1,6 +1,6 @@
 package com.example.spellsbook.domain.usecase
 
-import com.example.spellsbook.domain.LocaleEnum
+import com.example.spellsbook.domain.enums.LocaleEnum
 import com.example.spellsbook.domain.enums.SortOptionEnum
 import com.example.spellsbook.domain.enums.TagEnum
 import com.example.spellsbook.domain.enums.TagIdentifierEnum

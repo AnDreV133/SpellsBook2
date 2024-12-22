@@ -1,7 +1,7 @@
 package com.example.spellsbook.app.di
 
 import androidx.compose.ui.text.intl.Locale
-import com.example.spellsbook.domain.LocaleEnum
+import com.example.spellsbook.domain.enums.LocaleEnum
 import com.example.spellsbook.domain.usecase.ValidateBookUseCase
 import dagger.Module
 import dagger.Provides

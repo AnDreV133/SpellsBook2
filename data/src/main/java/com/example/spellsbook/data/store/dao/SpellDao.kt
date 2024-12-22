@@ -9,11 +9,12 @@ import com.example.spellsbook.data.store.entity.BooksSpellsXRefEntity
 import com.example.spellsbook.data.store.entity.SpellEntity
 import com.example.spellsbook.data.store.entity.TaggingSpellEntity
 import com.example.spellsbook.data.store.entity.model.SpellWithTagsShort
-import com.example.spellsbook.domain.LocaleEnum
+import com.example.spellsbook.domain.enums.LocaleEnum
 import com.example.spellsbook.domain.enums.SortOptionEnum
 import com.example.spellsbook.domain.enums.TagEnum
 import com.example.spellsbook.domain.enums.TagIdentifierEnum
 import kotlinx.coroutines.flow.Flow
+
 // todo add catching 'default' language
 @Dao
 abstract class SpellDao : BaseDao<SpellEntity>(SpellEntity.TABLE_NAME) {
@@ -68,8 +69,6 @@ abstract class SpellDao : BaseDao<SpellEntity>(SpellEntity.TABLE_NAME) {
         append(" where 1=1 ")
         // set filters
         filter.forEach { entry ->
-            if (entry.value.isNotEmpty()) {
-            }
             append("and ${entry.key.toColumnName()} in (${entry.value.toTableFields()}) ")
         }
 

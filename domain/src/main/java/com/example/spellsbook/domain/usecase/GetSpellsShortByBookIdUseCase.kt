@@ -1,6 +1,6 @@
 package com.example.spellsbook.domain.usecase
 
-import com.example.spellsbook.domain.LocaleEnum
+import com.example.spellsbook.domain.enums.LocaleEnum
 import com.example.spellsbook.domain.model.SpellShortModel
 import com.example.spellsbook.domain.repository.BooksWithSpellsRepository
 import kotlinx.coroutines.flow.Flow

@@ -1,6 +1,6 @@
 package com.example.spellsbook.domain.repository
 
-import com.example.spellsbook.domain.LocaleEnum
+import com.example.spellsbook.domain.enums.LocaleEnum
 import com.example.spellsbook.domain.model.SpellShortModel
 import kotlinx.coroutines.flow.Flow
 
