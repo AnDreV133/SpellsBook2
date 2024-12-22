@@ -48,59 +48,60 @@ fun AppNavHost() {
         }
 
         composable(
-            route = NavEndpoint.UnknownSpells.route,
+            route = NavEndpoint.UnknownSpells().route,
             arguments = listOf(
                 navArgument("id") {
                     type = NavType.LongType
                 }
             )
         ) {
+            val bookId = it.arguments?.getLong("id") ?: return@composable
+
             ScreenWithMenuBar(
                 menuBar = {
                     BookMenuBar(
+                        bookId = bookId,
                         navController = navController,
-                        changedEndpoint = NavEndpoint.UnknownSpells
+                        changedEndpoint = NavEndpoint.UnknownSpells(bookId)
                     )
                 }
             ) {
-                it.arguments?.getLong("id").let { id ->
-                    if (id != null)
-                        SpellsByBookScreen(
-                            bookId = id,
-                            navController = navController
-                        )
-                }
+                SpellsByBookScreen(
+                    bookId = bookId,
+                    navController = navController
+                )
             }
         }
 
         composable(
-            route = NavEndpoint.KnownSpells.route,
+            route = NavEndpoint.KnownSpells().route,
             arguments = listOf(
                 navArgument("id") {
                     type = NavType.LongType
                 }
             )
         ) {
+            val bookId = it.arguments?.getLong("id") ?: return@composable
+
             ScreenWithMenuBar(
                 menuBar = {
                     BookMenuBar(
+                        bookId = bookId,
                         navController = navController,
-                        changedEndpoint = NavEndpoint.KnownSpells
+                        changedEndpoint = NavEndpoint.KnownSpells(bookId)
                     )
                 }
             ) {
-                it.arguments?.getLong("id").let { id ->
-                    if (id != null)
-                        KnownSpellsScreen(
-                            bookId = id,
-                            navController = navController
-                        )
-                }
+                KnownSpellsScreen(
+                    bookId = bookId,
+                    navController = navController
+                )
+
             }
         }
 
         composable(
-            route = NavEndpoint.SpellByUuid.route,
+            route = NavEndpoint.SpellByUuid().route,
             arguments = listOf(
                 navArgument("uuid") {
                     type = NavType.StringType

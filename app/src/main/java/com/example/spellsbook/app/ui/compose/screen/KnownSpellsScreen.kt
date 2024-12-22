@@ -1,6 +1,7 @@
 package com.example.spellsbook.app.ui.compose.screen
 
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
@@ -22,5 +23,5 @@ fun KnownSpellsScreen(
     navController: NavHostController,
     viewModel: KnownSpellsViewModel = hiltViewModel()
 ) {
-
+    Text("stub")
 }

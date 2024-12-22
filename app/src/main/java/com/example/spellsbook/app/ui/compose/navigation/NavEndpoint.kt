@@ -1,34 +1,65 @@
 package com.example.spellsbook.app.ui.compose.navigation
 
-import androidx.navigation.NavHostController
+import androidx.navigation.NavController
+import androidx.navigation.NavOptionsBuilder
 
-sealed class NavEndpoint(val route: String) {
-    object Books : NavEndpoint("books")
-    object Spells : NavEndpoint("spells")
-    object Settings : NavEndpoint("settings")
+
+sealed class NavEndpoint : Route, Destination {
+    object Books : NavEndpoint() {
+        override val route = "books"
+        override val destination = route
+    }
+
+    object Spells : NavEndpoint() {
+        override val route = "spells"
+        override val destination = route
+    }
+    object Settings : NavEndpoint() {
+        override val route = "settings"
+        override val destination = route
+    }
 
 //    data object Prepared : NavEndpoint("prepared")
 //    data object KnownSpells : NavEndpoint("known")
 //    data object SpellsWithAddInBook : NavEndpoint("spells_with_add")
 
 
-    object UnknownSpells : NavEndpoint("books/{id}/unknown"), DestinationById<Long> {
-        override fun getDestination(id: Long): String = "books/${id}/unknown"
+    class UnknownSpells(id: Long? = null) : NavEndpoint() {
+        override val route = "books/{id}/unknown"
+        override val destination: String = "books/$id/unknown"
     }
 
-    object KnownSpells : NavEndpoint("books/{id}/known"), DestinationById<Long> {
-        override fun getDestination(id: Long): String = "books/${id}/known"
+    class KnownSpells(id: Long? = null) : NavEndpoint() {
+        override val route = "books/{id}/known"
+        override val destination: String = "books/$id/known"
     }
 
-    object SpellByUuid : NavEndpoint("spells/{uuid}/known"), DestinationById<String> {
-        override fun getDestination(id: String): String = "spells/${id}/known"
+    class SpellByUuid(uuid: String? = null) : NavEndpoint() {
+        override val route = "spells/{uuid}"
+        override val destination: String = "spells/$uuid"
+    }
+
+    override fun equals(other: Any?): Boolean {
+        return this.route == (other as Route).route
+    }
+
+    override fun hashCode(): Int {
+        return route.hashCode()
     }
 }
 
-interface DestinationById<T : Any> {
-    fun getDestination(id: T): String
+interface Destination {
+    val destination: String
 }
 
-//fun NavHostController.navigate(endpoint: DestinationById<Any>) {
-//    navigate(endpoint.getDestination())
-//}
+interface Route {
+    val route: String
+}
+
+fun NavController.navigate(endpoint: Destination) {
+    navigate(endpoint.destination)
+}
+
+fun NavController.navigate(endpoint: Destination, builder: NavOptionsBuilder.() -> Unit) {
+    navigate(endpoint.destination, builder)
+}

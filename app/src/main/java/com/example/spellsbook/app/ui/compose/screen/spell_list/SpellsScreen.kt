@@ -25,6 +25,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.spellsbook.app.mapper.toResString
 import com.example.spellsbook.app.ui.compose.navigation.NavEndpoint
+import com.example.spellsbook.app.ui.compose.navigation.navigate
 import com.example.spellsbook.domain.enums.SortOptionEnum
 import com.example.spellsbook.domain.model.SpellShortModel
 import com.example.spellsbook.domain.usecase.GetSpellsWithFilterAndSorterUseCase
@@ -113,8 +114,7 @@ private fun SpellList(
                 navigate = {
                     navController.navigate(
                         NavEndpoint
-                            .SpellByUuid
-                            .getDestination(spell.uuid)
+                            .SpellByUuid(spell.uuid)
                     )
                 },
                 spell = spell,

@@ -35,6 +35,7 @@ import androidx.navigation.NavController
 import com.example.spellsbook.R
 import com.example.spellsbook.app.mapper.toResString
 import com.example.spellsbook.app.ui.compose.navigation.NavEndpoint
+import com.example.spellsbook.app.ui.compose.navigation.navigate
 import com.example.spellsbook.domain.enums.LevelEnum
 import com.example.spellsbook.domain.enums.SortOptionEnum
 import com.example.spellsbook.domain.model.SpellShortModel
@@ -144,8 +145,7 @@ private fun SpellList(
         { spellAndChanged: Pair<SpellShortModel, Boolean> ->
             navController.navigate(
                 NavEndpoint
-                    .SpellByUuid
-                    .getDestination(spellAndChanged.first.uuid)
+                    .SpellByUuid(spellAndChanged.first.uuid)
             )
         }
     }

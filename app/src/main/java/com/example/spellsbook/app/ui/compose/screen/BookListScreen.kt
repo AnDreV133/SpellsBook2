@@ -22,6 +22,7 @@ import com.example.spellsbook.R
 import com.example.spellsbook.app.ui.compose.AddButtonShape
 import com.example.spellsbook.app.ui.compose.item.BookItem
 import com.example.spellsbook.app.ui.compose.navigation.NavEndpoint
+import com.example.spellsbook.app.ui.compose.navigation.navigate
 import com.example.spellsbook.domain.model.BookModel
 import com.example.spellsbook.domain.usecase.AddBookUseCase
 import com.example.spellsbook.domain.usecase.GetAllBooksUseCase
@@ -134,7 +135,7 @@ fun BookList(
             BookItem(
                 model = elem,
                 onRemove = { viewModel.onEvent(BooksViewModel.Event.ShowRemoveBookDialog(elem)) },
-                navigate = { navController.navigate(NavEndpoint.UnknownSpells.getDestination(elem.id)) }
+                navigate = { navController.navigate(NavEndpoint.UnknownSpells(elem.id)) }
             )
         }
     }
