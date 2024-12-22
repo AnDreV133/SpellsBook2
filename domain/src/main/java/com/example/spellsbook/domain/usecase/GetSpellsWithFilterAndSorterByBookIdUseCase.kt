@@ -24,7 +24,7 @@ class GetSpellsWithFilterAndSorterByBookIdUseCase @Inject constructor(
         var prevUuidInBookSize = uuidInBook.size
         return spellRepository.getSpellsShort(filter, sorter, locale).map {
             uuidInBook -= it.uuid
-            val inBook = uuidInBook.size != prevUuidInBookSize
+            val inBook = uuidInBook.size == prevUuidInBookSize
             prevUuidInBookSize = uuidInBook.size
             Pair(
                 it,

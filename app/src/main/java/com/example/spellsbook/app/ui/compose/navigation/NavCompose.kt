@@ -14,7 +14,7 @@ import com.example.spellsbook.app.ui.compose.screen.KnownSpellsScreen
 import com.example.spellsbook.app.ui.compose.screen.SettingsScreen
 import com.example.spellsbook.app.ui.compose.screen.SpellDetailScreen
 import com.example.spellsbook.app.ui.compose.screen.spell_list.AllSpellsScreen
-import com.example.spellsbook.app.ui.compose.screen.spell_list.SpellsScreen
+import com.example.spellsbook.app.ui.compose.screen.spell_list.SpellsByBookScreen
 
 @Composable
 fun AppNavHost() {
@@ -47,31 +47,31 @@ fun AppNavHost() {
             }
         }
 
-//        composable(
-//            route = NavEndpoint.UnknownSpells.route,
-//            arguments = listOf(
-//                navArgument("id") {
-//                    type = NavType.LongType
-//                }
-//            )
-//        ) {
-//            ScreenWithMenuBar(
-//                menuBar = {
-//                    BookMenuBar(
-//                        navController = navController,
-//                        changedEndpoint = NavEndpoint.UnknownSpells
-//                    )
-//                }
-//            ) {
-//                it.arguments?.getLong("id").let { id ->
-//                    if (id != null)
-//                        SpellsScreen(
-//                            bookId = id,
-//                            navController = navController
-//                        )
-//                }
-//            }
-//        }
+        composable(
+            route = NavEndpoint.UnknownSpells.route,
+            arguments = listOf(
+                navArgument("id") {
+                    type = NavType.LongType
+                }
+            )
+        ) {
+            ScreenWithMenuBar(
+                menuBar = {
+                    BookMenuBar(
+                        navController = navController,
+                        changedEndpoint = NavEndpoint.UnknownSpells
+                    )
+                }
+            ) {
+                it.arguments?.getLong("id").let { id ->
+                    if (id != null)
+                        SpellsByBookScreen(
+                            bookId = id,
+                            navController = navController
+                        )
+                }
+            }
+        }
 
         composable(
             route = NavEndpoint.KnownSpells.route,
