@@ -21,9 +21,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -50,6 +50,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
+
+typealias FilterMap = Map<TagIdentifierEnum, List<TagEnum>>
 
 @HiltViewModel
 class FilterGridViewModel @Inject constructor() : ViewModel() {
@@ -126,7 +128,7 @@ fun FilterItem(
     onDismissRequest: () -> Unit,
 ) {
     var isDropDownMenuShowing by remember { mutableStateOf(false) }
-    val selectedTagsMap = remember { mutableStateMapOf<TagEnum, Boolean>() } // todo rewrite
+    var selectedTagsMapState by remember { mutableStateOf(emptyMap<TagEnum, Boolean>()) }
 
     Row(
         modifier = Modifier
@@ -165,34 +167,43 @@ fun FilterItem(
             onDismissRequest = {
                 isDropDownMenuShowing = false
                 itemData.updateTagsInFilter(
-                    selectedTagsMap
+                    selectedTagsMapState
                         .filter { it.value }
                         .map { it.key }
                 )
                 onDismissRequest()
             }
         ) {
-            selectedTagsMap.forEach { tagSelect ->
+            selectedTagsMapState.forEach { tagSelect ->
                 Row {
                     RadioButton(
                         selected = tagSelect.value,
                         onClick = {
-                            selectedTagsMap[tagSelect.key] = !tagSelect.value
+                            selectedTagsMapState = selectedTagsMapState
+                                .toMutableMap().apply {
+                                    put(tagSelect.key, !tagSelect.value)
+                                }
                         }
                     )
 
                     Text(tagSelect.key.toResString())
                 }
             }
-        }
 
-        SideEffect {
-            selectedTagsMap.clear()
-            val tagsInFilter = itemData.getTagsInFilter()
-            selectedTagsMap.putAll(
-                itemData.tags.map { it to tagsInFilter.contains(it) }
-            )
-            println(selectedTagsMap)
+            LaunchedEffect(Unit) {
+                selectedTagsMapState = selectedTagsMapState
+                    .toMutableMap()
+                    .apply {
+                        clear()
+
+                        val tagsInFilter = itemData.getTagsInFilter()
+                        itemData.tags
+                            .map { it to tagsInFilter.contains(it) }
+                            .forEach {
+                                put(it.first, it.second)
+                            }
+                    }
+            }
         }
     }
 }
@@ -216,4 +227,3 @@ private fun constructFilterItem(
     }
 )
 
-typealias FilterMap = Map<TagIdentifierEnum, List<TagEnum>>
