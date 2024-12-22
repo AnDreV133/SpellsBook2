@@ -1,4 +1,4 @@
-package com.example.spellsbook.app.ui.compose.screen.spell_list
+package com.example.spellsbook.app.ui.compose.screen.spells
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column

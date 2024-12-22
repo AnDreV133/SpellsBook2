@@ -10,11 +10,11 @@ import com.example.spellsbook.app.ui.compose.fragments.BookMenuBar
 import com.example.spellsbook.app.ui.compose.fragments.MainMenuBar
 import com.example.spellsbook.app.ui.compose.fragments.ScreenWithMenuBar
 import com.example.spellsbook.app.ui.compose.screen.BooksScreen
-import com.example.spellsbook.app.ui.compose.screen.KnownSpellsScreen
+import com.example.spellsbook.app.ui.compose.screen.spells.KnownSpellsScreen
 import com.example.spellsbook.app.ui.compose.screen.SettingsScreen
 import com.example.spellsbook.app.ui.compose.screen.SpellDetailScreen
-import com.example.spellsbook.app.ui.compose.screen.spell_list.AllSpellsScreen
-import com.example.spellsbook.app.ui.compose.screen.spell_list.SpellsByBookScreen
+import com.example.spellsbook.app.ui.compose.screen.spells.AllSpellsScreen
+import com.example.spellsbook.app.ui.compose.screen.spells.SpellsByBookScreen
 
 @Composable
 fun AppNavHost() {
