@@ -67,7 +67,7 @@ fun KnownSpellsScreen(
             }
 
             items(spells) { spell ->
-                SpellListItemWithButton(
+                SpellListItemWithRemoveButton(
                     spell = spell,
                     onClick = {
                         viewModel.viewModelScope.launch {

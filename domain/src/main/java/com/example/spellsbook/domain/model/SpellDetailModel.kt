@@ -2,7 +2,7 @@ package com.example.spellsbook.domain.model
 
 data class SpellDetailModel(
     val name: String = "",
-    val uuid: String = "",
+    val uuid: String,
     val level: String = "",
     val school: String = "",
     val description: String = "",

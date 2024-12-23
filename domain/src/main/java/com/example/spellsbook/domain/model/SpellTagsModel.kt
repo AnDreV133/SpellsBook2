@@ -8,10 +8,10 @@ import com.example.spellsbook.domain.enums.SourceEnum
 import com.example.spellsbook.domain.enums.RangeEnum
 
 data class SpellTagsModel(
-    val level: LevelEnum?,
-    val castingTime: CastingTimeEnum?,
-    val school: SchoolEnum?,
-    val range: RangeEnum?,
-    val source: SourceEnum?,
-    val ritual: RitualEnum?,
+    val level: LevelEnum? = null,
+    val castingTime: CastingTimeEnum? = null,
+    val school: SchoolEnum? = null,
+    val range: RangeEnum? = null,
+    val source: SourceEnum? = null,
+    val ritual: RitualEnum? = null
 )
