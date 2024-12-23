@@ -30,7 +30,7 @@ abstract class AppDatabase : RoomDatabase() {
 
     abstract fun spellDao(): SpellDao
 
-    abstract fun taggingSpellDao(): SpellByAuthorDao
+    abstract fun spellByAuthorDao(): SpellByAuthorDao
 
     abstract fun initDao(): InitDao
 }
