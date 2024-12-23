@@ -2,6 +2,7 @@ package com.example.spellsbook.data.store.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import com.example.spellsbook.data.store.entity.SpellEntity.Companion.COLUMN_LANGUAGE
 import com.example.spellsbook.data.store.entity.SpellEntity.Companion.COLUMN_UUID
 import com.example.spellsbook.domain.enums.LocaleEnum
@@ -10,13 +11,13 @@ import com.example.spellsbook.domain.enums.LocaleEnum
 @Entity(
     tableName = SpellEntity.TABLE_NAME,
     primaryKeys = [COLUMN_UUID, COLUMN_LANGUAGE],
-//    foreignKeys = [
-//        ForeignKey(
-//            entity = TaggingSpellEntity::class,
-//            parentColumns = [TaggingSpellEntity.COLUMN_UUID],
-//            childColumns = [COLUMN_UUID]
-//        )
-//    ]
+    foreignKeys = [
+        ForeignKey(
+            entity = TaggingSpellEntity::class,
+            parentColumns = [TaggingSpellEntity.COLUMN_UUID],
+            childColumns = [COLUMN_UUID]
+        )
+    ]
 )
 class SpellEntity(
     @ColumnInfo(name = COLUMN_UUID)

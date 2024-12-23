@@ -142,22 +142,5 @@ fun BookList(
 }
 
 
-@Composable
-fun AddFloatingButton(
-    onClick: () -> Unit,
-) {
-    IconButton(
-        modifier = AddButtonShape()
-            .padding(8.dp)
-            .size(60.dp),
-        onClick = onClick
-    ) {
-        Icon(
-            painter = painterResource(id = R.drawable.ic_add_24),
-            contentDescription = "Add button",
-            modifier = Modifier
-                .size(48.dp),
-        )
-    }
-}
+
 

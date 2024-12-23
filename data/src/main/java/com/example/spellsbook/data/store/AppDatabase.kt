@@ -7,7 +7,7 @@ import com.example.spellsbook.data.store.dao.BookDao
 import com.example.spellsbook.data.store.dao.BooksWithSpellsDao
 import com.example.spellsbook.data.store.dao.InitDao
 import com.example.spellsbook.data.store.dao.SpellDao
-import com.example.spellsbook.data.store.dao.TaggingSpellDao
+import com.example.spellsbook.data.store.dao.SpellByAuthorDao
 import com.example.spellsbook.data.store.entity.BookEntity
 import com.example.spellsbook.data.store.entity.BooksSpellsXRefEntity
 import com.example.spellsbook.data.store.entity.SpellEntity
@@ -30,7 +30,7 @@ abstract class AppDatabase : RoomDatabase() {
 
     abstract fun spellDao(): SpellDao
 
-    abstract fun taggingSpellDao(): TaggingSpellDao
+    abstract fun taggingSpellDao(): SpellByAuthorDao
 
     abstract fun initDao(): InitDao
 }
