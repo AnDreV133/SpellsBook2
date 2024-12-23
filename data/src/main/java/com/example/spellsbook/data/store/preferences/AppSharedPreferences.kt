@@ -46,6 +46,6 @@ suspend inline fun <reified T : Any> AppSharedPreferences.set(key: String, value
                 Boolean::class -> sharedPref.edit().putBoolean(key, value as Boolean)
                 Int::class -> sharedPref.edit().putInt(key, value as Int)
                 else -> null
-            }?.apply()
+            }?.commit()
         }.await()
     }

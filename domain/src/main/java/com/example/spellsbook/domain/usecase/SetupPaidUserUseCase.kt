@@ -10,26 +10,12 @@ import javax.inject.Inject
 class SetupPaidUserUseCase @Inject constructor(
     private val settingsRepository: SettingsRepository
 ) {
-    private val scope = CoroutineScope(Dispatchers.IO)
 
-    fun switch(currPaidUser: Boolean) {
-        if (currPaidUser) disable()
-        else enable()
+    suspend fun enable() {
+        settingsRepository.enablePaidUser()
     }
 
-    fun enable() {
-        scope.launch {
-            settingsRepository.enablePaidUser()
-        }
-    }
-
-    fun disable() {
-        scope.launch {
-            settingsRepository.disablePaidUser()
-        }
-    }
-
-    suspend fun isEnable(): Boolean {
-        return settingsRepository.isPaidUser()
+    suspend fun disable() {
+        settingsRepository.disablePaidUser()
     }
 }
