@@ -1,6 +1,5 @@
 package com.example.spellsbook.app.ui.compose.navigation
 
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -15,6 +14,7 @@ import com.example.spellsbook.app.ui.compose.screen.BooksScreen
 import com.example.spellsbook.app.ui.compose.screen.spells.KnownSpellsScreen
 import com.example.spellsbook.app.ui.compose.screen.SettingsScreen
 import com.example.spellsbook.app.ui.compose.screen.SpellDetailScreen
+import com.example.spellsbook.app.ui.compose.screen.SpellEditorScreen
 import com.example.spellsbook.app.ui.compose.screen.spells.AllSpellsScreen
 import com.example.spellsbook.app.ui.compose.screen.spells.SpellsByBookScreen
 
@@ -120,7 +120,7 @@ fun AppNavHost() {
         }
 
         composable(
-            route = NavEndpoint.SpellByUuidWithModifying().route,
+            route = NavEndpoint.SpellByUuidEditor().route,
             arguments = listOf(
                 navArgument("uuid") {
                     type = NavType.StringType
@@ -129,7 +129,12 @@ fun AppNavHost() {
         ) {
             it.arguments?.getString("uuid").let { uuid ->
                 if (uuid != null)
-                    Text("stub")
+                    SpellEditorScreen(
+                        uuid = uuid,
+                        forClose = {
+                            navController.popBackStack()
+                        }
+                    )
             }
         }
     }

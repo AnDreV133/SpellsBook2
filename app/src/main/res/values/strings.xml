@@ -80,4 +80,5 @@
     <string name="paid_user">Paid user</string>
     <string name="title_my_spells">My spells</string>
     <string name="base_name_new_spell">New spell</string>
+    <string name="save">Save</string>
 </resources>

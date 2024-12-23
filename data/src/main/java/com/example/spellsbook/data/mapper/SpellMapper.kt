@@ -1,11 +1,17 @@
 package com.example.spellsbook.data.mapper
 
 import com.example.spellsbook.data.store.entity.SpellEntity
-import com.example.spellsbook.data.store.entity.model.SpellWithTagsDetail
+import com.example.spellsbook.data.store.entity.TaggingSpellEntity
 import com.example.spellsbook.data.store.entity.model.SpellWithTagsShort
+import com.example.spellsbook.domain.enums.CastingTimeEnum
 import com.example.spellsbook.domain.enums.LevelEnum
+import com.example.spellsbook.domain.enums.RangeEnum
+import com.example.spellsbook.domain.enums.RitualEnum
+import com.example.spellsbook.domain.enums.SchoolEnum
+import com.example.spellsbook.domain.enums.SourceEnum
 import com.example.spellsbook.domain.model.SpellDetailModel
 import com.example.spellsbook.domain.model.SpellShortModel
+import com.example.spellsbook.domain.model.SpellTagsModel
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 
@@ -32,6 +38,17 @@ fun SpellEntity.mapToDetailModel(): SpellDetailModel =
             source = json.getFromJsonToString("source"),
         )
     }
+
+ fun TaggingSpellEntity.mapToTagsModel(): SpellTagsModel =
+     SpellTagsModel(
+         level = levelTag?.let { LevelEnum.valueOf(it) },
+         castingTime = castingTime?.let { CastingTimeEnum.valueOf(it) },
+         school = schoolTag?.let {SchoolEnum.valueOf(it)},
+         range = rangeTag?.let { RangeEnum.valueOf(it) },
+         source = sourceTag?.let {SourceEnum.valueOf(it)},
+         ritual = ritualTag?.let { RitualEnum.valueOf(it)}
+     )
+
 
 fun SpellDetailModel.mapToJson(): JsonObject =
     JsonObject().apply {

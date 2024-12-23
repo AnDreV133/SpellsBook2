@@ -15,7 +15,7 @@ internal fun getSpellsWithTagsShortQuery(
 ) = "select * from ${TaggingSpellEntity.TABLE_NAME} as t0 " +
         "inner join ${SpellEntity.TABLE_NAME} as t1 " +
         "on t0.${SpellEntity.COLUMN_UUID}=t1.${TaggingSpellEntity.COLUMN_UUID} " +
-        "and t1.${SpellEntity.COLUMN_LANGUAGE} in ('${language.value}', '${LocaleEnum.DEFAULT}')"
+        "and t1.${SpellEntity.COLUMN_LANGUAGE} in ('${language.value}', '${LocaleEnum.DEFAULT.value}')"
 
 internal fun filterSuffixQuery(
     filter: Map<TagIdentifierEnum, List<TagEnum>> = emptyMap(),

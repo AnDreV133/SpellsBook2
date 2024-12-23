@@ -16,11 +16,11 @@ data class TaggingSpellEntity(
     @ColumnInfo(name = COLUMN_CASTING_TIME_TAG)
     val castingTime: String? = null,
     @ColumnInfo(name = COLUMN_RANGE_TAG)
-    val range: String? = null,
+    val rangeTag: String? = null,
     @ColumnInfo(name = COLUMN_RITUAL_TAG)
-    val ritual: String? = null,
+    val ritualTag: String? = null,
     @ColumnInfo(name = COLUMN_SOURCE_TAG)
-    val source: String? = null
+    val sourceTag: String? = null
 
     // todo add more columns here
 ) {

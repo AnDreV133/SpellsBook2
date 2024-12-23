@@ -15,9 +15,8 @@ import kotlinx.coroutines.flow.Flow
 abstract class SpellByAuthorDao {
     @Query(
         """
-        delete from ${TaggingSpellEntity.TABLE_NAME} 
-            where ${TaggingSpellEntity.COLUMN_UUID}=:uuid     
-                and ${TaggingSpellEntity.COLUMN_SOURCE_TAG}='BY_AUTHOR'
+        delete from ${SpellEntity.TABLE_NAME} 
+            where ${SpellEntity.COLUMN_UUID}=:uuid     
         """
     )
     abstract suspend fun remove(uuid: String)

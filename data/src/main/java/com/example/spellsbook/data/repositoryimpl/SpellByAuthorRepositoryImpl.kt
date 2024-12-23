@@ -30,9 +30,9 @@ class SpellByAuthorRepositoryImpl (
                 levelTag = tags.level?.toString(),
                 schoolTag = tags.school?.toString(),
                 castingTime = tags.castingTime?.toString(),
-                range = tags.range?.toString(),
-                ritual = tags.ritual?.toString(),
-                source = tags.source?.toString()
+                rangeTag = tags.range?.toString(),
+                ritualTag = tags.ritual?.toString(),
+                sourceTag = tags.source?.toString()
             ),
             SpellEntity(
                 uuid = spell.uuid,

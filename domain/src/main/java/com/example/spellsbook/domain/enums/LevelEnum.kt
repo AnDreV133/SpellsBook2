@@ -11,5 +11,18 @@ enum class LevelEnum : TagEnum {
     LEVEL_7,
     LEVEL_8,
     LEVEL_9;
-//    override fun values(): List<LevelEnum> = entries
+}
+
+fun LevelEnum?.toDigit() = when (this) {
+    LevelEnum.LEVEL_0 -> 0
+    LevelEnum.LEVEL_1 -> 1
+    LevelEnum.LEVEL_2 -> 2
+    LevelEnum.LEVEL_3 -> 3
+    LevelEnum.LEVEL_4 -> 4
+    LevelEnum.LEVEL_5 -> 5
+    LevelEnum.LEVEL_6 -> 6
+    LevelEnum.LEVEL_7 -> 7
+    LevelEnum.LEVEL_8 -> 8
+    LevelEnum.LEVEL_9 -> 9
+    else -> null
 }

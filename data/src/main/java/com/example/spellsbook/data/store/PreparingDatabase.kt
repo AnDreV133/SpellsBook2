@@ -35,9 +35,9 @@ private suspend fun initTaggingSpells(
                             levelTag = fields[1],
                             schoolTag = fields[2],
                             castingTime = fields[3],
-                            range = fields[4],
-                            ritual = fields[5],
-                            source = fields[6],
+                            rangeTag = fields[4],
+                            ritualTag = fields[5],
+                            sourceTag = fields[6],
                         )
                     }
             }.toList()

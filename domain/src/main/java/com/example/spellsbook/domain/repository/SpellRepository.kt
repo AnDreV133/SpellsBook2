@@ -6,12 +6,18 @@ import com.example.spellsbook.domain.enums.TagEnum
 import com.example.spellsbook.domain.enums.TagIdentifierEnum
 import com.example.spellsbook.domain.model.SpellDetailModel
 import com.example.spellsbook.domain.model.SpellShortModel
+import com.example.spellsbook.domain.model.SpellTagsModel
 
 interface SpellRepository {
     suspend fun getSpellDetailByUuid(
         uuid: String,
         language: LocaleEnum
     ): SpellDetailModel
+
+    suspend fun getSpellWithTagsDetailByUuid(
+        uuid: String,
+        language: LocaleEnum
+    ): Pair<SpellTagsModel, SpellDetailModel>
 
     suspend fun getSpellsShort(
         filter: Map<TagIdentifierEnum, List<TagEnum>>,

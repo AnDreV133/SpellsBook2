@@ -10,6 +10,7 @@ data class SpellDetailModel(
     val materials: String = "",
     val duration: String = "",
     val range: String = "",
+    val ritual: String? = null,
     val castingTime: String = "",
     val source: String = "",
 )

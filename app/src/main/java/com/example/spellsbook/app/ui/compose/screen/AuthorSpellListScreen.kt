@@ -141,7 +141,7 @@ fun AuthorSpellListScreen(
                     }
                 ) {
                     navController.navigate(
-                        NavEndpoint.SpellByUuidWithModifying(model.uuid)
+                        NavEndpoint.SpellByUuidEditor(model.uuid)
                     )
                 }
             }

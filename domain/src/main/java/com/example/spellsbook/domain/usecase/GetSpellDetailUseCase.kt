@@ -10,4 +10,10 @@ class GetSpellDetailUseCase @Inject constructor(
 ) {
     suspend fun execute(uuid: String) =
         spellRepository.getSpellDetailByUuid(uuid, locale)
+
+    suspend fun executeWithTags(uuid: String) =
+        spellRepository.getSpellWithTagsDetailByUuid(uuid, locale)
+
+    suspend fun executeWithTagsNonLocale(uuid: String) =
+        spellRepository.getSpellWithTagsDetailByUuid(uuid, LocaleEnum.DEFAULT)
 }

@@ -27,7 +27,7 @@ abstract class SpellDao : BaseDao<SpellEntity>(SpellEntity.TABLE_NAME) {
                     and t0.${BooksSpellsXRefEntity.COLUMN_SPELL_UUID} = t1.${TaggingSpellEntity.COLUMN_UUID}
             inner join ${SpellEntity.TABLE_NAME} as t2 
                 on t1.${SpellEntity.COLUMN_UUID}=t2.${TaggingSpellEntity.COLUMN_UUID} 
-                    and t2.${SpellEntity.COLUMN_LANGUAGE}=:language
+                    and t2.${SpellEntity.COLUMN_LANGUAGE} in (:language, 'default')
         """
     )
     abstract fun getSpellsShortByBookId(id: Long, language: String): Flow<List<SpellWithTagsShort>>
@@ -35,10 +35,20 @@ abstract class SpellDao : BaseDao<SpellEntity>(SpellEntity.TABLE_NAME) {
     @Query(
         "SELECT * FROM ${SpellEntity.TABLE_NAME} " +
                 "WHERE ${SpellEntity.COLUMN_UUID} = :uuid " +
-                "AND ${SpellEntity.COLUMN_LANGUAGE} = :language " +
+                "AND ${SpellEntity.COLUMN_LANGUAGE} in (:language, 'default') " +
                 "LIMIT 1"
     )
     abstract suspend fun getSpellDetail(uuid: String, language: String): SpellEntity
+
+    @Query(
+        """
+        select * from ${TaggingSpellEntity.TABLE_NAME}
+            where ${TaggingSpellEntity.COLUMN_UUID} = :uuid
+            limit 1
+        """
+    )
+    abstract suspend fun getSpellTags(uuid: String): TaggingSpellEntity
+
 
     @RawQuery(observedEntities = [SpellWithTagsShort::class])
     protected abstract suspend fun getManyShort(query: SupportSQLiteQuery): List<SpellWithTagsShort>
@@ -54,6 +64,4 @@ abstract class SpellDao : BaseDao<SpellEntity>(SpellEntity.TABLE_NAME) {
                         + filterSuffixQuery(filter, sorter)
             )
         )
-
-
 }
