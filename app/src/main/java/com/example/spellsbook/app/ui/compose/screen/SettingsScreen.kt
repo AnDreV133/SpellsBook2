@@ -11,9 +11,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -27,19 +24,17 @@ import com.example.spellsbook.domain.usecase.SetupPaidUserUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class SettingViewModel @Inject constructor(
-    val setupPaidUserUseCase: SetupPaidUserUseCase,
-    val isPaidUserUseCase: IsPaidUserUseCase
+    private val setupPaidUserUseCase: SetupPaidUserUseCase,
+    private val isPaidUserUseCase: IsPaidUserUseCase
 ) : ViewModel() {
     sealed class Event {
-        object SwitchPaidUser : Event()
+        data object SwitchPaidUser : Event()
     }
 
     data class State(

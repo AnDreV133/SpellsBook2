@@ -48,6 +48,7 @@
     <string name="tag_ritual_name">Ритуал</string>
     <string name="tag_ritual_ritual">Ритуал</string>
     <string name="tag_ritual_cast">Нет</string>
+    <string name="tag_casting_time_hours">Часы</string>
     <!--  END SPELL TAG -->
 
 
@@ -73,6 +74,8 @@
     <!--  other  -->
     <string name="apply_filters">Фильтровать</string>
     <string name="paid_user">Платный пользователь</string>
-    <string name="tag_casting_time_hours">Часы</string>
+    <string name="title_my_spells">Мои заклинания</string>
+    <string name="base_name_new_spell">Новое заклинание</string>
+
 
 </resources>

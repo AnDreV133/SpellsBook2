@@ -44,7 +44,7 @@ sealed class NavEndpoint : Route, Destination {
         override val destination: String = "spells/$uuid"
     }
 
-    class SpellsByUuidWithModifying(uuid: String? = null) : NavEndpoint() {
+    class SpellByUuidWithModifying(uuid: String? = null) : NavEndpoint() {
         override val route = "spells/{uuid}/modify"
         override val destination: String = "spells/$uuid/modify"
     }

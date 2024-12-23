@@ -30,8 +30,8 @@ abstract class SpellByAuthorDao {
 
     @Transaction
     open suspend fun insert(spellTags: TaggingSpellEntity, spell: SpellEntity) {
-        insertSpell(spell)
         insertTags(spellTags)
+        insertSpell(spell)
     }
     @Query(
         """

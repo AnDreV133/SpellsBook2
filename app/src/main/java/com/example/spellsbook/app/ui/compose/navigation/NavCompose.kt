@@ -120,7 +120,7 @@ fun AppNavHost() {
         }
 
         composable(
-            route = NavEndpoint.SpellsByUuidWithModifying().route,
+            route = NavEndpoint.SpellByUuidWithModifying().route,
             arguments = listOf(
                 navArgument("uuid") {
                     type = NavType.StringType

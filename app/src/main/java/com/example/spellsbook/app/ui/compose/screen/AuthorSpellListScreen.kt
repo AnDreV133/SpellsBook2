@@ -1,23 +1,36 @@
 package com.example.spellsbook.app.ui.compose.screen
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
+import com.example.spellsbook.R
 import com.example.spellsbook.app.ui.compose.fragments.AddFloatingButton
+import com.example.spellsbook.app.ui.compose.fragments.ScreenWithMenuBar
+import com.example.spellsbook.app.ui.compose.navigation.NavEndpoint
+import com.example.spellsbook.app.ui.compose.navigation.navigate
 import com.example.spellsbook.app.ui.compose.screen.spells.SpellListItemWithRemoveButton
-import com.example.spellsbook.domain.model.SpellDetailModel
 import com.example.spellsbook.domain.model.SpellShortModel
-import com.example.spellsbook.domain.model.SpellTagsModel
 import com.example.spellsbook.domain.usecase.AddUpdateSpellByAuthorUseCase
 import com.example.spellsbook.domain.usecase.GetSpellsShortByAuthorUseCase
 import com.example.spellsbook.domain.usecase.RemoveSpellByAuthorUseCase
@@ -26,7 +39,6 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
@@ -40,7 +52,7 @@ class AuthorSpellListViewModel @Inject constructor(
     )
 
     sealed class Event {
-        object AddNewSpell : Event()
+        class AddNewSpell(val name: String) : Event()
         class RemoveSpell(val uuid: String) : Event()
     }
 
@@ -59,14 +71,7 @@ class AuthorSpellListViewModel @Inject constructor(
         when (event) {
             is Event.AddNewSpell -> {
                 viewModelScope.launch {
-                    val randomUuid = UUID.randomUUID().toString()
-
-                    addUpdateSpellByAuthorUseCase.execute(
-                        SpellTagsModel(),
-                        SpellDetailModel(
-                            uuid = randomUuid,
-                        )
-                    )
+                    addUpdateSpellByAuthorUseCase.executeNew(event.name)
                 }
             }
 
@@ -86,28 +91,58 @@ fun AuthorSpellListScreen(
 ) {
     val state by viewModel.state.collectAsState()
 
-    Scaffold(
-        bottomBar = {
-            Text("My spells")
+    ScreenWithMenuBar(
+        menuBar = {
+            Row(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.White),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    HorizontalDivider(
+                        modifier = Modifier.padding(bottom = 8.dp),
+                        thickness = 2.dp
+                    )
+                    Text(
+                        text = stringResource(id = R.string.title_my_spells),
+                        fontSize = 28.sp,
+                        color = Color.Black,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
         },
-        floatingActionButton = {
+        floatingButton = {
+            val baseName = stringResource(id = R.string.base_name_new_spell)
             AddFloatingButton {
-                viewModel.onEvent(AuthorSpellListViewModel.Event.AddNewSpell)
-                //navController.navigate(TODO("navigate to addSpellScreen") as String)
+                viewModel.onEvent(
+                    AuthorSpellListViewModel.Event.AddNewSpell(baseName)
+                )
+//                navController.navigate(NavEndpoint.SpellsByUuidWithModifying()) // TODO: navigate to addSpellScreen when contain navigate in DI
             }
         }
     ) {
         LazyColumn(
-            modifier = Modifier.padding(it)
+            modifier = Modifier
+                .fillMaxSize()
         ) {
             items(state.spells) { model ->
                 SpellListItemWithRemoveButton(
                     spell = model,
                     onClick = {
-                        viewModel.onEvent(AuthorSpellListViewModel.Event.RemoveSpell(model.uuid))
+                        viewModel.onEvent(
+                            AuthorSpellListViewModel
+                                .Event.RemoveSpell(model.uuid)
+                        )
                     }
                 ) {
-                    //navController.navigate(TODO("navigate to addSpellScreen") as String)
+                    navController.navigate(
+                        NavEndpoint.SpellByUuidWithModifying(model.uuid)
+                    )
                 }
             }
         }
