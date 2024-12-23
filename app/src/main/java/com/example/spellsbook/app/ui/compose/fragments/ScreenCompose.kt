@@ -30,6 +30,7 @@ fun MainWindow(content: @Composable () -> Unit) {
 @Composable
 fun ScreenWithMenuBar(
     menuBar: @Composable () -> Unit,
+    floatingButton: @Composable () -> Unit = {},
     content: @Composable () -> Unit
 ) {
     Scaffold(
@@ -43,7 +44,9 @@ fun ScreenWithMenuBar(
             ) {
                 menuBar()
             }
-        }
+        },
+
+        floatingActionButton = floatingButton,
     ) {
         Box(
             modifier = Modifier

@@ -18,14 +18,12 @@ class SetupPaidUserUseCase @Inject constructor(
     }
 
     fun enable() {
-        scope.coroutineContext.cancelChildren()
         scope.launch {
             settingsRepository.enablePaidUser()
         }
     }
 
     fun disable() {
-        scope.coroutineContext.cancelChildren()
         scope.launch {
             settingsRepository.disablePaidUser()
         }

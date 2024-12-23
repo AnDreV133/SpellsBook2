@@ -34,9 +34,19 @@ sealed class NavEndpoint : Route, Destination {
         override val destination: String = "books/$id/known"
     }
 
+    object AuthorSpells : NavEndpoint() {
+        override val route = "spells/author"
+        override val destination: String = route
+    }
+
     class SpellByUuid(uuid: String? = null) : NavEndpoint() {
         override val route = "spells/{uuid}"
         override val destination: String = "spells/$uuid"
+    }
+
+    class SpellsByUuidWithModifying(uuid: String? = null) : NavEndpoint() {
+        override val route = "spells/{uuid}/modify"
+        override val destination: String = "spells/$uuid/modify"
     }
 
     override fun equals(other: Any?): Boolean {

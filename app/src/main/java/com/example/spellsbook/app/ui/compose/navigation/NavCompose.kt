@@ -1,5 +1,6 @@
 package com.example.spellsbook.app.ui.compose.navigation
 
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -9,6 +10,7 @@ import androidx.navigation.navArgument
 import com.example.spellsbook.app.ui.compose.fragments.BookMenuBar
 import com.example.spellsbook.app.ui.compose.fragments.MainMenuBar
 import com.example.spellsbook.app.ui.compose.fragments.ScreenWithMenuBar
+import com.example.spellsbook.app.ui.compose.screen.AuthorSpellListScreen
 import com.example.spellsbook.app.ui.compose.screen.BooksScreen
 import com.example.spellsbook.app.ui.compose.screen.spells.KnownSpellsScreen
 import com.example.spellsbook.app.ui.compose.screen.SettingsScreen
@@ -40,11 +42,7 @@ fun AppNavHost() {
         }
 
         composable(route = NavEndpoint.Spells.route) {
-            ScreenWithMenuBar(
-                menuBar = { MainMenuBar(navController, NavEndpoint.Spells) }
-            ) {
-                AllSpellsScreen(navController = navController)
-            }
+            AllSpellsScreen(navController = navController)
         }
 
         composable(
@@ -96,8 +94,15 @@ fun AppNavHost() {
                     bookId = bookId,
                     navController = navController
                 )
-
             }
+        }
+
+        composable(
+            route = NavEndpoint.AuthorSpells.route,
+        ) {
+            AuthorSpellListScreen(
+                navController = navController
+            )
         }
 
         composable(
@@ -111,6 +116,20 @@ fun AppNavHost() {
             it.arguments?.getString("uuid").let { uuid ->
                 if (uuid != null)
                     SpellDetailScreen(spellUuid = uuid)
+            }
+        }
+
+        composable(
+            route = NavEndpoint.SpellsByUuidWithModifying().route,
+            arguments = listOf(
+                navArgument("uuid") {
+                    type = NavType.StringType
+                }
+            )
+        ) {
+            it.arguments?.getString("uuid").let { uuid ->
+                if (uuid != null)
+                    Text("stub")
             }
         }
     }

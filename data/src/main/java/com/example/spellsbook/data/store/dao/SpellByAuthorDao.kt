@@ -29,7 +29,7 @@ abstract class SpellByAuthorDao {
     protected abstract suspend fun insertSpell(spell: SpellEntity)
 
     @Transaction
-    suspend fun insert(spellTags: TaggingSpellEntity, spell: SpellEntity) {
+    open suspend fun insert(spellTags: TaggingSpellEntity, spell: SpellEntity) {
         insertSpell(spell)
         insertTags(spellTags)
     }

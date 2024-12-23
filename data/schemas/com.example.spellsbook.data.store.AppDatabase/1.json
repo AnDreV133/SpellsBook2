@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "38eff8c63818a7e04c877f7e39e20959",
+    "identityHash": "617e8c38c6af0c7b50b5152385747d00",
     "entities": [
       {
         "tableName": "book",
@@ -115,7 +115,7 @@
       },
       {
         "tableName": "spell",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uuid` TEXT NOT NULL, `language` TEXT NOT NULL, `name` TEXT NOT NULL, `json` TEXT NOT NULL, PRIMARY KEY(`uuid`, `language`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uuid` TEXT NOT NULL, `language` TEXT NOT NULL, `name` TEXT NOT NULL, `json` TEXT NOT NULL, PRIMARY KEY(`uuid`, `language`), FOREIGN KEY(`uuid`) REFERENCES `tagging_spell`(`uuid`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
         "fields": [
           {
             "fieldPath": "uuid",
@@ -150,13 +150,25 @@
           ]
         },
         "indices": [],
-        "foreignKeys": []
+        "foreignKeys": [
+          {
+            "table": "tagging_spell",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "uuid"
+            ],
+            "referencedColumns": [
+              "uuid"
+            ]
+          }
+        ]
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '38eff8c63818a7e04c877f7e39e20959')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '617e8c38c6af0c7b50b5152385747d00')"
     ]
   }
 }

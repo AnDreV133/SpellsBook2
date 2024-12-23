@@ -22,7 +22,7 @@ data class MenuNavigationItem(
 
 @Composable
 fun MainMenuBar(
-    navController: NavHostController,
+    navController: NavController,
     changedEndpoint: NavEndpoint,
 ) {
     MenuBar(
@@ -35,7 +35,7 @@ fun MainMenuBar(
 @Composable
 fun BookMenuBar(
     bookId: Long,
-    navController: NavHostController,
+    navController: NavController,
     changedEndpoint: NavEndpoint,
 ) {
     MenuBar(
