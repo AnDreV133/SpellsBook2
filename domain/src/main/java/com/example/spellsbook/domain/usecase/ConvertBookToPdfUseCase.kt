@@ -172,11 +172,11 @@ class ConvertBookToPdfUseCase @Inject constructor(
             val testLine = if (currentLine.isEmpty()) word else "$currentLine $word"
             val testWidth = paint.measureText(testLine)
 
-            if (testWidth > maxWidth) {
+            currentLine = if (testWidth > maxWidth) {
                 lines.add(currentLine)
-                currentLine = word
+                word
             } else {
-                currentLine = testLine
+                testLine
             }
         }
 

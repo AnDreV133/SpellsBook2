@@ -1,13 +1,5 @@
 package com.example.spellsbook.app.ui.compose.screen
 
-import android.content.ContentValues
-import android.content.Context
-import android.net.Uri
-import android.os.Build
-import android.os.Environment
-import android.provider.MediaStore
-import android.util.Log
-import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -37,12 +29,9 @@ import com.example.spellsbook.app.ui.compose.fragments.ExportToast
 import com.example.spellsbook.domain.usecase.ConvertBookToJsonUseCase
 import com.example.spellsbook.domain.usecase.ConvertBookToPdfUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.io.File
 import java.io.InputStream
 import javax.inject.Inject
 

@@ -32,18 +32,14 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
-
-    hilt {
-        enableTransformForLocalTests = true
-    }
 }
 
 dependencies {
     kapt(libs.hilt.android.compiler)
 
     // for tests with hilt
-    androidTestImplementation("com.google.dagger:hilt-android-testing:2.44")
-    kaptAndroidTest("com.google.dagger:hilt-android-compiler:2.44")
+    androidTestImplementation(libs.hilt.android.testing)
+    kaptAndroidTest(libs.hilt.android.compiler)
 
     implementation(libs.dagger.hilt.android)
 

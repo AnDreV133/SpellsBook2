@@ -3,7 +3,6 @@ package com.example.spellsbook.data.store.dao
 import androidx.room.Dao
 import androidx.room.Query
 import com.example.spellsbook.data.store.entity.BooksSpellsXRefEntity
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 abstract class BooksWithSpellsDao {

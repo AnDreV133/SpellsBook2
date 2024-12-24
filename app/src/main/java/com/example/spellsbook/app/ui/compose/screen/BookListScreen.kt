@@ -17,8 +17,6 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.spellsbook.app.ui.compose.fragments.AddFloatingButton
 import com.example.spellsbook.app.ui.compose.item.BookItem
-import com.example.spellsbook.app.ui.compose.navigation.NavEndpoint
-import com.example.spellsbook.app.ui.compose.navigation.navigate
 import com.example.spellsbook.domain.model.BookModel
 import com.example.spellsbook.domain.usecase.GetAllBooksUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel

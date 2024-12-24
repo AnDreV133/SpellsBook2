@@ -17,14 +17,6 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.InputStream
 
-fun <T> ViewModel.emitState(destination: MutableStateFlow<T>, state: CoroutineScope.() -> T) {
-    viewModelScope.launch {
-        destination.emit(
-            state()
-        )
-    }
-}
-
 suspend fun export(context: Context, streamData: Pair<String, InputStream>) =
     withContext(Dispatchers.IO) {
         try {
