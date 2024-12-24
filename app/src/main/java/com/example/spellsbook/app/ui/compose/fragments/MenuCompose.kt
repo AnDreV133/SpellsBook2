@@ -76,17 +76,17 @@ private val itemsForMainMenu
     get() = listOf(
         MenuNavigationItem(
             title = stringResource(id = R.string.menu_books),
-            icon = ImageVector.vectorResource(R.drawable.ic_block_48),
+            icon = ImageVector.vectorResource(R.drawable.baseline_menu_book_36),
             navEndpoint = NavEndpoint.Books
         ),
         MenuNavigationItem(
             title = stringResource(id = R.string.menu_spells),
-            icon = ImageVector.vectorResource(R.drawable.ic_block_48),
+            icon = ImageVector.vectorResource(R.drawable.baseline_article_36),
             navEndpoint = NavEndpoint.Spells
         ),
         MenuNavigationItem(
             title = stringResource(id = R.string.menu_settings),
-            icon = ImageVector.vectorResource(R.drawable.ic_block_48),
+            icon = ImageVector.vectorResource(R.drawable.baseline_settings_36),
             navEndpoint = NavEndpoint.Settings
         )
     )
@@ -95,12 +95,12 @@ private val itemsForMainMenu
 private fun itemsForBookMenu(bookId: Long) = listOf(
         MenuNavigationItem(
             title = stringResource(id = R.string.menu_spells),
-            icon = ImageVector.vectorResource(R.drawable.ic_block_48),
+            icon = ImageVector.vectorResource(R.drawable.baseline_article_36),
             navEndpoint = NavEndpoint.UnknownSpells(bookId)
         ),
         MenuNavigationItem(
             title = stringResource(id = R.string.menu_known_spells),
-            icon = ImageVector.vectorResource(R.drawable.ic_block_48),
+            icon = ImageVector.vectorResource(R.drawable.baseline_face_36),
             navEndpoint = NavEndpoint.KnownSpells(bookId)
         )
     )
