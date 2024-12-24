@@ -21,17 +21,19 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.spellsbook.R
 import com.example.spellsbook.domain.usecase.ConvertBookToJsonUseCase
+import com.example.spellsbook.domain.usecase.ConvertBookToPdfUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -45,7 +47,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ExportBookScreenViewModel @Inject constructor(
     private val convertToJson: ConvertBookToJsonUseCase,
-//    private val convertToPdf: ConvertBookToPdfUseCase
+    private val convertToPdf: ConvertBookToPdfUseCase
 ) : ViewModel() {
     data class State(
         val streamData: Pair<String, InputStream>? = null,
@@ -64,21 +66,25 @@ class ExportBookScreenViewModel @Inject constructor(
     fun onEvent(event: Event) {
         when (event) {
             is Event.ExportToJson -> viewModelScope.launch {
-                convertToJson.execute(event.bookId).let {
-                    if (it.isSuccess)
-                        _state.value = State(streamData = it.getOrNull()!!, isStreamGet = true)
-                    else
-                        _state.value = State(streamData = null, isStreamGet = false)
-                }
+                convert { convertToJson.execute(event.bookId) }
             }
 
             is Event.ExportToPdf -> viewModelScope.launch {
-//                convertToPdf.execute(uuid)
+                convert { convertToPdf.execute(event.bookId) }
             }
 
             is Event.CompleteExport -> viewModelScope.launch {
                 _state.value = State()
             }
+        }
+    }
+
+    private suspend fun convert(onConvert: suspend () -> Result<Pair<String, InputStream>>) {
+        onConvert().let {
+            if (it.isSuccess)
+                _state.value = State(streamData = it.getOrNull()!!, isStreamGet = true)
+            else
+                _state.value = State(streamData = null, isStreamGet = false)
         }
     }
 }
@@ -95,9 +101,17 @@ fun ExportBookScreen(
 
     if (exportResult != null) {
         if (exportResult == true)
-            Toast.makeText(context, "Экспорт завершен", Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                context,
+                stringResource(R.string.export_complete),
+                Toast.LENGTH_SHORT
+            ).show()
         else
-            Toast.makeText(context, "Ошибка экспорта", Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                context,
+                stringResource(R.string.exception_of_export),
+                Toast.LENGTH_SHORT
+            ).show()
         viewModel.onEvent(ExportBookScreenViewModel.Event.CompleteExport)
         exportResult = null
     }
@@ -118,7 +132,7 @@ fun ExportBookScreen(
             },
             modifier = Modifier.padding(8.dp)
         ) {
-            Text("Экспорт в JSON")
+            Text(stringResource(R.string.export_to_json))
         }
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -132,7 +146,7 @@ fun ExportBookScreen(
             },
             modifier = Modifier.padding(8.dp)
         ) {
-            Text("Экспорт в PDF")
+            Text(stringResource(R.string.export_to_pdf))
         }
     }
 

@@ -77,4 +77,8 @@
     <string name="title_my_spells">Мои заклинания</string>
     <string name="base_name_new_spell">Новое заклинание</string>
     <string name="save">Сохранить</string>
+    <string name="export_complete">Экспорт завершен</string>
+    <string name="exception_of_export">Ошибка экспорта</string>
+    <string name="export_to_pdf">Экспорт в PDF</string>
+    <string name="export_to_json">Экспорт в JSON</string>
 </resources>

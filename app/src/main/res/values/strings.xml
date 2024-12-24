@@ -81,4 +81,8 @@
     <string name="title_my_spells">My spells</string>
     <string name="base_name_new_spell">New spell</string>
     <string name="save">Save</string>
+    <string name="export_complete">Export complete</string>
+    <string name="exception_of_export">Error when export</string>
+    <string name="export_to_pdf">Export to PDF</string>
+    <string name="export_to_json">Export to JSON</string>
 </resources>
