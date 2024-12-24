@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -83,8 +84,6 @@ fun AllSpellsScreen(
 ) {
     val state by viewModel.state.collectAsState()
 
-    viewModel.onEvent(AllSpellListViewModel.Event.CheckPaidUser)
-
     ScreenWithMenuBar(
         menuBar = {
             MainMenuBar(
@@ -109,6 +108,10 @@ fun AllSpellsScreen(
                 viewModel = viewModel
             )
         }
+    }
+
+    LaunchedEffect (Unit) {
+        viewModel.onEvent(AllSpellListViewModel.Event.CheckPaidUser)
     }
 }
 

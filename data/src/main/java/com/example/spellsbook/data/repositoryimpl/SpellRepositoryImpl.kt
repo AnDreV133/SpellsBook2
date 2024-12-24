@@ -43,5 +43,9 @@ class SpellRepositoryImpl(
         spellDao
             .getSpellDetail(uuid, language = language.value)
             .mapToDetailModel()
+
+    override suspend fun getSpellsJsonByBook(bookId:Long, language: LocaleEnum): List<String> {
+        return spellDao.getSpellsJsonByBook(bookId, language.value)
+    }
 }
 

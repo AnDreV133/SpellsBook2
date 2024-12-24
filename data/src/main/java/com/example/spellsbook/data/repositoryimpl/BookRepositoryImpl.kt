@@ -6,11 +6,15 @@ import com.example.spellsbook.data.store.dao.BookDao
 import com.example.spellsbook.domain.model.BookModel
 import com.example.spellsbook.domain.repository.BookRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 class BookRepositoryImpl(
     private val bookDao: BookDao,
 ) : BookRepository {
+    override suspend fun get(bookId: Long): BookModel =
+        bookDao.get(bookId).first()?.mapToModel() ?: BookModel("")
+
     override fun getAll(): Flow<List<BookModel>> = bookDao.getAll().map { books ->
         books.map { it.mapToModel() }
     }

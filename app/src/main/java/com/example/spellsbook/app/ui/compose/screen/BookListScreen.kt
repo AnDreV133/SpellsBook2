@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.spellsbook.app.ui.compose.fragments.AddFloatingButton
 import com.example.spellsbook.app.ui.compose.item.BookItem
@@ -114,7 +115,7 @@ fun BooksScreen(
 
 @Composable
 fun BookList(
-    navController: NavHostController,
+    navController: NavController,
     padding: PaddingValues,
     viewModel: BooksViewModel
 ) {
@@ -128,7 +129,7 @@ fun BookList(
             BookItem(
                 model = elem,
                 onRemove = { viewModel.onEvent(BooksViewModel.Event.ShowRemoveBookDialog(elem)) },
-                navigate = { navController.navigate(NavEndpoint.UnknownSpells(elem.id)) }
+                navController = navController
             )
         }
     }

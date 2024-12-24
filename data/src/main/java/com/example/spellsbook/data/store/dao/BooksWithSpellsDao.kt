@@ -18,7 +18,7 @@ abstract class BooksWithSpellsDao {
 
     @Query(
         """
-        insert into ${BooksSpellsXRefEntity.TABLE_NAME} 
+        insert or replace into ${BooksSpellsXRefEntity.TABLE_NAME} 
             (${BooksSpellsXRefEntity.COLUMN_BOOK_ID}, ${BooksSpellsXRefEntity.COLUMN_SPELL_UUID})
             values (:bookId, :spellUuid)
         """

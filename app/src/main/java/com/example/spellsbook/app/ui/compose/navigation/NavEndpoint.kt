@@ -49,6 +49,11 @@ sealed class NavEndpoint : Route, Destination {
         override val destination: String = "spells/$uuid/modify"
     }
 
+    class ExportBook(id: Long? = null) : NavEndpoint() {
+        override val route = "books/{id}/export"
+        override val destination: String = "books/$id/export"
+    }
+
     override fun equals(other: Any?): Boolean {
         return this.route == (other as Route).route
     }

@@ -11,6 +11,7 @@ import com.example.spellsbook.app.ui.compose.fragments.MainMenuBar
 import com.example.spellsbook.app.ui.compose.fragments.ScreenWithMenuBar
 import com.example.spellsbook.app.ui.compose.screen.AuthorSpellListScreen
 import com.example.spellsbook.app.ui.compose.screen.BooksScreen
+import com.example.spellsbook.app.ui.compose.screen.ExportBookScreen
 import com.example.spellsbook.app.ui.compose.screen.spells.KnownSpellsScreen
 import com.example.spellsbook.app.ui.compose.screen.SettingsScreen
 import com.example.spellsbook.app.ui.compose.screen.SpellDetailScreen
@@ -131,6 +132,25 @@ fun AppNavHost() {
                 if (uuid != null)
                     SpellEditorScreen(
                         uuid = uuid,
+                        forClose = {
+                            navController.popBackStack()
+                        }
+                    )
+            }
+        }
+
+        composable(
+            route = NavEndpoint.ExportBook().route,
+            arguments = listOf(
+                navArgument("id") {
+                    type = NavType.LongType
+                }
+            )
+        ) {
+            it.arguments?.getLong("id").let { id ->
+                if (id != null)
+                    ExportBookScreen(
+                        bookId = id,
                         forClose = {
                             navController.popBackStack()
                         }

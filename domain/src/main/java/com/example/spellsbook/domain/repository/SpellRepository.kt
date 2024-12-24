@@ -24,4 +24,6 @@ interface SpellRepository {
         sorter: SortOptionEnum,
         language: LocaleEnum
     ): List<SpellShortModel>
+
+    suspend fun getSpellsJsonByBook(bookId:Long, language: LocaleEnum): List<String>
 }
