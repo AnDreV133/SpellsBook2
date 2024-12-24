@@ -14,7 +14,7 @@ import java.util.concurrent.Executors
 object AppDatabaseConnection {
     @Volatile
     private var _db: AppDatabase? = null
-    private const val DB_NAME = "app-databases"
+    const val DB_NAME = "app-databases"
     private const val TAG = "AppDB"
 
     fun instance(

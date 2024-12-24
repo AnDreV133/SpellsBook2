@@ -88,7 +88,7 @@ class ConvertBookToPdfUseCase @Inject constructor(
             val wrappedText = wrapText(
                 jsonToText(spellJson),
                 paintText,
-                cellWidth.toFloat() - paddingIn*2,
+                cellWidth.toFloat() - paddingIn * 2,
                 cellHeight.toFloat()
             )
             var textY = top + paintText.textSize + paddingIn

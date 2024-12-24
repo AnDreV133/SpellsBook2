@@ -81,4 +81,5 @@
     <string name="exception_of_export">Ошибка экспорта</string>
     <string name="export_to_pdf">Экспорт в PDF</string>
     <string name="export_to_json">Экспорт в JSON</string>
+    <string name="dump_bd">Сделать дамп бд?</string>
 </resources>

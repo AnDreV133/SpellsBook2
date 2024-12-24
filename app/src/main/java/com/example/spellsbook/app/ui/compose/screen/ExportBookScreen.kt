@@ -32,6 +32,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.spellsbook.R
+import com.example.spellsbook.app.ui.compose.export
+import com.example.spellsbook.app.ui.compose.fragments.ExportToast
 import com.example.spellsbook.domain.usecase.ConvertBookToJsonUseCase
 import com.example.spellsbook.domain.usecase.ConvertBookToPdfUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -99,22 +101,9 @@ fun ExportBookScreen(
     var exportResult by rememberSaveable { mutableStateOf<Boolean?>(null) }
     val context = LocalContext.current
 
-    if (exportResult != null) {
-        if (exportResult == true)
-            Toast.makeText(
-                context,
-                stringResource(R.string.export_complete),
-                Toast.LENGTH_SHORT
-            ).show()
-        else
-            Toast.makeText(
-                context,
-                stringResource(R.string.exception_of_export),
-                Toast.LENGTH_SHORT
-            ).show()
-        viewModel.onEvent(ExportBookScreenViewModel.Event.CompleteExport)
-        exportResult = null
-    }
+    ExportToast(exportResult = exportResult)
+    viewModel.onEvent(ExportBookScreenViewModel.Event.CompleteExport)
+    exportResult = null
 
     Column(
         modifier = Modifier
@@ -155,49 +144,8 @@ fun ExportBookScreen(
 
         exportResult = export(context, streamData)
 
-
         forClose()
     }
 }
 
-private suspend fun export(context: Context, streamData: Pair<String, InputStream>) =
-    withContext(Dispatchers.IO) {
-        try {
-            val fileName = streamData.first
-            val fileExtension = fileName.substringAfterLast(".")
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                val contentValues = ContentValues().apply {
-                    put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
-                    put(MediaStore.MediaColumns.MIME_TYPE, "application/$fileExtension")
-                    put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS)
-                }
-
-                val resolver = context.contentResolver
-                val uri: Uri? =
-                    resolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, contentValues)
-
-                uri?.let {
-                    resolver.openOutputStream(it)?.use { outputStream ->
-                        streamData.second.use { inputStream ->
-                            inputStream.copyTo(outputStream)
-                        }
-                    }
-                }
-            } else {
-                val downloadsDir =
-                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-
-                File(downloadsDir, fileName).outputStream().use { destinationFile ->
-                    streamData.second.copyTo(destinationFile)
-                }
-            }
-
-            true
-        } catch (e: Exception) {
-            Log.e("ExportBookScreen", e.toString())
-            false
-        } finally {
-            streamData.second.close()
-        }
-    }
