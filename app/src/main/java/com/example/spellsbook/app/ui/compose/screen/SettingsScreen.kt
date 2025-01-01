@@ -46,7 +46,7 @@ class SettingViewModel @Inject constructor(
 ) : ViewModel() {
     sealed class Event {
         data object SwitchPaidUser : Event()
-        class DoDumpBD(
+        class DoDumpDB(
             val context: Context,
             val resultCallback: (Boolean) -> Unit
         ) : Event()
@@ -82,7 +82,7 @@ class SettingViewModel @Inject constructor(
             }
 
 
-            is Event.DoDumpBD -> viewModelScope.launch {
+            is Event.DoDumpDB -> viewModelScope.launch {
                 event.resultCallback(
                     export(
                         event.context, Pair(
@@ -145,7 +145,7 @@ fun SettingsScreen(
                     .size(48.dp, 24.dp),
                 onClick = {
                 viewModel.onEvent(
-                    SettingViewModel.Event.DoDumpBD(
+                    SettingViewModel.Event.DoDumpDB(
                         context
                     ) { result ->
                         exportResult = result

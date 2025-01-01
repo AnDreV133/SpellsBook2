@@ -1,5 +1,6 @@
 package com.example.spellsbook.app.ui.compose.screen
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -74,8 +75,12 @@ class ExportBookScreenViewModel @Inject constructor(
         onConvert().let {
             if (it.isSuccess)
                 _state.value = State(streamData = it.getOrNull()!!, isStreamGet = true)
-            else
+            else {
                 _state.value = State(streamData = null, isStreamGet = false)
+                it.onFailure { e ->
+                    Log.e("ExportBookScreen", e.toString())
+                }
+            }
         }
     }
 }
@@ -91,7 +96,6 @@ fun ExportBookScreen(
     val context = LocalContext.current
 
     ExportToast(exportResult = exportResult)
-    viewModel.onEvent(ExportBookScreenViewModel.Event.CompleteExport)
     exportResult = null
 
     Column(
@@ -132,6 +136,8 @@ fun ExportBookScreen(
         val streamData = state.value.streamData ?: return@LaunchedEffect
 
         exportResult = export(context, streamData)
+
+        viewModel.onEvent(ExportBookScreenViewModel.Event.CompleteExport)
 
         forClose()
     }

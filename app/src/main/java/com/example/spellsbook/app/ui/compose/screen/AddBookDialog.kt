@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -20,12 +19,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.spellsbook.R
 import com.example.spellsbook.domain.model.BookModel
 import com.example.spellsbook.domain.usecase.AddBookUseCase
 import com.example.spellsbook.domain.usecase.ValidateBookUseCase
@@ -110,7 +111,7 @@ fun AddBookDialog(
                 .wrapContentSize()
         ) {
             Text(
-                text = "Add Book",
+                text = stringResource(R.string.title_add_book),
                 fontSize = 24.sp,
                 modifier = Modifier
                     .padding(bottom = 16.dp)
@@ -122,7 +123,7 @@ fun AddBookDialog(
                     .padding(bottom = 8.dp)
             ) {
                 Text(
-                    text = "Name",
+                    text = stringResource(R.string.name),
                     fontSize = 24.sp,
                     modifier = Modifier.padding(
                         bottom = 8.dp,
@@ -149,17 +150,13 @@ fun AddBookDialog(
                 modifier = Modifier
                     .width(IntrinsicSize.Max)
                     .height(IntrinsicSize.Min),
-                colors = ButtonDefaults
-                    .buttonColors(
-                        contentColor = Color.Gray
-                    ),
                 onClick = {
                     viewModel.onEvent(
                         AddDialogViewModel.Event.AddWithValidate(onClose)
                     )
                 }
             ) {
-                Text(text = "Add")
+                Text(text = stringResource(R.string.add))
             }
 
             if (state.bookNameError != null) {

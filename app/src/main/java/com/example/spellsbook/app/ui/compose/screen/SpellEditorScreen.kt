@@ -278,7 +278,7 @@ fun <T : TagEnum> DropdownTag(
     var expanded by remember { mutableStateOf(false) }
 
     TextField(
-        value = selectedItem?.toString() ?: "",
+        value = selectedItem?.toResString() ?: "",
         onValueChange = {},
         label = { Text(label) },
         modifier = modifier.fillMaxWidth(),

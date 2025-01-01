@@ -33,10 +33,10 @@ abstract class SpellDao : BaseDao<SpellEntity>(SpellEntity.TABLE_NAME) {
     abstract fun getSpellsShortByBookId(id: Long, language: String): Flow<List<SpellWithTagsShort>>
 
     @Query(
-        "SELECT * FROM ${SpellEntity.TABLE_NAME} " +
-                "WHERE ${SpellEntity.COLUMN_UUID} = :uuid " +
-                "AND ${SpellEntity.COLUMN_LANGUAGE} in (:language, 'default') " +
-                "LIMIT 1"
+        "select * from ${SpellEntity.TABLE_NAME} " +
+                "where ${SpellEntity.COLUMN_UUID} = :uuid " +
+                "and ${SpellEntity.COLUMN_LANGUAGE} in (:language, 'default') " +
+                "limit 1"
     )
     abstract suspend fun getSpellDetail(uuid: String, language: String): SpellEntity
 

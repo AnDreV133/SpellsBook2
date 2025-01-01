@@ -82,4 +82,7 @@
     <string name="export_to_pdf">Экспорт в PDF</string>
     <string name="export_to_json">Экспорт в JSON</string>
     <string name="dump_bd">Сделать дамп бд?</string>
+    <string name="title_add_book">Добавить книгу</string>
+    <string name="name">Имя</string>
+    <string name="add">Добавить</string>
 </resources>

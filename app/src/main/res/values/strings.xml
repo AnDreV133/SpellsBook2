@@ -86,4 +86,7 @@
     <string name="export_to_pdf">Export to PDF</string>
     <string name="export_to_json">Export to JSON</string>
     <string name="dump_bd">Do DB dump?</string>
+    <string name="title_add_book">Add Book</string>
+    <string name="name">Name</string>
+    <string name="add">Add</string>
 </resources>

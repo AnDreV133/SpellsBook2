@@ -3,10 +3,11 @@ package com.example.spellsbook.domain.usecase
 import com.example.spellsbook.domain.enums.LocaleEnum
 import com.example.spellsbook.domain.repository.BookRepository
 import com.example.spellsbook.domain.repository.SpellRepository
+import com.google.gson.JsonArray
+import com.google.gson.JsonObject
+import com.google.gson.JsonParser
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.json.JSONArray
-import org.json.JSONObject
 import java.io.InputStream
 import javax.inject.Inject
 
@@ -24,9 +25,13 @@ class ConvertBookToJsonUseCase @Inject constructor(
                 Result.success(
                     Pair(
                         "book_${book.name}.json",
-                        JSONObject().apply {
-                            put("name", book.name)
-                            put("spells", JSONArray(spellsJson))
+                        JsonObject().apply {
+                            addProperty("name", book.name)
+                            add("spells", JsonArray().also { arr ->
+                                spellsJson.forEach {spellJson ->
+                                    arr.add(JsonParser.parseString(spellJson))
+                                }
+                            })
                         }
                             .toString()
                             .byteInputStream()
