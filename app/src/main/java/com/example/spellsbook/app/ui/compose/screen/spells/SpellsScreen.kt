@@ -17,6 +17,8 @@ import com.example.spellsbook.app.ui.compose.fragments.MainMenuBar
 import com.example.spellsbook.app.ui.compose.fragments.ScreenWithMenuBar
 import com.example.spellsbook.app.ui.compose.navigation.NavEndpoint
 import com.example.spellsbook.app.ui.compose.navigation.navigate
+import com.example.spellsbook.app.ui.compose.screen.spells.holder.FilterMap
+import com.example.spellsbook.app.ui.compose.screen.spells.holder.SpellsScreenHolder
 import com.example.spellsbook.domain.enums.SortOptionEnum
 import com.example.spellsbook.domain.model.SpellShortModel
 import com.example.spellsbook.domain.usecase.GetSpellsWithFilterAndSorterUseCase

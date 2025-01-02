@@ -1,4 +1,4 @@
-package com.example.spellsbook.app.ui.compose.screen.spells
+package com.example.spellsbook.app.ui.compose.screen.spells.holder
 
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
