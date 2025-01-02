@@ -1,8 +1,10 @@
 package com.example.spellsbook.app.ui.compose.screen.spells
 
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
@@ -120,12 +122,13 @@ fun SpellsByBookScreen(
     navController: NavController,
     viewModel: SpellsByBookViewModel = hiltViewModel(),
 ) {
-    SpellsScreenHolder { filter, sorter, searchQuery ->
+    SpellsScreenHolder { filter, sorter, searchQuery, modifier ->
         SpellList(
             bookId = bookId,
             filter = filter,
             sorter = sorter,
             navController = navController,
+            modifier = modifier,
             viewModel = viewModel
         )
     }
@@ -137,6 +140,7 @@ private fun SpellList(
     filter: FilterMap,
     sorter: SortOptionEnum,
     navController: NavController,
+    modifier: Modifier = Modifier,
     viewModel: SpellsByBookViewModel = hiltViewModel(),
 ) {
     val state = viewModel.state.collectAsState()
@@ -176,6 +180,7 @@ private fun SpellList(
         }
     }
 
+
     viewModel.onEvent(
         SpellsByBookViewModel
             .Event
@@ -186,16 +191,23 @@ private fun SpellList(
             )
     )
 
-    LazyColumn(
-        modifier = Modifier.fillMaxSize()
+    Scaffold(
+        modifier = modifier
+            .fillMaxSize()
     ) {
-        items(state.value.spells.toList()) { spellAndChanged ->
-            SpellListItemWithSwitchButton(
-                spellAndChanged = spellAndChanged,
-                addToBook = addToBookFunc,
-                removeFromBook = removeFromBookFunc,
-            ) { navigateFunc(spellAndChanged) }
+        LazyColumn(
+            modifier = Modifier
+                .padding(it)
+        ) {
+            items(state.value.spells.toList()) { spellAndChanged ->
+                SpellListItemWithSwitchButton(
+                    spellAndChanged = spellAndChanged,
+                    addToBook = addToBookFunc,
+                    removeFromBook = removeFromBookFunc,
+                ) { navigateFunc(spellAndChanged) }
+            }
         }
     }
+
 }
 

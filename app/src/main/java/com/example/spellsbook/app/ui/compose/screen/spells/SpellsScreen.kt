@@ -102,18 +102,19 @@ fun AllSpellsScreen(
                 )
         }
     ) {
-        SpellsScreenHolder { filter, sorter, searchQuery ->
+        SpellsScreenHolder { filter, sorter, searchQuery, modifier ->
             SpellList(
                 filter = filter,
                 sorter = sorter,
                 searchQuery = searchQuery,
                 navController = navController,
+                modifier = modifier,
                 viewModel = viewModel
             )
         }
     }
 
-    LaunchedEffect (Unit) {
+    LaunchedEffect(Unit) {
         viewModel.onEvent(AllSpellListViewModel.Event.CheckPaidUser)
     }
 }
@@ -124,6 +125,7 @@ private fun SpellList(
     sorter: SortOptionEnum,
     searchQuery: String,
     navController: NavController,
+    modifier: Modifier = Modifier,
     viewModel: AllSpellListViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsState()
@@ -139,7 +141,8 @@ private fun SpellList(
     )
 
     LazyColumn(
-        modifier = Modifier.fillMaxSize()
+        modifier = modifier
+            .fillMaxSize()
     ) {
         items(state.spells) { spell ->
             SpellListItem(
