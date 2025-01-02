@@ -22,6 +22,7 @@ interface SpellRepository {
     suspend fun getSpellsShort(
         filter: Map<TagIdentifierEnum, List<TagEnum>>,
         sorter: SortOptionEnum,
+        searchQuery: String,
         language: LocaleEnum
     ): List<SpellShortModel>
 

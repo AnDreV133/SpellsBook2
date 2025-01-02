@@ -118,7 +118,7 @@ fun SpellsByBookScreen(
     navController: NavController,
     viewModel: SpellsByBookViewModel = hiltViewModel(),
 ) {
-    SpellsScreenHolder { filter, sorter ->
+    SpellsScreenHolder { filter, sorter, searchQuery ->
         SpellList(
             bookId = bookId,
             filter = filter,

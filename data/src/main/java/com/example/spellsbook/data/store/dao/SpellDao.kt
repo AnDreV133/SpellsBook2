@@ -9,8 +9,11 @@ import com.example.spellsbook.data.store.entity.BooksSpellsXRefEntity
 import com.example.spellsbook.data.store.entity.SpellEntity
 import com.example.spellsbook.data.store.entity.TaggingSpellEntity
 import com.example.spellsbook.data.store.entity.model.SpellWithTagsShort
-import com.example.spellsbook.data.store.util.filterSuffixQuery
+import com.example.spellsbook.data.store.util.beginCondition
+import com.example.spellsbook.data.store.util.filterCondition
 import com.example.spellsbook.data.store.util.getSpellsWithTagsShortQuery
+import com.example.spellsbook.data.store.util.searchCondition
+import com.example.spellsbook.data.store.util.sortQuery
 import com.example.spellsbook.domain.enums.LocaleEnum
 import com.example.spellsbook.domain.enums.SortOptionEnum
 import com.example.spellsbook.domain.enums.TagEnum
@@ -56,12 +59,16 @@ abstract class SpellDao : BaseDao<SpellEntity>(SpellEntity.TABLE_NAME) {
     suspend fun getSpellsShort(
         filter: Map<TagIdentifierEnum, List<TagEnum>> = emptyMap(),
         sorter: SortOptionEnum = SortOptionEnum.BY_NAME,
+        searchQuery: String = "",
         language: LocaleEnum = LocaleEnum.ENGLISH
     ): List<SpellWithTagsShort> =
         getManyShort(
             SimpleSQLiteQuery(
                 getSpellsWithTagsShortQuery(language)
-                        + filterSuffixQuery(filter, sorter)
+                        + beginCondition()
+                        + filterCondition(filter)
+                        + searchCondition(searchQuery)
+                        + sortQuery(sorter)
             )
         )
 

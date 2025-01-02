@@ -17,27 +17,29 @@ internal fun getSpellsWithTagsShortQuery(
         "on t0.${SpellEntity.COLUMN_UUID}=t1.${TaggingSpellEntity.COLUMN_UUID} " +
         "and t1.${SpellEntity.COLUMN_LANGUAGE} in ('${language.value}', '${LocaleEnum.DEFAULT.value}')"
 
-internal fun filterSuffixQuery(
-    filter: Map<TagIdentifierEnum, List<TagEnum>> = emptyMap(),
-    sorter: SortOptionEnum = SortOptionEnum.BY_NAME
+internal fun beginCondition() =
+    " where 1=1 "
+
+
+internal fun filterCondition(
+    filter: Map<TagIdentifierEnum, List<TagEnum>> = emptyMap()
 ) = StringBuilder().apply {
-    // begin condition
-    append(" where 1=1 ")
-    // set filters
     filter.forEach { entry ->
         if (entry.value.isNotEmpty())
-            append("and ${entry.key.toColumnName()} in (${entry.value.toTableFields()}) ")
+            append(" and ${entry.key.toColumnName()} in (${entry.value.toTableFields()}) ")
     }
-
-    // set sorter
-    when (sorter) { // fixme: incorrect sort query
-        SortOptionEnum.BY_NAME -> Unit
-
-        SortOptionEnum.BY_LEVEL ->
-            append(", ${TaggingSpellEntity.COLUMN_LEVEL_TAG} asc ")
-
-        else -> throw IllegalArgumentException("sort option not supported")
-    }
-    append("order by ${SpellEntity.COLUMN_NAME} asc")
 }.toString()
 
+internal fun searchCondition(
+    word: String = ""
+) = " and ${SpellEntity.COLUMN_NAME} like '%$word%' "
+
+internal fun sortQuery(
+    sorter: SortOptionEnum = SortOptionEnum.BY_NAME
+) = StringBuilder().apply {
+    append(" order by ${SpellEntity.COLUMN_NAME} asc ")
+    when (sorter) { // fixme: incorrect sort query
+        SortOptionEnum.BY_NAME -> Unit
+        SortOptionEnum.BY_LEVEL -> append(", ${TaggingSpellEntity.COLUMN_LEVEL_TAG} asc ")
+    }
+}

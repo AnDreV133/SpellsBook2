@@ -19,11 +19,13 @@ class SpellRepositoryImpl(
     override suspend fun getSpellsShort(
         filter: Map<TagIdentifierEnum, List<TagEnum>>,
         sorter: SortOptionEnum,
+        searchQuery: String,
         language: LocaleEnum
     ): List<SpellShortModel> =
         spellDao.getSpellsShort(
             filter,
             sorter,
+            searchQuery,
             language
         ).map { it.mapToShortModel() }
 

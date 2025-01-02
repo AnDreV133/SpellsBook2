@@ -42,7 +42,8 @@ class AllSpellListViewModel @Inject constructor(
     sealed class Event {
         class UpdateListByFilterAndSorter(
             val filter: FilterMap,
-            val sorter: SortOptionEnum
+            val sorter: SortOptionEnum,
+            val searchQuery: String
         ) : Event()
 
         object CheckPaidUser : Event()
@@ -58,10 +59,9 @@ class AllSpellListViewModel @Inject constructor(
                     _state.value = _state.value.copy(
                         spells = getSpellsWithFilterAndSorterUseCase.execute(
                             event.filter,
-                            event.sorter
+                            event.sorter,
+                            event.searchQuery
                         ),
-//                        filter = event.filter,
-//                        sorter = event.sorter
                     )
                 }
             }
@@ -100,10 +100,11 @@ fun AllSpellsScreen(
                 )
         }
     ) {
-        SpellsScreenHolder { filter, sorter ->
+        SpellsScreenHolder { filter, sorter, searchQuery ->
             SpellList(
                 filter = filter,
                 sorter = sorter,
+                searchQuery = searchQuery,
                 navController = navController,
                 viewModel = viewModel
             )
@@ -119,6 +120,7 @@ fun AllSpellsScreen(
 private fun SpellList(
     filter: FilterMap,
     sorter: SortOptionEnum,
+    searchQuery: String,
     navController: NavController,
     viewModel: AllSpellListViewModel = hiltViewModel(),
 ) {
@@ -129,7 +131,8 @@ private fun SpellList(
             .Event
             .UpdateListByFilterAndSorter(
                 filter = filter,
-                sorter = sorter
+                sorter = sorter,
+                searchQuery = searchQuery
             )
     )
 

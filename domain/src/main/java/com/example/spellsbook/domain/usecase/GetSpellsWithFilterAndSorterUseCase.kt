@@ -15,10 +15,12 @@ class GetSpellsWithFilterAndSorterUseCase @Inject constructor(
     suspend fun execute(
         filter: Map<TagIdentifierEnum, List<TagEnum>> = emptyMap(),
         sorter: SortOptionEnum = SortOptionEnum.BY_NAME,
+        searchQuery: String = ""
     ): List<SpellShortModel> =
         spellRepository.getSpellsShort(
             filter = filter,
             sorter = sorter,
+            searchQuery = searchQuery,
             language = locale
         )
 }

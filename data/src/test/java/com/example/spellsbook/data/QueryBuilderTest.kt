@@ -2,7 +2,7 @@ package com.example.spellsbook.data
 
 import com.example.spellsbook.data.store.entity.SpellEntity
 import com.example.spellsbook.data.store.entity.TaggingSpellEntity
-import com.example.spellsbook.data.store.util.filterSuffixQuery
+import com.example.spellsbook.data.store.util.filterCondition
 import com.example.spellsbook.domain.enums.LevelEnum
 import com.example.spellsbook.domain.enums.TagEnum
 import com.example.spellsbook.domain.enums.TagIdentifierEnum
@@ -17,7 +17,7 @@ class QueryBuilderTest {
             TagIdentifierEnum.LEVEL to listOf<TagEnum>()
         )
 
-        val res = filterSuffixQuery(
+        val res = filterCondition(
             filter
         )
 
@@ -30,7 +30,7 @@ class QueryBuilderTest {
     fun `empty filter should return empty suffix`() {
         val filter = mapOf<TagIdentifierEnum, List<TagEnum>>()
 
-        val res = filterSuffixQuery(
+        val res = filterCondition(
             filter
         )
 
@@ -45,7 +45,7 @@ class QueryBuilderTest {
             TagIdentifierEnum.LEVEL to listOf(LevelEnum.LEVEL_1)
         )
 
-        val res = filterSuffixQuery(
+        val res = filterCondition(
             filter
         )
 
@@ -63,7 +63,7 @@ class QueryBuilderTest {
             TagIdentifierEnum.SCHOOL to listOf()
         )
 
-        val res = filterSuffixQuery(
+        val res = filterCondition(
             filter
         )
 

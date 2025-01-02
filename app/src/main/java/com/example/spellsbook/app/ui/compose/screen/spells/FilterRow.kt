@@ -5,16 +5,14 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
-import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
-import androidx.compose.foundation.lazy.staggeredgrid.items
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.Icon
@@ -89,7 +87,7 @@ data class FilterItemData(
 )
 
 @Composable
-fun FilterGrid(
+fun FilterRow(
     callbackApplyFilter: (FilterMap) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: FilterGridViewModel = hiltViewModel()
@@ -108,11 +106,9 @@ fun FilterGrid(
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        LazyVerticalStaggeredGrid(
+        LazyRow(
             modifier = modifier,
-            columns = StaggeredGridCells.Fixed(3),
-            contentPadding = PaddingValues(4.dp),
-            horizontalArrangement = Arrangement.Start
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             items(filterItemDataList) {
                 FilterItem(it) { callbackApplyFilter(viewModel.state.value.filters) }

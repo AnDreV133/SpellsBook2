@@ -18,11 +18,12 @@ class GetSpellsWithFilterAndSorterByBookIdUseCase @Inject constructor(
         bookId: Long,
         filter: Map<TagIdentifierEnum, List<TagEnum>> = emptyMap(),
         sorter: SortOptionEnum = SortOptionEnum.BY_NAME,
+        searchQuery: String = "",
     ): List<Pair<SpellShortModel, Boolean>> {
         val uuidInBook = booksWithSpellsRepository.getUuidsByBookId(bookId).toMutableSet()
 
         var prevUuidInBookSize = uuidInBook.size
-        return spellRepository.getSpellsShort(filter, sorter, locale).map {
+        return spellRepository.getSpellsShort(filter, sorter, searchQuery, locale).map {
             uuidInBook -= it.uuid
             val inBook = uuidInBook.size == prevUuidInBookSize
             prevUuidInBookSize = uuidInBook.size
