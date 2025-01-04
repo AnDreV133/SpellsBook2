@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import com.example.spellsbook.app.ui.compose.fragments.MainWindow
 import com.example.spellsbook.app.ui.compose.navigation.AppNavHost
+import com.example.spellsbook.app.ui.theme.AppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -14,7 +15,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            MainWindow {
+            AppTheme {
                 AppNavHost()
             }
         }
