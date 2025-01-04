@@ -5,7 +5,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
 val BaseTextStyle = TextStyle(
-    color = DarkMiddleColor,
+    color = DarkMiddleGrayColor,
     fontSize = 20.sp
 )
 

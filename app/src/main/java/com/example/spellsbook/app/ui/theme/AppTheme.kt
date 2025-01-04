@@ -11,11 +11,14 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.TextStyle
 import androidx.core.view.WindowCompat
+import androidx.navigation.compose.rememberNavController
 
 data class AppColors(
     val firstBackgroundColor: Color,
     val secondBackgroundColor: Color,
-    val firstForegroundColor: Color,
+    val cellBackgroundColor: Color,
+    val textColor: Color,
+    val tintTextColor: Color,
 )
 
 data class AppTextStiles(
@@ -28,14 +31,16 @@ private val LocalAppColors = staticCompositionLocalOf<AppColors> {
     error("No colors provided")
 }
 
-private val LocalTextStyles = staticCompositionLocalOf<AppTextStiles> {
+private val LocalAppTextStyles = staticCompositionLocalOf<AppTextStiles> {
     error("No text styles provided")
 }
 
 private val LightAppColorScheme = AppColors(
     firstBackgroundColor = DarkGrayColor,
     secondBackgroundColor = CreamColor,
-    firstForegroundColor = DarkCreamColor
+    cellBackgroundColor = DarkCreamColor,
+    textColor = DarkMiddleGrayColor,
+    tintTextColor = GrayColor,
 )
 
 private val AppTextStileScheme = AppTextStiles(
@@ -51,6 +56,7 @@ fun AppTheme(
 ) {
     val colorScheme = LightAppColorScheme
     val textStyleScheme = AppTextStileScheme
+    val navController = rememberNavController()
 
     val view = LocalView.current
     if (!view.isInEditMode) {
@@ -63,7 +69,8 @@ fun AppTheme(
 
     CompositionLocalProvider(
         LocalAppColors provides colorScheme,
-        LocalTextStyles provides textStyleScheme,
+        LocalAppTextStyles provides textStyleScheme,
+        LocalAppNavController provides navController,
         content = content
     )
 }
@@ -75,5 +82,5 @@ object AppTheme {
 
     val textStyles: AppTextStiles
         @Composable
-        get() = LocalTextStyles.current
+        get() = LocalAppTextStyles.current
 }

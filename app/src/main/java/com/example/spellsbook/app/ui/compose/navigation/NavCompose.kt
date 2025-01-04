@@ -18,10 +18,11 @@ import com.example.spellsbook.app.ui.compose.screen.SpellDetailScreen
 import com.example.spellsbook.app.ui.compose.screen.SpellEditorScreen
 import com.example.spellsbook.app.ui.compose.screen.spells.AllSpellsScreen
 import com.example.spellsbook.app.ui.compose.screen.spells.SpellsByBookScreen
+import com.example.spellsbook.app.ui.theme.appNavController
 
 @Composable
 fun AppNavHost() {
-    val navController = rememberNavController()
+    val navController = appNavController
     NavHost(
         navController = navController,
         startDestination = NavEndpoint.Books.route
@@ -30,7 +31,7 @@ fun AppNavHost() {
             ScreenWithMenuBar(
                 menuBar = { MainMenuBar(navController, NavEndpoint.Books) }
             ) {
-                BooksScreen(navController = navController)
+                BooksScreen()
             }
         }
 

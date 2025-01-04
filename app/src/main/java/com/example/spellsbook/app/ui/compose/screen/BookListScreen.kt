@@ -1,22 +1,36 @@
 package com.example.spellsbook.app.ui.compose.screen
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.NavController
-import androidx.navigation.NavHostController
 import com.example.spellsbook.app.ui.compose.fragments.AddFloatingButton
-import com.example.spellsbook.app.ui.compose.item.BookItem
+import com.example.spellsbook.app.ui.compose.navigation.NavEndpoint
+import com.example.spellsbook.app.ui.compose.navigation.navigate
+import com.example.spellsbook.app.ui.theme.AppTheme
+import com.example.spellsbook.app.ui.theme.appNavController
 import com.example.spellsbook.domain.model.BookModel
 import com.example.spellsbook.domain.usecase.GetAllBooksUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -80,7 +94,6 @@ class BooksViewModel @Inject constructor(
 
 @Composable
 fun BooksScreen(
-    navController: NavHostController,
     viewModel: BooksViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsState()
@@ -92,9 +105,9 @@ fun BooksScreen(
 
         content = { padding ->
             BookList(
-                navController = navController,
-                padding = padding,
-                viewModel = viewModel
+                state.books,
+                onRemoveBook = { viewModel.onEvent(BooksViewModel.Event.ShowRemoveBookDialog(it)) },
+                modifier = Modifier.padding(padding)
             )
         }
     )
@@ -113,26 +126,78 @@ fun BooksScreen(
 
 @Composable
 fun BookList(
-    navController: NavController,
-    padding: PaddingValues,
-    viewModel: BooksViewModel
+    books: List<BookModel>,
+    onRemoveBook: (model: BookModel) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
-    val state by viewModel.state.collectAsState()
+    val navController = appNavController
 
     LazyColumn(
-        modifier = Modifier.padding(padding),
-        contentPadding = PaddingValues(4.dp)
+        modifier = modifier
+            .fillMaxSize()
+            .background(AppTheme.colors.firstBackgroundColor),
+        contentPadding = PaddingValues(4.dp),
     ) {
-        this@LazyColumn.items(state.books) { elem ->
+        this@LazyColumn.items(books) { elem ->
             BookItem(
                 model = elem,
-                onRemove = { viewModel.onEvent(BooksViewModel.Event.ShowRemoveBookDialog(elem)) },
-                navController = navController
+                onRemove = { onRemoveBook(elem) },
+                navigateExport = { navController.navigate(NavEndpoint.ExportBook(elem.id)) },
+                navigateDetail = { navController.navigate(NavEndpoint.UnknownSpells(elem.id)) }
             )
         }
     }
 }
 
 
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun BookItem(
+    model: BookModel,
+    onRemove: () -> Unit,
+    navigateExport: () -> Unit,
+    navigateDetail: () -> Unit,
+) {
+    Card(
+        modifier = Modifier
+            .padding(
+                horizontal = 4.dp,
+                vertical = 8.dp,
+            )
+            .fillMaxSize()
+            .combinedClickable(
+                onLongClick = navigateExport,
+                onClick = navigateDetail
+            ),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 10.dp
+        ),
+        colors = CardDefaults.cardColors(
+            containerColor = AppTheme.colors.secondBackgroundColor,
+        )
+    ) {
+        Text(
+            modifier = Modifier.padding(
+                horizontal = 16.dp,
+                vertical = 12.dp,
+            ),
+            textAlign = TextAlign.Start,
+            text = model.name,
+            style = AppTheme.textStyles.primaryBoldTextStyle
+        )
 
+        IconButton(onClick = onRemove) {
+            Icon(
+                imageVector = Icons.Default.Delete,
+                contentDescription = "Delete button",
+                tint = AppTheme.colors.textColor
+            )
+        }
+    }
+}
 
+@Preview
+@Composable
+fun PreviewBooksScreen() {
+    BooksScreen()
+}
