@@ -7,12 +7,8 @@ import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.CoroutineScope
+import androidx.compose.ui.graphics.Color
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.InputStream
@@ -58,3 +54,12 @@ suspend fun export(context: Context, streamData: Pair<String, InputStream>) =
             streamData.second.close()
         }
     }
+
+fun Color.saturation(saturation: Float = 0.3f): Color {
+    val toBound = { it: Float -> if (it < 0) 0f else if (it > 1) 1f else it }
+    return copy(
+        red = toBound(red * saturation),
+        green = toBound(green * saturation),
+        blue = toBound(blue * saturation),
+    )
+}

@@ -113,7 +113,7 @@ fun BooksScreen(
     )
 
     if (state.isAddDialogShowing)
-        AddBookDialog(
+        AddBookDialogScreen(
             onClose = { viewModel.onEvent(BooksViewModel.Event.CloseAddBookDialog) }
         )
 
@@ -190,7 +190,7 @@ fun BookItem(
             Icon(
                 imageVector = Icons.Default.Delete,
                 contentDescription = "Delete button",
-                tint = AppTheme.colors.textColor
+                tint = AppTheme.colors.firstForegroundColor
             )
         }
     }

@@ -13,7 +13,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
 import com.example.spellsbook.app.ui.compose.navigation.navigate
 import com.example.spellsbook.R
 import com.example.spellsbook.app.ui.compose.navigation.NavEndpoint
@@ -78,13 +77,13 @@ private fun MenuBar(
                     Icon(
                         item.icon,
                         contentDescription = item.title,
-                        tint = AppTheme.colors.textColor
+                        tint = AppTheme.colors.firstForegroundColor
                     )
                 },
                 label = {
                     Text(
                         text = item.title,
-                        color = AppTheme.colors.textColor
+                        color = AppTheme.colors.firstForegroundColor
                     )
                 }
             )

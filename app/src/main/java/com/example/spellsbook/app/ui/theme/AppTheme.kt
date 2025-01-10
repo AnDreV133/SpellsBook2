@@ -17,14 +17,15 @@ data class AppColors(
     val firstBackgroundColor: Color,
     val secondBackgroundColor: Color,
     val cellBackgroundColor: Color,
-    val textColor: Color,
+    val firstForegroundColor: Color,
+    val secondForegroundColor: Color,
     val tintTextColor: Color,
 )
 
 data class AppTextStiles(
     val primaryTextStyle: TextStyle,
     val primaryBoldTextStyle: TextStyle,
-    val tintTextStyle: TextStyle
+    val smallTextStyle: TextStyle
 )
 
 private val LocalAppColors = staticCompositionLocalOf<AppColors> {
@@ -39,14 +40,15 @@ private val LightAppColorScheme = AppColors(
     firstBackgroundColor = DarkGrayColor,
     secondBackgroundColor = CreamColor,
     cellBackgroundColor = DarkCreamColor,
-    textColor = DarkMiddleGrayColor,
+    firstForegroundColor = WhiteColor,
+    secondForegroundColor = DarkMiddleGrayColor,
     tintTextColor = GrayColor,
 )
 
 private val AppTextStileScheme = AppTextStiles(
     primaryTextStyle = BaseBoldTextStyle,
     primaryBoldTextStyle = BaseBoldTextStyle,
-    tintTextStyle = TintTextStyle
+    smallTextStyle = SmallTextStyle
 )
 
 @Composable
