@@ -21,7 +21,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
@@ -141,10 +140,9 @@ private fun AddBookDialog(
         ) {
             Text(
                 text = stringResource(R.string.title_add_book),
-                fontSize = 24.sp,
                 modifier = Modifier
                     .padding(bottom = 16.dp),
-                style = AppTheme.textStyles.primaryBoldTextStyle
+                style = AppTheme.textStyles.largeBoldTextStyle
             )
 
             Row(
@@ -154,12 +152,11 @@ private fun AddBookDialog(
             ) {
                 Text(
                     text = stringResource(R.string.name),
-                    fontSize = 24.sp,
                     modifier = Modifier.padding(
                         bottom = 8.dp,
                         end = 8.dp
-                    )
-
+                    ),
+                    style = AppTheme.textStyles.largeTextStyle
                 )
                 TextField(
                     modifier = Modifier
@@ -167,6 +164,7 @@ private fun AddBookDialog(
                         .height(IntrinsicSize.Min),
                     value = state.bookName,
                     onValueChange = onEditBookName,
+                    textStyle = AppTheme.textStyles.primaryTextStyle,
                 )
             }
 

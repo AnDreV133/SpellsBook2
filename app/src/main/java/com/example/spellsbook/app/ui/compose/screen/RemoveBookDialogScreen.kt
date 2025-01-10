@@ -72,8 +72,7 @@ private fun RemoveBookDialog(
         text = {
             Text(
                 text = stringResource(id = R.string.remove_fmt, model.name),
-                fontSize = 24.sp,
-                style = AppTheme.textStyles.primaryBoldTextStyle
+                style = AppTheme.textStyles.largeBoldTextStyle
             )
         },
         containerColor = AppTheme.colors.secondBackgroundColor,

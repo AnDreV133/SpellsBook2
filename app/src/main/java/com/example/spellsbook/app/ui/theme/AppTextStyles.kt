@@ -15,3 +15,15 @@ val BaseBoldTextStyle = BaseTextStyle.copy(
 val SmallTextStyle = BaseTextStyle.copy(
     fontSize = 16.sp
 )
+
+val SmallBoldTextStyle = SmallTextStyle.copy(
+    fontWeight = FontWeight.Bold
+)
+
+val LargeTextStyle = BaseTextStyle.copy(
+    fontSize = 24.sp
+)
+
+val LargeBoldTextStyle = LargeTextStyle.copy(
+    fontWeight = FontWeight.Bold
+)

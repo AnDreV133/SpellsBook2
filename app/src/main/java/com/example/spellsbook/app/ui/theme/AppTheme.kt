@@ -25,7 +25,10 @@ data class AppColors(
 data class AppTextStiles(
     val primaryTextStyle: TextStyle,
     val primaryBoldTextStyle: TextStyle,
-    val smallTextStyle: TextStyle
+    val smallTextStyle: TextStyle,
+    val smallBoldTextStyle: TextStyle,
+    val largeTextStyle: TextStyle,
+    val largeBoldTextStyle: TextStyle
 )
 
 private val LocalAppColors = staticCompositionLocalOf<AppColors> {
@@ -46,9 +49,12 @@ private val LightAppColorScheme = AppColors(
 )
 
 private val AppTextStileScheme = AppTextStiles(
-    primaryTextStyle = BaseBoldTextStyle,
+    primaryTextStyle = BaseTextStyle,
     primaryBoldTextStyle = BaseBoldTextStyle,
-    smallTextStyle = SmallTextStyle
+    smallTextStyle = SmallTextStyle,
+    smallBoldTextStyle = SmallBoldTextStyle,
+    largeTextStyle = LargeTextStyle,
+    largeBoldTextStyle = LargeBoldTextStyle,
 )
 
 @Composable
