@@ -1,26 +1,22 @@
 package com.example.spellsbook.app.ui.compose.fragments
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.spellsbook.R
+import com.example.spellsbook.app.ui.theme.AppTheme
+import com.example.spellsbook.app.ui.theme.backgroundColorForPreview
 
 @Composable
 fun AddFloatingButton(
     onClick: () -> Unit,
 ) {
-    IconButton(
+    CustomFirstIconButton(
         modifier = Modifier
-            .background(Color.White, shape = CircleShape)
-            .padding(8.dp)
             .size(60.dp),
         onClick = onClick
     ) {
@@ -30,5 +26,16 @@ fun AddFloatingButton(
             modifier = Modifier
                 .size(48.dp),
         )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    backgroundColor = backgroundColorForPreview
+)
+@Composable
+fun AddFloatingButtonPreview() {
+    AppTheme {
+        AddFloatingButton(onClick = {})
     }
 }

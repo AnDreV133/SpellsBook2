@@ -77,13 +77,13 @@ private fun MenuBar(
                     Icon(
                         item.icon,
                         contentDescription = item.title,
-                        tint = AppTheme.colors.firstForegroundColor
+                        tint = AppTheme.colors.secondForegroundColor
                     )
                 },
                 label = {
                     Text(
                         text = item.title,
-                        color = AppTheme.colors.firstForegroundColor
+                        color = AppTheme.colors.secondForegroundColor
                     )
                 }
             )
