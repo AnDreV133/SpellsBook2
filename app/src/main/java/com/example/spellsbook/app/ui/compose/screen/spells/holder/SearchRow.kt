@@ -30,7 +30,6 @@ fun SearchRow(
     modifier: Modifier = Modifier
 ) {
     val focusManager = LocalFocusManager.current
-    val isKeyboardOpened by keyboardAsState()
 
     OutlinedTextField(
         modifier = modifier,
@@ -64,12 +63,8 @@ fun SearchRow(
         ),
         keyboardActions = KeyboardActions(
             onSearch = { onClickSearch(); focusManager.clearFocus() }
-        ),
-
+        )
     )
-
-    if (!isKeyboardOpened)
-        focusManager.clearFocus()
 }
 
 @Preview(
