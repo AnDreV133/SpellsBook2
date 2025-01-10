@@ -1,6 +1,5 @@
 package com.example.spellsbook.app.ui.theme
 
-import androidx.annotation.ColorInt
 import androidx.compose.ui.graphics.Color
 
 
