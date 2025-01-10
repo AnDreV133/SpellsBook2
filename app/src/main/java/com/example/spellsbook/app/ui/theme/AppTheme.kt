@@ -16,10 +16,13 @@ import androidx.navigation.compose.rememberNavController
 data class AppColors(
     val firstBackgroundColor: Color,
     val secondBackgroundColor: Color,
-    val cellBackgroundColor: Color,
     val firstForegroundColor: Color,
     val secondForegroundColor: Color,
-    val tintTextColor: Color,
+    val cellColor: Color,
+    val cellStrokeFocusedColor: Color,
+    val cellStrokeUnfocusedColor: Color,
+    val cellTintTextColor: Color,
+    val cellTextColor: Color,
 )
 
 data class AppTextStiles(
@@ -42,10 +45,13 @@ private val LocalAppTextStyles = staticCompositionLocalOf<AppTextStiles> {
 private val LightAppColorScheme = AppColors(
     firstBackgroundColor = DarkGrayColor,
     secondBackgroundColor = CreamColor,
-    cellBackgroundColor = DarkCreamColor,
+    cellColor = DarkCreamColor,
+    cellStrokeFocusedColor = LightGreenColor,
+    cellStrokeUnfocusedColor = LightGrayColor,
     firstForegroundColor = WhiteColor,
     secondForegroundColor = DarkMiddleGrayColor,
-    tintTextColor = GrayColor,
+    cellTintTextColor = GrayColor,
+    cellTextColor = GrayColor
 )
 
 private val AppTextStileScheme = AppTextStiles(

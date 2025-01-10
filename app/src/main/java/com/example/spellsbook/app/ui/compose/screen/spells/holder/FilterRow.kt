@@ -35,6 +35,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import com.example.spellsbook.R
 import com.example.spellsbook.app.mapper.toResString
+import com.example.spellsbook.app.ui.theme.AppTheme
 import com.example.spellsbook.domain.enums.CastingTimeEnum
 import com.example.spellsbook.domain.enums.LevelEnum
 import com.example.spellsbook.domain.enums.RangeEnum
@@ -128,8 +129,16 @@ fun FilterItem(
     Row(
         modifier = Modifier
             .wrapContentSize()
-            .background(Color.DarkGray, shape = CircleShape)
-            .border(4.dp, Color.DarkGray, shape = CircleShape)
+            .background(AppTheme.colors.cellColor, shape = CircleShape)
+            .border(
+                2.dp,
+                if (isDropDownMenuShowing)
+                    AppTheme.colors.cellStrokeFocusedColor
+                else
+                    AppTheme.colors.cellStrokeUnfocusedColor,
+                shape = CircleShape
+            )
+            .border(4.dp, AppTheme.colors.cellColor, shape = CircleShape)
             .padding(4.dp)
             .clickable { isDropDownMenuShowing = true },
         horizontalArrangement = Arrangement.spacedBy(4.dp),
@@ -139,16 +148,16 @@ fun FilterItem(
             painter = painterResource(
                 id = R.drawable.ic_arrow_drop_down_48
             ),
-            tint = Color.Gray,
+            tint = AppTheme.colors.cellTextColor,
             contentDescription = null,
             modifier = Modifier.size(24.dp)
         )
         Text(
             text = itemData.tagIdentifier.toResString(),
-            color = Color.White,
+            color = AppTheme.colors.cellTextColor,
             overflow = TextOverflow.Ellipsis,
             maxLines = 1,
-            fontSize = 16.sp,
+            style = AppTheme.textStyles.smallTextStyle,
             modifier = Modifier
                 .wrapContentHeight()
                 .widthIn(0.dp, 100.dp)

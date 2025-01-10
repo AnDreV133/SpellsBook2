@@ -1,7 +1,6 @@
 package com.example.spellsbook.app.ui.compose.screen.spells.holder
 
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -13,41 +12,36 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import com.example.spellsbook.app.ui.compose.keyboardAsState
+import com.example.spellsbook.app.ui.theme.AppTheme
+import com.example.spellsbook.app.ui.theme.backgroundColorForPreview
 
 
 @Composable
 fun SearchRow(
-    callbackSearchQuery: (String) -> Unit,
+    query: String,
+    onValueChange: (String) -> Unit,
+    onClickSearch: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var query by remember { mutableStateOf("") }
-    val cbSearch = remember {
-        { callbackSearchQuery(query) }
-    }
+    val focusManager = LocalFocusManager.current
+    val isKeyboardOpened by keyboardAsState()
 
     OutlinedTextField(
         modifier = modifier,
         value = query,
-        onValueChange = { query = it },
+        onValueChange = onValueChange,
         singleLine = true,
-        textStyle = TextStyle(
-            color = Color.Black,
-            fontSize = 20.sp
-        ),
+        textStyle = AppTheme.textStyles.primaryTextStyle,
         trailingIcon = {
             IconButton(
                 modifier = Modifier.size(48.dp),
-                onClick = cbSearch,
+                onClick = { onClickSearch(); focusManager.clearFocus() },
             ) {
                 Icon(
                     imageVector = Icons.Filled.Search,
@@ -56,24 +50,39 @@ fun SearchRow(
             }
         },
         colors = TextFieldDefaults.colors(
-            focusedIndicatorColor = Color.Black,
-            unfocusedIndicatorColor = Color.Black
+            focusedIndicatorColor = AppTheme.colors.cellStrokeFocusedColor,
+            focusedContainerColor = AppTheme.colors.cellColor,
+            focusedLabelColor = AppTheme.colors.cellTextColor,
+            unfocusedIndicatorColor = AppTheme.colors.cellStrokeUnfocusedColor,
+            unfocusedContainerColor = AppTheme.colors.cellColor,
+            unfocusedLabelColor = AppTheme.colors.cellTintTextColor,
         ),
         shape = RoundedCornerShape(100),
         keyboardOptions = KeyboardOptions(
-            imeAction = ImeAction.Search
+            imeAction = ImeAction.Search,
+
         ),
         keyboardActions = KeyboardActions(
-            onSearch = { cbSearch() }
-        )
+            onSearch = { onClickSearch(); focusManager.clearFocus() }
+        ),
+
     )
+
+    if (!isKeyboardOpened)
+        focusManager.clearFocus()
 }
 
-@Preview
+@Preview(
+    showBackground = true,
+    backgroundColor = backgroundColorForPreview
+)
 @Composable
 fun SearchRowPreview() {
-    SearchRow(
-        modifier = Modifier.width(700.dp),
-        callbackSearchQuery = {}
-    )
+    AppTheme {
+        SearchRow(
+            query = "ЁЁЁЁЁЁ",
+            onValueChange = {},
+            onClickSearch = {}
+        )
+    }
 }
