@@ -85,4 +85,6 @@
     <string name="title_add_book">Добавить книгу</string>
     <string name="name">Имя</string>
     <string name="add">Добавить</string>
+    <string name="remove_fmt">Удалить «%s»?</string>
+    <string name="remove">Удалить</string>
 </resources>

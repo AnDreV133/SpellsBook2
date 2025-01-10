@@ -118,7 +118,7 @@ fun BooksScreen(
         )
 
     if (state.bookModelForRemoveDialog != null)
-        RemoveBookDialog(
+        RemoveBookDialogScreen(
             bookModel = state.bookModelForRemoveDialog!!,
             onClose = { viewModel.onEvent(BooksViewModel.Event.CloseRemoveBookDialog) }
         )

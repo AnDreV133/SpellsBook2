@@ -89,4 +89,6 @@
     <string name="title_add_book">Add Book</string>
     <string name="name">Name</string>
     <string name="add">Add</string>
+    <string name="remove_fmt">Remove «%s»?</string>
+    <string name="remove">Remove</string>
 </resources>
