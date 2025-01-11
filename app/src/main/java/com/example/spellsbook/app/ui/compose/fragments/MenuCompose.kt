@@ -1,21 +1,23 @@
 package com.example.spellsbook.app.ui.compose.fragments
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.spellsbook.app.ui.compose.navigation.navigate
 import com.example.spellsbook.R
 import com.example.spellsbook.app.ui.compose.navigation.NavEndpoint
+import com.example.spellsbook.app.ui.compose.navigation.navigate
+import com.example.spellsbook.app.ui.compose.saturation
 import com.example.spellsbook.app.ui.theme.AppTheme
 
 data class MenuNavigationItem(
@@ -59,13 +61,17 @@ private fun MenuBar(
     if (selectedItemIndex < 0) throw IllegalArgumentException("Invalid endpoint $changedEndpoint in ${items.map { it.navEndpoint }}")
 
     NavigationBar(
+        containerColor = AppTheme.colors.firstBackgroundColor,
+        contentColor = AppTheme.colors.firstForegroundColor,
         modifier = Modifier
             .fillMaxWidth()
-            .wrapContentHeight()
-            .background(color = AppTheme.colors.secondBackgroundColor),
+            .wrapContentHeight(),
     ) {
         items.forEachIndexed { index, item ->
             NavigationBarItem(
+                colors = NavigationBarItemDefaults.colors(
+                    indicatorColor = AppTheme.colors.firstForegroundColor.saturation(0.5f),
+                ),
                 selected = selectedItemIndex == index,
                 onClick = {
                     navController.navigate(item.navEndpoint) {
@@ -77,13 +83,13 @@ private fun MenuBar(
                     Icon(
                         item.icon,
                         contentDescription = item.title,
-                        tint = AppTheme.colors.secondForegroundColor
+                        tint = AppTheme.colors.firstForegroundColor
                     )
                 },
                 label = {
                     Text(
                         text = item.title,
-                        color = AppTheme.colors.secondForegroundColor
+                        color = AppTheme.colors.firstForegroundColor,
                     )
                 }
             )
