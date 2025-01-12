@@ -60,14 +60,18 @@ class AllSpellListViewModel @Inject constructor(
 
     private val _state = MutableStateFlow(State())
     val state = _state
-        .onStart {
-            emit(State(isPaidUser = isPaidUserUseCase.execute()))
-        }
+        .onStart { initState() }
         .stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(5000L),
-            State()
+        viewModelScope,
+        SharingStarted.WhileSubscribed(5000L),
+        State()
+    )
+
+    private suspend fun initState() {
+        _state.value = _state.value.copy(
+            isPaidUser = isPaidUserUseCase.execute()
         )
+    }
 
     fun onEvent(event: Event) {
         when (event) {
