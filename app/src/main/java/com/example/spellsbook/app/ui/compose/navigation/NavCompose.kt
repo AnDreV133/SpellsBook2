@@ -4,7 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.spellsbook.app.ui.compose.fragments.BookMenuBar
 import com.example.spellsbook.app.ui.compose.fragments.MainMenuBar
@@ -57,20 +56,9 @@ fun AppNavHost() {
         ) {
             val bookId = it.arguments?.getLong("id") ?: return@composable
 
-            ScreenWithMenuBar(
-                menuBar = {
-                    BookMenuBar(
-                        bookId = bookId,
-                        navController = navController,
-                        changedEndpoint = NavEndpoint.UnknownSpells(bookId)
-                    )
-                }
-            ) {
-                SpellsByBookScreen(
-                    bookId = bookId,
-                    navController = navController
-                )
-            }
+            SpellsByBookScreen(
+                bookId = bookId
+            )
         }
 
         composable(

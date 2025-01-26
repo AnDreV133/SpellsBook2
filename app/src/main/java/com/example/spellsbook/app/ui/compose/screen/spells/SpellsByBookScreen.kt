@@ -1,26 +1,29 @@
 package com.example.spellsbook.app.ui.compose.screen.spells
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.NavController
+import com.example.spellsbook.app.ui.compose.fragments.BookMenuBar
+import com.example.spellsbook.app.ui.compose.fragments.ScreenWithMenuBar
 import com.example.spellsbook.app.ui.compose.navigation.NavEndpoint
 import com.example.spellsbook.app.ui.compose.navigation.navigate
-import com.example.spellsbook.app.ui.compose.screen.spells.holder.FilterMap
-import com.example.spellsbook.app.ui.compose.screen.spells.holder.SpellsScreenHolder
-import com.example.spellsbook.domain.enums.SortOptionEnum
+import com.example.spellsbook.app.ui.compose.screen.spells.holder.SpellsHeaderWithHeader
+import com.example.spellsbook.app.ui.theme.AppTheme
+import com.example.spellsbook.app.ui.theme.appNavController
 import com.example.spellsbook.domain.model.SpellShortModel
 import com.example.spellsbook.domain.usecase.AddSpellToBookUseCase
-import com.example.spellsbook.domain.usecase.GetSpellsWithFilterAndSorterByBookIdUseCase
+import com.example.spellsbook.domain.usecase.MarkSpellsIfInBook
 import com.example.spellsbook.domain.usecase.RemoveSpellFromBookUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,7 +33,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SpellsByBookViewModel @Inject constructor(
-    private val getSpellsWithFilterAndSorterByBookIdUseCase: GetSpellsWithFilterAndSorterByBookIdUseCase,
+    private val markSpellsIfInBook: MarkSpellsIfInBook,
     private val addSpellToBookUseCase: AddSpellToBookUseCase,
     private val removeSpellFromBookUseCase: RemoveSpellFromBookUseCase
 ) : ViewModel() {
@@ -39,10 +42,9 @@ class SpellsByBookViewModel @Inject constructor(
     )
 
     sealed class Event {
-        class ExecuteListByFilterAndSorter(
+        class ChangeFilter(
             val bookId: Long,
-            val filter: FilterMap,
-            val sorter: SortOptionEnum
+            val spells: List<SpellShortModel>,
         ) : Event()
 
         class AddToBook(
@@ -61,14 +63,15 @@ class SpellsByBookViewModel @Inject constructor(
 
     fun onEvent(event: Event) {
         when (event) {
-            is Event.ExecuteListByFilterAndSorter -> {
+            is Event.ChangeFilter -> {
                 viewModelScope.launch {
                     _state.value = _state.value.copy(
-                        spells = getSpellsWithFilterAndSorterByBookIdUseCase.execute(
-                            bookId = event.bookId,
-                            filter = event.filter,
-                            sorter = event.sorter
-                        ).associate { it },
+                        spells = markSpellsIfInBook
+                            .execute(
+                                bookId = event.bookId,
+                                spells = event.spells
+                            )
+                            .associate { it },
                     )
                 }
             }
@@ -119,95 +122,92 @@ class SpellsByBookViewModel @Inject constructor(
 @Composable
 fun SpellsByBookScreen(
     bookId: Long,
-    navController: NavController,
     viewModel: SpellsByBookViewModel = hiltViewModel(),
 ) {
-    SpellsScreenHolder { filter, sorter, searchQuery, modifier ->
-        SpellList(
-            bookId = bookId,
-            filter = filter,
-            sorter = sorter,
-            navController = navController,
-            modifier = modifier,
-            viewModel = viewModel
-        )
+    val state by viewModel.state.collectAsState()
+    val navController = appNavController
+
+    ScreenWithMenuBar(
+        menuBar = {
+            BookMenuBar(
+                bookId = bookId,
+                navController = navController,
+                changedEndpoint = NavEndpoint.UnknownSpells(bookId)
+            )
+        }
+    ) {
+        SpellsHeaderWithHeader { spells, modifier ->
+            println(spells.size)
+            LaunchedEffect(spells) {
+                viewModel.onEvent(
+                    SpellsByBookViewModel
+                        .Event
+                        .ChangeFilter(
+                            bookId,
+                            spells
+                        )
+                )
+            }
+
+            SpellList(
+                spellAndChangeList = state.spells.toList(),
+                addToBook = {
+                    viewModel.onEvent(
+                        SpellsByBookViewModel
+                            .Event
+                            .AddToBook(
+                                bookId = bookId,
+                                spell = it
+                            )
+                    )
+                },
+                removeFromBook = {
+                    viewModel.onEvent(
+                        SpellsByBookViewModel
+                            .Event
+                            .RemoveFromBook(
+                                bookId = bookId,
+                                spell = it
+                            )
+                    )
+                },
+                modifier = modifier,
+                navigateToDetail = { uuid ->
+                    navController.navigate(NavEndpoint.SpellByUuid(uuid))
+                }
+            )
+        }
     }
 }
 
 @Composable
 private fun SpellList(
-    bookId: Long,
-    filter: FilterMap,
-    sorter: SortOptionEnum,
-    navController: NavController,
+    spellAndChangeList: List<Pair<SpellShortModel, Boolean>>,
+    addToBook: (model: SpellShortModel) -> Unit,
+    removeFromBook: (model: SpellShortModel) -> Unit,
+    navigateToDetail: (uuid: String) -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: SpellsByBookViewModel = hiltViewModel(),
 ) {
-    val state = viewModel.state.collectAsState()
-
-    val navigateFunc = remember {
-        { spellAndChanged: Pair<SpellShortModel, Boolean> ->
-            navController.navigate(
-                NavEndpoint
-                    .SpellByUuid(spellAndChanged.first.uuid)
-            )
-        }
-    }
-
-    val addToBookFunc = remember {
-        { spell: SpellShortModel ->
-            viewModel.onEvent(
-                SpellsByBookViewModel
-                    .Event
-                    .AddToBook(
-                        bookId = bookId,
-                        spell = spell
-                    )
-            )
-        }
-    }
-
-    val removeFromBookFunc = remember {
-        { spell: SpellShortModel ->
-            viewModel.onEvent(
-                SpellsByBookViewModel
-                    .Event
-                    .RemoveFromBook(
-                        bookId = bookId,
-                        spell = spell
-                    )
-            )
-        }
-    }
-
-
-    viewModel.onEvent(
-        SpellsByBookViewModel
-            .Event
-            .ExecuteListByFilterAndSorter(
-                bookId = bookId,
-                filter = filter,
-                sorter = sorter
-            )
-    )
-
-    Scaffold(
+    LazyColumn(
         modifier = modifier
-            .fillMaxSize()
+            .background(AppTheme.colors.firstBackgroundColor)
+            .fillMaxSize(),
     ) {
-        LazyColumn(
-            modifier = Modifier
-                .padding(it)
-        ) {
-            items(state.value.spells.toList()) { spellAndChanged ->
-                SpellListItemWithSwitchButton(
-                    spellAndChanged = spellAndChanged,
-                    addToBook = addToBookFunc,
-                    removeFromBook = removeFromBookFunc,
-                ) { navigateFunc(spellAndChanged) }
-            }
+        items(spellAndChangeList) { spellAndChange ->
+            SpellListItemWithSwitchButton(
+                spell = spellAndChange.first,
+                changed = spellAndChange.second,
+                navigateToDetail = {
+                    navigateToDetail(spellAndChange.first.uuid)
+                },
+                addToBook = addToBook,
+                removeFromBook = removeFromBook,
+                modifier = Modifier
+                    .padding(
+                        horizontal = 8.dp,
+                        vertical = 4.dp
+                    )
+            )
         }
     }
-
 }
-

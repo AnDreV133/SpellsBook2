@@ -69,15 +69,17 @@ fun SpellListItemWithRemoveButton(
 
 @Composable
 fun SpellListItemWithSwitchButton(
-    spellAndChanged: Pair<SpellShortModel, Boolean>,
+    spell: SpellShortModel,
+    changed: Boolean,
     addToBook: (SpellShortModel) -> Unit,
     removeFromBook: (SpellShortModel) -> Unit,
-    navigate: () -> Unit
+    navigateToDetail: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val textWidth = 0.7f
 
     Row(
-        modifier = Modifier
+        modifier = modifier
             .background(
                 AppTheme.colors.secondBackgroundColor,
                 RoundedCornerShape(20)
@@ -88,22 +90,22 @@ fun SpellListItemWithSwitchButton(
         verticalAlignment = Alignment.CenterVertically
     ) {
         SpellListItem(
-            spell = spellAndChanged.first,
-            navigate = navigate,
+            spell = spell,
+            navigate = navigateToDetail,
             modifier = Modifier
                 .weight(weight = textWidth)
         )
-        if (spellAndChanged.second)
+        if (changed)
             IconButton(
                 modifier = Modifier
                     .padding(8.dp),
                 onClick = {
-                    addToBook(spellAndChanged.first)
+                    removeFromBook(spell)
                 }
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_add_24),
-                    tint = Color.Green,
+                    painter = painterResource(id = R.drawable.ic_remove_24),
+                    tint = Color.Red,
                     contentDescription = null
                 )
             }
@@ -112,12 +114,12 @@ fun SpellListItemWithSwitchButton(
                 modifier = Modifier
                     .padding(8.dp),
                 onClick = {
-                    removeFromBook(spellAndChanged.first)
+                    addToBook(spell)
                 }
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_remove_24),
-                    tint = Color.Red,
+                    painter = painterResource(id = R.drawable.ic_add_24),
+                    tint = Color.Green,
                     contentDescription = null
                 )
             }
@@ -207,14 +209,12 @@ private fun SpellListItemWithRemoveButtonPreview() {
 fun SpellListItemWithSwitchButtonPreview() {
     AppTheme {
         SpellListItemWithSwitchButton(
-            Pair(
-                SpellShortModel(
-                    "vpnavoi",
-                    "testtesttesttesttesttesttesttesttesttesttesttesttesttest",
-                    LevelEnum.LEVEL_1
-                ),
-                true
+            SpellShortModel(
+                "vpnavoi",
+                "testtesttesttesttesttesttesttesttesttesttesttesttesttest",
+                LevelEnum.LEVEL_1
             ),
+            true,
             {},
             {},
             {}

@@ -1,7 +1,6 @@
 package com.example.spellsbook.app.ui.compose.screen.spells
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -114,6 +113,7 @@ fun AllSpellsScreen(
         }
     ) {
         SpellsHeaderWithHeader { spells, modifier ->
+            println("spells -> " + spells.size )
             SpellList(
                 spells = spells,
                 modifier = modifier,
