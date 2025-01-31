@@ -31,12 +31,13 @@ import com.example.spellsbook.domain.model.SpellShortModel
 fun SpellListItemWithRemoveButton(
     spell: SpellShortModel,
     onClick: () -> Unit,
-    navigate: () -> Unit
+    navigate: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val textWidth = 0.7f
 
     Row(
-        modifier = Modifier
+        modifier = modifier
             .background(
                 color = AppTheme.colors.secondBackgroundColor,
                 shape = RoundedCornerShape(20)
@@ -196,8 +197,9 @@ private fun SpellListItemWithRemoveButtonPreview() {
                 "testtesttesttesttesttesttesttesttesttesttesttesttesttest",
                 LevelEnum.LEVEL_1
             ),
-            onClick = {}
-        ) {}
+            onClick = {},
+            navigate = {}
+        )
     }
 }
 

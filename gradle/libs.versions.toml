@@ -36,10 +36,10 @@ androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref =
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomRuntime" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
 dagger-compiler = { module = "com.google.dagger:dagger-compiler", version.ref = "daggerCompiler" }
-dagger-hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
+dagger-hilt-android = { module = "com.google.dagger:hilt-android", version = "2.50" }
 gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
-hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroidCompiler" }
-hilt-android-testing = { module = "com.google.dagger:hilt-android-testing", version.ref = "hiltAndroidTesting" }
+hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version = "2.50" }
+hilt-android-testing = { module = "com.google.dagger:hilt-android-testing", version = "2.50" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }

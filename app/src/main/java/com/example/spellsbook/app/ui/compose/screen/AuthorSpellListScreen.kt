@@ -138,12 +138,13 @@ fun AuthorSpellListScreen(
                             AuthorSpellListViewModel
                                 .Event.RemoveSpell(model.uuid)
                         )
+                    },
+                    navigate = {
+                        navController.navigate(
+                            NavEndpoint.SpellByUuidEditor(model.uuid)
+                        )
                     }
-                ) {
-                    navController.navigate(
-                        NavEndpoint.SpellByUuidEditor(model.uuid)
-                    )
-                }
+                )
             }
         }
     }

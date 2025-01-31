@@ -64,6 +64,7 @@ dependencies {
 
     // annotation processing
     kapt(libs.hilt.android.compiler)
+    kapt(libs.androidx.hilt.compiler)
 
     // di
     implementation(libs.dagger.hilt.android)
@@ -86,8 +87,8 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
-    androidTestImplementation("com.google.dagger:hilt-android-testing:2.44")
-    kaptAndroidTest("com.google.dagger:hilt-android-compiler:2.44")
+    androidTestImplementation("com.google.dagger:hilt-android-testing:2.50")
+    kaptAndroidTest("com.google.dagger:hilt-android-compiler:2.50")
 
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
