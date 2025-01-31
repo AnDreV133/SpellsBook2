@@ -17,6 +17,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.Icon
 import androidx.compose.material3.RadioButton
+import androidx.compose.material3.RadioButtonColors
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -28,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -35,6 +37,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import com.example.spellsbook.R
 import com.example.spellsbook.app.mapper.toResString
+import com.example.spellsbook.app.ui.compose.saturation
 import com.example.spellsbook.app.ui.theme.AppTheme
 import com.example.spellsbook.domain.enums.CastingTimeEnum
 import com.example.spellsbook.domain.enums.LevelEnum
@@ -141,9 +144,8 @@ fun FilterItem(
             .border(4.dp, AppTheme.colors.cellColor, shape = CircleShape)
             .padding(4.dp)
             .clickable { isDropDownMenuShowing = true },
-        horizontalArrangement = Arrangement.spacedBy(4.dp),
-
-        ) {
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         Icon(
             painter = painterResource(
                 id = R.drawable.ic_arrow_drop_down_48
@@ -165,8 +167,9 @@ fun FilterItem(
     }
 
     if (isDropDownMenuShowing) {
-        // todo do list of selected tags from previous selected tags
         DropdownMenu(
+            modifier = Modifier
+                .background(AppTheme.colors.secondBackgroundColor),
             expanded = isDropDownMenuShowing,
             onDismissRequest = {
                 isDropDownMenuShowing = false
@@ -179,8 +182,20 @@ fun FilterItem(
             }
         ) {
             selectedTagsMapState.forEach { tagSelect ->
-                Row {
+                Row(
+                    modifier = Modifier
+                        .padding(
+                            end = 8.dp
+                        ),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     RadioButton(
+                        colors = RadioButtonColors(
+                            selectedColor = AppTheme.colors.cellStrokeFocusedColor,
+                            unselectedColor = AppTheme.colors.cellStrokeUnfocusedColor,
+                            disabledSelectedColor = AppTheme.colors.cellStrokeFocusedColor.saturation(),
+                            disabledUnselectedColor = AppTheme.colors.cellStrokeUnfocusedColor.saturation()
+                        ),
                         selected = tagSelect.value,
                         onClick = {
                             selectedTagsMapState = selectedTagsMapState
@@ -190,7 +205,12 @@ fun FilterItem(
                         }
                     )
 
-                    Text(tagSelect.key.toResString())
+                    Text(
+                        text = tagSelect.key.toResString(),
+                        style = AppTheme.textStyles.smallTextStyle,
+                        color = AppTheme.colors.secondForegroundColor,
+                        textAlign = TextAlign.Center,
+                    )
                 }
             }
 
