@@ -51,6 +51,7 @@ dependencies {
     kaptAndroidTest(libs.hilt.android.compiler)
 
     implementation(libs.dagger.hilt.android)
+    implementation(libs.androidx.compose.runtime)
 
     implementation(libs.converter.gson)
 
